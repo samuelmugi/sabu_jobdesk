@@ -70,7 +70,7 @@ class CandidateMain extends React.Component {
                             <i className="ni ni-single-02"/>
                           </div>
                           <h6 className="text-primary text-uppercase">
-                            My Profile
+                           View My Profile
                           </h6>
                           <MyProfile/>
                         </CardBody>
@@ -83,7 +83,7 @@ class CandidateMain extends React.Component {
                             <i className="ni ni-single-copy-04"/>
                           </div>
                           <h6 className="text-success text-uppercase">
-                            Upload CV
+                            Create Profile
                           </h6>
                           <Uploadcv/>
                         </CardBody>
