@@ -26,7 +26,7 @@ export default class jobs extends Component {
       <>
         <DemoNavbar/>
         <main ref="main">
-          <div className="position-relative">
+          <div className=" component-jobs position-relative">
             {/* shape Hero */}
             <section className="section section-lg section-shaped pb-250">
               <div className="shape shape-style-1 shape-default">

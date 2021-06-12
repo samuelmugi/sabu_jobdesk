@@ -8,7 +8,7 @@ import CandidateNotification from './Notifications';
 import MyProfile from './Profile';
 import Uploadcv from './Uploadcv';
 
-class candidate extends React.Component {
+class CandidateMain extends React.Component {
   state = {};
 
   componentDidMount() {
@@ -277,4 +277,4 @@ class candidate extends React.Component {
   }
 }
 
-export default candidate;
+export default CandidateMain;

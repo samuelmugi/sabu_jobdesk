@@ -22,7 +22,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css';
-import Candidate from 'views/candidate/candidate/candidate.js';
+import CandidateMain from 'views/candidate/candidate/candidateMain.js';
 import Faq from 'views/faq/faq/faq';
 import Index from 'views/Index.js';
 import Jobs from 'views/jobs/jobs/jobs';
@@ -35,7 +35,7 @@ ReactDOM.render(
       <Route
         path="/candidate-page"
         exact
-        render={props => <Candidate {...props} />}
+        render={props => <CandidateMain {...props} />}
       /> <Route
       path="/jobs-page"
       exact

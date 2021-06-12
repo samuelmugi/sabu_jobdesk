@@ -1,2 +1,2 @@
-import candidate from "./candidate"
-export default candidate;
+import CandidateMain from "./candidateMain"
+export default CandidateMain;

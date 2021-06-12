@@ -63,7 +63,7 @@ export default function Uploadcv() {
               Build my profile
             </Typography>
             <Button autoFocus color="inherit" onClick={handleClose}>
-              save
+              Close
             </Button>
           </Toolbar>
         </AppBar>

@@ -1,69 +1,69 @@
 import React from 'react';
-import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
-import { Divider } from 'semantic-ui-react'
-
-class JobSettings extends React.Component {
+import {Card, Dropdown} from 'semantic-ui-react'
+import {makeStyles} from "@material-ui/core/styles";
 
 
-  render() {
+const useStyles = makeStyles((theme) => ({
+    root: {
+        width: '100%',
+    }
+}));
+const JobSettings = () => {
+    const classes = useStyles();
+    const options = [
+        {key: 'angular', text: 'Angular', value: 'angular'},
+        {key: 'css', text: 'CSS', value: 'css'},
+        {key: 'design', text: 'Graphic Design', value: 'design'},
+        {key: 'ember', text: 'Ember', value: 'ember'},
+        {key: 'html', text: 'HTML', value: 'html'},
+        {key: 'ia', text: 'Information Architecture', value: 'ia'},
+        {key: 'javascript', text: 'Javascript', value: 'javascript'},
+        {key: 'mech', text: 'Mechanical Engineering', value: 'mech'},
+        {key: 'meteor', text: 'Meteor', value: 'meteor'},
+        {key: 'node', text: 'NodeJS', value: 'node'},
+        {key: 'plumbing', text: 'Plumbing', value: 'plumbing'},
+        {key: 'python', text: 'Python', value: 'python'},
+        {key: 'rails', text: 'Rails', value: 'rails'},
+        {key: 'react', text: 'React', value: 'react'},
+        {key: 'repair', text: 'Kitchen Repair', value: 'repair'},
+        {key: 'ruby', text: 'Ruby', value: 'ruby'},
+        {key: 'ui', text: 'UI Design', value: 'ui'},
+        {key: 'ux', text: 'User Experience', value: 'ux'},
+    ]
+
+    const DropdownExampleMultipleSelection = () => (
+        <Dropdown placeholder='Skills' fluid multiple selection options={options}/>
+    )
+
     return (
-      <>
-
-        <Row>
-          <Col>
-            <Card className="bg-secondary shadow">
-              <div>
-                <Row>
-                  <Col sm>
-                    <span>search for jobs</span>
-                  </Col>
-                  <Col sm>
-                    <span>country or town</span>
-                  </Col>
-                  <Col sm>
-                    <span>Show jobs</span>
-                  </Col>
-                  <Col sm>
-                    <span>clear filters</span>
-                  </Col>
-                </Row>
-                <Divider />
-                <Row>
-                  <Col sm>
-                    <span>published</span>
-                  </Col>
-                  <Col sm>
-                    <span>Profession</span>
-                  </Col>
-                  <Col sm>
-                    <span>Industry</span>
-                  </Col>
-                  <Col sm>
-                    <span>seniority</span>
-                  </Col> <Col sm>
-                  <span></span>
-                </Col>
-                </Row>
-                <Divider />
-              </div>
-
-              <CardBody className="px-lg-5 py-lg-5">
-                <Row>
-                  <Col>
-                    <Card><span>1 of 3</span></Card>
-                  </Col>
-                  <Col sm="8">
-                    <Card><span>2 of 3 (wider)</span></Card>
-                  </Col>
-                </Row>
-              </CardBody>
+        <>
+            <Card fluid>
+                <Card.Content>
+                    <Card.Header>Preferred Counties</Card.Header>
+                </Card.Content>
+                <Card.Content>
+                    <DropdownExampleMultipleSelection/>
+                </Card.Content>
             </Card>
-          </Col>
-        </Row>
+            <Card fluid>
+                <Card.Content>
+                    <Card.Header>Interest areas</Card.Header>
+                </Card.Content>
+                <Card.Content>
+                    <DropdownExampleMultipleSelection/>
+                </Card.Content>
+            </Card>
+            <Card fluid>
+                <Card.Content>
+                    <Card.Header>Notification Setings</Card.Header>
+                </Card.Content>
+                <Card.Content>
+                    <DropdownExampleMultipleSelection/>
+                </Card.Content>
+            </Card>
+        </>
 
-      </>
-    );
-  }
+    )
 }
 
 export default JobSettings;
