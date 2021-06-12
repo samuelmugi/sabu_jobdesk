@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "703e4ac0e24524ff59b81c22d370849a",
+    "revision": "6e087b66f89e36ef4e3ac69690ac98f1",
     "url": "/sabu_jobdesk/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/sabu_jobdesk/static/css/2.bc31d483.chunk.css"
   },
   {
-    "revision": "75c1c5403ec3a1d5fa5a",
+    "revision": "b3bae73c8be35e30538b",
     "url": "/sabu_jobdesk/static/css/main.f34df336.chunk.css"
   },
   {
@@ -20,12 +20,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/sabu_jobdesk/static/js/2.4b14c7b5.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "75c1c5403ec3a1d5fa5a",
-    "url": "/sabu_jobdesk/static/js/main.75f3b815.chunk.js"
+    "revision": "b3bae73c8be35e30538b",
+    "url": "/sabu_jobdesk/static/js/main.85c9ae21.chunk.js"
   },
   {
     "revision": "7a6956e196ccd2e4ccc8856708b02847",
-    "url": "/sabu_jobdesk/static/js/main.75f3b815.chunk.js.LICENSE.txt"
+    "url": "/sabu_jobdesk/static/js/main.85c9ae21.chunk.js.LICENSE.txt"
   },
   {
     "revision": "2797ed550788ca4c963f",
