@@ -1,40 +1,60 @@
 const LS_KEY = {
-  auth_token: ""
+    auth_token: "jwtToken",
+    user_det: "profile"
 };
 
-const set = {
-  authToken: data => {
-    localStorage.setItem(
-      LS_KEY.auth_token,
-      JSON.stringify({
-        auth_token: data
-      })
-    );
-  }
-};
+class Storage {
+    setAuthTOken = (authToken) => {
+        this.destroyAuthTOken();
+        localStorage.setItem(
+            LS_KEY.auth_token,
+            JSON.stringify({
+                [LS_KEY.auth_token]: authToken
+            })
+        );
 
-const fetch = {
-  authToken: () => {
-    const data = localStorage.getItem(LS_KEY.auth_token);
-    if (data) {
-      try {
-        const decoded = JSON.parse(data);
-        return decoded.auth_token;
-      } catch (err) {
-        console.log(err);
-      }
+    };
+
+
+    fetchAuthToken = () => {
+        const data = localStorage.getItem(LS_KEY.auth_token);
+        if (data) {
+            try {
+                const decoded = JSON.parse(data);
+                return decoded[LS_KEY.auth_token];
+            } catch (err) {
+                console.log(err);
+                return {[LS_KEY.auth_token]: 'has no auth'};
+            }
+        }
+
+    };
+
+    setUserDetials = (userDetials) => {
+        localStorage.setItem(
+            LS_KEY.user_det,
+            JSON.stringify({
+                [LS_KEY.user_det]: userDetials
+            })
+        );
     }
-  }
-};
+    getCurrentUser = () => {
+        const data = localStorage.getItem(LS_KEY.user_det);
+        if (data) {
+            try {
+                const decoded = JSON.parse(data);
+                return decoded[LS_KEY.user_det];
+            } catch (err) {
+                console.log(err);
+                return {[LS_KEY.user_det]: 'has no user'};
+            }
+        }
+    };
 
-const destroy = {
-  authToken: () => {
-    localStorage.removeItem(LS_KEY.auth_token);
-  }
-};
+    destroyAuthTOken = () => {
+        localStorage.clear();
+    };
 
-export const storage = {
-  set,
-  fetch,
-  destroy
-};
+}
+
+export default new Storage();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 // reactstrap components
 import {Card, CardBody, Col, Row} from 'reactstrap';
 import {Button, Divider, Form, Select} from 'semantic-ui-react';
@@ -11,6 +11,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import PostSecondary from './postsecondary';
 import ProfessionalQualification from './professionalqualification';
+import BackendService from "services/APiCalls/BackendService";
+import REST_APIS from "services/APiCalls/config/apiUrl";
+import STORAGE from "services/APiCalls/config/storage";
+import CandidateConstants from "views/candidate/candidate/candidateconstants";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -42,24 +46,110 @@ const optionsGrades = [
     {key: 'D-', text: 'D-', value: 'D-'},
     {key: 'E', text: 'E', value: 'E'},
 ];
+
+const academicValuesFields = CandidateConstants.academicValuesFields;
+
+
 export default function AcademicDetails(props) {
     const classes = useStyles();
-    const user = {username: 'mugi'};
+    const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
     const [color, setColor] = useState("#60991f");
     const [startDate, setStartDate] = useState(new Date());
     const [loading, setLoading, loadingRef] = useState(false);
-    const [issueValues, setIssueValues, issueValuesRef] = useState({
-        id: '',
-        createdBy: user?.username,
-        title: '',
-        issue: '',
-        bankSystem: ''
-    });
-    const [issueValuesErrors, setIssueValuesErrors, issueValuesErrorsRef] = useState({
-        title: '',
-        issue: '',
-        bankSystem: ''
-    });
+    const [isMounted, setMounted, isMountedRef] = useState(false);
+    const [isEdited, setEditing, isEditedRef] = useState(false);
+    const [academicValues, setAcademicValues, academicValuesRef] = useState({});
+    const [academicValuesErrors, setAcademicValuesErrors, academicValuesErrorsRef] = useState({});
+
+
+    useEffect(() => {
+        (async function () {
+            if (!isMountedRef.current) {
+                await initializeAcademicValues;
+                setMounted(true);
+            }
+        })();
+    }, [isEdited]);
+
+
+    const initializeAcademicValues = async () => {
+        console.log(JSON.stringify(user));
+        academicValuesFields.map(fieldObj => {
+            setAcademicValues((prevValues) => {
+                return {...prevValues, [fieldObj.field]: user[fieldObj.field]};
+            });
+        })
+    }
+    const handleOtherSelects = (e, {name, value}) => {
+        setFieldValues(name, value);
+    }
+    const setField = (e) => {
+        setFieldValues(e.target.name, e.target.value);
+    };
+    const setFieldValues = (key, value) => {
+        setAcademicValues((prevValues) => {
+            return {...prevValues, [key]: value};
+        });
+        if (!!academicValuesErrorsRef.current[key])
+            setAcademicValuesErrors((prevValues) => {
+                return {...prevValues, [key]: null};
+            });
+    }
+    const validateValues = () => {
+        let hasErrors = false;
+        setEditing(true);
+
+        const personalObj = academicValuesRef.current;
+        academicValuesFields.map((fieldObj) => {
+            if (personalObj[fieldObj.field] === null || personalObj[fieldObj.field] === '' || personalObj[fieldObj.field] === undefined) {
+                setAcademicValuesErrors((prevValues) => {
+                    return {...prevValues, [fieldObj.field]: fieldObj.field + ' is required'};
+                });
+                hasErrors = true;
+            }
+        });
+        if (!!academicValuesErrorsRef.current?.dateOfBirth) {
+            BackendService.notifyError('PLease select date of birth');
+        }
+
+        console.log(JSON.stringify(academicValuesErrorsRef.current))
+        return hasErrors;
+    }
+
+
+    const submitAcademicValues = async () => {
+        const hasErrors = validateValues();
+        console.log('hasErrors', hasErrors)
+        if (!hasErrors) {
+            setLoading(true);
+            let academicValues = academicValuesRef.current;
+            academicValues.id = user.id;
+            const url = REST_APIS.ADD_SECONDARY_SCHOOL.replace('PROFILEID', user.id);
+            await BackendService.putRequest(url, academicValues)
+                .then(() => {
+                        BackendService.notifySuccess('Personal Data updated successfully')
+                        setLoading(false);
+                        props.handleComplete();
+                    },
+                    (error) => {
+                        BackendService.notifySuccess('oops! error occured during personal data update. pLease try later ');
+                        setLoading(false);
+                    }
+                );
+
+        }
+    }
+    const displayError = (key) => {
+        if (isEditedRef.current) {
+            if (academicValuesErrorsRef.current[key]) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
     return (
         <> <LoadingOverlay
             active={loadingRef.current}
@@ -75,20 +165,35 @@ export default function AcademicDetails(props) {
                                     <Form.Input
                                         label="Secondary School"
                                         placeholder="Secondary School"
-                                        name="secondaryschool"
+                                        name="secondarySchoolName"
+                                        value={academicValuesRef.current.secondarySchoolName}
+                                        onChange={setField}
+                                        error={displayError('secondarySchoolName') ? {
+                                            content: academicValuesErrorsRef.current?.secondarySchoolName
+                                        } : false}
                                     />
                                     <Form.Field
                                         control={Select}
                                         label='Grade'
                                         options={optionsGrades}
                                         placeholder='Grade'
+                                        name='secondaryOverallGrade'
+                                        onChange={handleOtherSelects}
+                                        error={displayError('secondaryOverallGrade') ? {
+                                            content: academicValuesErrorsRef.current?.secondaryOverallGrade
+                                        } : false}
                                     />
-                                    <Form.Field>
+                                    <Form.Field error={displayError('secondarySchoolYearOfCompletion') ? {
+                                        content: academicValuesErrorsRef.current?.secondarySchoolYearOfCompletion
+                                    } : false}>
                                         Year Of Completion<br/>
                                         <DatePicker
+                                            name='secondarySchoolYearOfCompletion'
                                             selected={startDate}
-                                            onChange={(date) => setStartDate(date)}
-                                            showYearPicker
+                                            onChange={(date) => {
+                                                setFieldValues('secondarySchoolYearOfCompletion', date);
+                                                setStartDate(date);
+                                            }} showYearPicker
                                             dateFormat="yyyy"
                                         />
                                     </Form.Field>
@@ -101,17 +206,32 @@ export default function AcademicDetails(props) {
                                         label='Mathematics'
                                         options={optionsGrades}
                                         placeholder='Mathematics'
+                                        name='mathGrade'
+                                        onChange={handleOtherSelects}
+                                        error={displayError('mathGrade') ? {
+                                            content: academicValuesErrorsRef.current?.mathGrade
+                                        } : false}
                                     />
                                     <Form.Field
                                         control={Select}
                                         label='English'
                                         options={optionsGrades}
                                         placeholder='English'
+                                        name='englishGrade'
+                                        onChange={handleOtherSelects}
+                                        error={displayError('englishGrade') ? {
+                                            content: academicValuesErrorsRef.current?.englishGrade
+                                        } : false}
                                     />
                                     <Form.Field
                                         control={Select}
                                         label='Kiswahili'
                                         options={optionsGrades}
+                                        name='kiswahiliGrade'
+                                        onChange={handleOtherSelects}
+                                        error={displayError('kiswahiliGrade') ? {
+                                            content: academicValuesErrorsRef.current?.kiswahiliGrade
+                                        } : false}
                                         placeholder='Kiswahili'
                                     />
                                     <Form.Field
@@ -119,18 +239,33 @@ export default function AcademicDetails(props) {
                                         label='Biology'
                                         options={optionsGrades}
                                         placeholder='Biology'
+                                        name='biologyGrade'
+                                        onChange={handleOtherSelects}
+                                        error={displayError('biologyGrade') ? {
+                                            content: academicValuesErrorsRef.current?.biologyGrade
+                                        } : false}
                                     />
                                     <Form.Field
                                         control={Select}
                                         label='Physics'
                                         options={optionsGrades}
                                         placeholder='Physics'
+                                        name='physicsGrade'
+                                        onChange={handleOtherSelects}
+                                        error={displayError('physicsGrade') ? {
+                                            content: academicValuesErrorsRef.current?.physicsGrade
+                                        } : false}
                                     />
                                     <Form.Field
                                         control={Select}
                                         label='Chemistry'
                                         options={optionsGrades}
                                         placeholder='Chemistry'
+                                        name='chemistryGrade'
+                                        onChange={handleOtherSelects}
+                                        error={displayError('chemistryGrade') ? {
+                                            content: academicValuesErrorsRef.current?.chemistryGrade
+                                        } : false}
                                     />
                                 </Form.Group>
                                 <Form.Group>
@@ -139,6 +274,11 @@ export default function AcademicDetails(props) {
                                         label='Attach Certificate (pdf or image)'
                                         placeholder='Attach Certificate (pdf or image'
                                         type="file"
+                                        name='salutation'
+                                        onChange={handleOtherSelects}
+                                        error={displayError('salutation') ? {
+                                            content: academicValuesErrorsRef.current?.salutation
+                                        } : false}
                                     />
                                 </Form.Group>
                                 <Divider horizontal>Post Secondary School Qualification eg Diploma, Bachelors,
@@ -158,26 +298,25 @@ export default function AcademicDetails(props) {
                                     className={classes.button}>
                                 Back
                             </Button>
+                            {props.activeStep !== props.steps.length &&
+                            (props.completed[props.activeStep] ? (
+                                <Typography variant="caption" className={classes.completed}>
+                                    Step: Academic Data already completed
+                                </Typography>
+                            ) : (
+                                <Button variant="contained" positive
+                                        onClick={submitAcademicValues}>
+                                    Save Academic Data
+                                </Button>
+                            ))}
                             <Button
                                 variant="contained"
-                                color="primary"
+                                color="yellow"
                                 onClick={props.handleNext}
                                 className={classes.button}
                             >
                                 Next
                             </Button>
-
-                            {props.activeStep !== props.steps.length &&
-                            (props.completed[props.activeStep] ? (
-                                <Typography variant="caption" className={classes.completed}>
-                                    Step {props.activeStep + 1} already completed
-                                </Typography>
-                            ) : (
-                                <Button variant="contained" color="primary"
-                                        onClick={props.handleComplete}>
-                                    {props.completedSteps() === props.totalSteps() - 1 ? 'Finish' : 'Complete Step'}
-                                </Button>
-                            ))}
 
                         </Col>
                     </Row>

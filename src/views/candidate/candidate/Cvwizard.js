@@ -152,10 +152,10 @@ export default function Cvwizard() {
                     </div>
                 ) : (
                     <div>
-                        <Typography className={classes.instructions}>{
+                        <div className={classes.instructions}>{
                             getStepContent(activeStep, completed, steps, handleNext, handleBack, completedSteps, totalSteps, handleComplete)
                         }
-                        </Typography>
+                        </div>
 
                     </div>
                 )}
