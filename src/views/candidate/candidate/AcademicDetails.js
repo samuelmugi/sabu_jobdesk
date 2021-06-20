@@ -188,8 +188,8 @@ export default function AcademicDetails(props) {
                                     } : false}>
                                         Year Of Completion<br/>
                                         <DatePicker
-                                            name='secondarySchoolYearOfCompletion'
                                             selected={startDate}
+                                            name='secondarySchoolYearOfCompletion'
                                             onChange={(date) => {
                                                 setFieldValues('secondarySchoolYearOfCompletion', date);
                                                 setStartDate(date);
@@ -284,9 +284,9 @@ export default function AcademicDetails(props) {
                                 <Divider horizontal>Post Secondary School Qualification eg Diploma, Bachelors,
                                     Masters.</Divider>
                                 <PostSecondary/>
-                                <Divider horizontal>Professional Qualification/Membership eg CPA, CCNA, Nursing Council
-                                    of Kenya..</Divider>
-                                <ProfessionalQualification/>
+                                {/*<Divider horizontal>Professional Qualification/Membership eg CPA, CCNA, Nursing Council*/}
+                                {/*    of Kenya..</Divider>*/}
+                                {/*<ProfessionalQualification/>*/}
 
                             </Form>
                         </Col>

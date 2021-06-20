@@ -45,4 +45,20 @@ module.exports = Object.freeze({
         {field: 'physicsGrade'},
         {field: 'chemistryGrade'}
     ],
-});
+    postSecondaryValuesFields: [
+        {field: 'schoolName'},
+        {field: 'start'},
+        {field: 'end'},
+        {field: 'courseName'},
+        {field: 'educationLevel'},
+     ],
+    experienceValuesFields: [
+        {field: 'companyName'},
+        {field: 'jobTitle'},
+        {field: 'currentActive'},
+        {field: 'startDate'},
+        {field: 'endDate'},
+        {field: 'description'},
+     ],
+})
+;

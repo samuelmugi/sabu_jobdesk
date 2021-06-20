@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -7,6 +7,12 @@ import {Button, Form} from "semantic-ui-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import useState from "react-usestateref";
+import CandidateConstants from "views/candidate/candidate/candidateconstants";
+import BackendService from "services/APiCalls/BackendService";
+import REST_APIS from "services/APiCalls/config/apiUrl";
+import LoadingOverlay from "react-loading-overlay";
+import ClipLoader from "react-spinners/PropagateLoader";
+import STORAGE from "services/APiCalls/config/storage";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -23,13 +29,23 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(1),
     },
 }));
+const employmentValuesFields = CandidateConstants.experienceValuesFields;
+
 
 export default function EmploymentHistory() {
+    const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
     const [startDate, setStartDate] = useState(new Date());
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [fullWidth, setFullWidth] = React.useState(true);
     const [maxWidth, setMaxWidth] = React.useState('sm');
+    const [color, setColor] = useState("#60991f");
+    const [loading, setLoading, loadingRef] = useState(false);
+    const [isMounted, setMounted, isMountedRef] = useState(false);
+    const [isEdited, setEditing, isEditedRef] = useState(false);
+    const [employmentValues, setEmploymentValues, employmentValuesRef] = useState({});
+    const [employmentValuesErrors, setEmploymentValuesErrors, employmentValuesErrorsRef] = useState({});
+
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -39,13 +55,94 @@ export default function EmploymentHistory() {
         setOpen(false);
     };
 
-    const handleMaxWidthChange = (event) => {
-        setMaxWidth(event.target.value);
-    };
 
-    const handleFullWidthChange = (event) => {
-        setFullWidth(event.target.checked);
+    useEffect(() => {
+        (async function () {
+            if (!isMountedRef.current) {
+                await initializeEmploymentValues;
+                setMounted(true);
+            }
+        })();
+    }, [isEdited]);
+
+
+    const initializeEmploymentValues = async () => {
+        console.log(JSON.stringify(user));
+        employmentValuesFields.map(fieldObj => {
+            setEmploymentValues((prevValues) => {
+                return {...prevValues, [fieldObj.field]: user[fieldObj.field]};
+            });
+        })
+    }
+    const handleOtherSelects = (e, {name, value}) => {
+        setFieldValues(name, value);
+    }
+    const setField = (e) => {
+        setFieldValues(e.target.name, e.target.value);
     };
+    const setFieldValues = (key, value) => {
+        setEmploymentValues((prevValues) => {
+            return {...prevValues, [key]: value};
+        });
+        if (!!employmentValuesErrorsRef.current[key])
+            setEmploymentValuesErrors((prevValues) => {
+                return {...prevValues, [key]: null};
+            });
+    }
+    const validateValues = () => {
+        let hasErrors = false;
+        setEditing(true);
+
+        const personalObj = employmentValuesRef.current;
+        employmentValuesFields.map((fieldObj) => {
+            if (personalObj[fieldObj.field] === null || personalObj[fieldObj.field] === '' || personalObj[fieldObj.field] === undefined) {
+                setEmploymentValuesErrors((prevValues) => {
+                    return {...prevValues, [fieldObj.field]: fieldObj.field + ' is required'};
+                });
+                hasErrors = true;
+            }
+        });
+        if (!!employmentValuesErrorsRef.current?.dateOfBirth) {
+            BackendService.notifyError('PLease select date of birth');
+        }
+
+        console.log(JSON.stringify(employmentValuesErrorsRef.current))
+        return hasErrors;
+    }
+
+
+    const submitEmploymentValues = async () => {
+        const hasErrors = validateValues();
+        console.log('hasErrors', hasErrors)
+        if (!hasErrors) {
+            setLoading(true);
+            let employmentValues = employmentValuesRef.current;
+            employmentValues.id = user.id;
+            const url = REST_APIS.ADD_EXPERIENCE.replace('PROFILEID', user.id);
+            await BackendService.putRequest(url, employmentValues)
+                .then(() => {
+                        BackendService.notifySuccess('Personal Data updated successfully')
+                        setLoading(false);
+                    },
+                    (error) => {
+                        BackendService.notifySuccess('oops! error occured during personal data update. pLease try later ');
+                        setLoading(false);
+                    }
+                );
+
+        }
+    }
+    const displayError = (key) => {
+        if (isEditedRef.current) {
+            if (employmentValuesErrorsRef.current[key]) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 
     return (
         <React.Fragment>
@@ -64,6 +161,9 @@ export default function EmploymentHistory() {
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="max-width-dialog-title"
+            > <LoadingOverlay
+                active={loadingRef.current}
+                spinner={<ClipLoader color={color} loading={loadingRef.current}/>}
             >
                 <DialogTitle id="max-width-dialog-title">
                     Employment History</DialogTitle>
@@ -73,44 +173,84 @@ export default function EmploymentHistory() {
                             <Form.Input
                                 label="Employer Name"
                                 placeholder="Employer Name"
-                                name="employername"
-                            />
+                                name="companyName"
+                                value={employmentValuesRef.current.companyName}
+                                onChange={setField}
+                                error={displayError('companyName') ? {
+                                    content: employmentValuesErrorsRef.current?.companyName
+                                } : false}/>
                         </Form.Group>
                         <Form.Group widths='equal'>
                             <Form.Input
                                 label="Job Title"
                                 placeholder="Job Title"
-                                name="jobtitle"
-                            />
+                                name="jobTitle"
+                                value={employmentValuesRef.current.jobTitle}
+                                onChange={setField}
+                                error={displayError('jobTitle') ? {
+                                    content: employmentValuesErrorsRef.current?.jobTitle
+                                } : false}/>
                         </Form.Group>
                         <Form.Group widths='equal'>
-                            <Form.Field>
+                            <Form.TextArea rows={2}
+                                           label="Job Description"
+                                           placeholder="Job Description"
+                                           name="description"
+                                           value={employmentValuesRef.current.description}
+                                           onChange={setField}
+                                           error={displayError('description') ? {
+                                               content: employmentValuesErrorsRef.current?.description
+                                           } : false}/>
+                        </Form.Group>
+                        <Form.Group widths='equal'>
+                            <Form.Checkbox
+                                label="Current Job"
+                                name="currentActive"
+                                checked={employmentValuesRef.current.currentActive}
+                                onChange={(e, data) => {
+                                    setFieldValues('currentActive', data.checked);
+                                }}
+                                error={displayError('currentActive') ? {
+                                    content: employmentValuesErrorsRef.current?.currentActive
+                                } : false}/>
+                        </Form.Group>
+                        <Form.Group widths='equal'>
+                            <Form.Field error={displayError('startDate') ? {
+                                content: employmentValuesErrorsRef.current?.startDate
+                            } : false}
+                            >
                                 Period From<br/>
                                 <DatePicker
                                     selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                    showYearDropdown
+                                    name='startDate'
+                                    onChange={(date) => {
+                                        setFieldValues('startDate', date);
+                                        setStartDate(date);
+                                    }} showYearDropdown
                                     showMonthYearDropdown
                                     useShortMonthInDropdown
                                 />
                             </Form.Field>
 
-                            <Form.Field>
+                            <Form.Field error={displayError('endDate') ? {
+                                content: employmentValuesErrorsRef.current?.endDate
+                            } : false}
+                            >
                                 To<br/>
                                 <DatePicker
                                     selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                    showYearDropdown
+                                    name='endDate'
+                                    onChange={(date) => {
+                                        setFieldValues('endDate', date);
+                                        setStartDate(date);
+                                    }} showYearDropdown
                                     showMonthYearDropdown
                                     useShortMonthInDropdown
                                 />
                             </Form.Field>
                         </Form.Group>
-                        <Button onClick={handleClose} color="primary">
+                        <Button onClick={submitEmploymentValues} positive>
                             Save
-                        </Button>
-                        <Button onClick={handleClose} color="primary">
-                            Reset
                         </Button>
                         <Button onClick={handleClose} color="primary">
                             Close
@@ -119,6 +259,7 @@ export default function EmploymentHistory() {
                     </Form>
 
                 </DialogContent>
+            </LoadingOverlay>
             </Dialog>
         </React.Fragment>
     );

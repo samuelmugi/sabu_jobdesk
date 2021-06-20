@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 // reactstrap components
 import {Card, CardBody, Col, Row} from 'reactstrap';
 import {Button, Divider, Form} from 'semantic-ui-react';
@@ -10,6 +10,10 @@ import ClipLoader from "react-spinners/PropagateLoader";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import EmploymentHistory from './employmenthistory';
+import CandidateConstants from "views/candidate/candidate/candidateconstants";
+import STORAGE from "services/APiCalls/config/storage";
+import BackendService from "services/APiCalls/BackendService";
+import REST_APIS from "services/APiCalls/config/apiUrl";
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -29,22 +33,31 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Experience(props) {
     const classes = useStyles();
-    const user = {username: 'mugi'};
+    const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
     const [color, setColor] = useState("#60991f");
     const [startDate, setStartDate] = useState(new Date());
     const [loading, setLoading, loadingRef] = useState(false);
-    const [issueValues, setIssueValues, issueValuesRef] = useState({
-        id: '',
-        createdBy: user?.username,
-        title: '',
-        issue: '',
-        bankSystem: ''
-    });
-    const [issueValuesErrors, setIssueValuesErrors, issueValuesErrorsRef] = useState({
-        title: '',
-        issue: '',
-        bankSystem: ''
-    });
+    const [isMounted, setMounted, isMountedRef] = useState(false);
+    const [isEdited, setEditing, isEditedRef] = useState(false);
+    const [experienceValues, setExperienceValues, experienceValuesRef] = useState({});
+    const [experienceValuesErrors, setExperienceValuesErrors, experienceValuesErrorsRef] = useState({});
+
+
+    useEffect(() => {
+        (async function () {
+            if (!isMountedRef.current) {
+                await initializeExperienceValues;
+                setMounted(true);
+            }
+        })();
+    }, [isEdited]);
+
+
+    const initializeExperienceValues = async () => {
+        console.log(JSON.stringify(user));
+
+    }
+
     return (
         <> <LoadingOverlay
             active={loadingRef.current}
@@ -65,26 +78,25 @@ export default function Experience(props) {
                                     className={classes.button}>
                                 Back
                             </Button>
+                            {props.activeStep !== props.steps.length &&
+                            (props.completed[props.activeStep] ? (
+                                <Typography variant="caption" className={classes.completed}>
+                                    Step: Experience Data already completed
+                                </Typography>
+                            ) : (
+                                <Button variant="contained" positive
+                                        onClick={props.handleComplete}>
+                                    Save Academic Data
+                                </Button>
+                            ))}
                             <Button
                                 variant="contained"
-                                primary
+                                color="yellow"
                                 onClick={props.handleNext}
                                 className={classes.button}
                             >
                                 Next
                             </Button>
-
-                            {props.activeStep !== props.steps.length &&
-                            (props.completed[props.activeStep] ? (
-                                <Typography variant="caption" className={classes.completed}>
-                                    Step {props.activeStep + 1} already completed
-                                </Typography>
-                            ) : (
-                                <Button variant="contained" color="primary"
-                                        onClick={props.handleComplete}>
-                                    {props.completedSteps() === props.totalSteps() - 1 ? 'Finish' : 'Complete Step'}
-                                </Button>
-                            ))}
 
                         </Col>
                     </Row>

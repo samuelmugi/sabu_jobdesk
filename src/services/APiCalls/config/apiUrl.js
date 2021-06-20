@@ -17,15 +17,15 @@ module.exports = Object.freeze({
     UPDATE_POST_SECONDARY_SCHOOL: 'profile/PROFILEID/academic-qualifications/',
     DELETE_POST_SECONDARY_SCHOOL: 'profile/PROFILEID/academic-qualifications/',
     //WORK EXPERIENCE
-    ADD_EXPERIENCE_SECONDARY_SCHOOL: 'profile/PROFILEID/work-experience',
-    GET_EXPERIENCE_SECONDARY_SCHOOL: 'profile/PROFILEID/work-experience',
-    UPDATE_EXPERIENCE_SECONDARY_SCHOOL: 'profile/PROFILEID/work-experience/',
-    DELETE_EXPERIENCE_SECONDARY_SCHOOL: 'profile/PROFILEID/work-experience/',
+    ADD_EXPERIENCE: 'profile/PROFILEID/work-experience',
+    GET_EXPERIENCE: 'profile/PROFILEID/work-experience',
+    UPDATE_EXPERIENCE: 'profile/PROFILEID/work-experience/',
+    DELETE_EXPERIENCE: 'profile/PROFILEID/work-experience/',
     //SKILL
-    ADD_SKILL_SECONDARY_SCHOOL: 'profile/PROFILEID/work-experience',
-    GET_SKILL_SECONDARY_SCHOOL: 'profile/PROFILEID/work-experience',
-    UPDATE_SKILL_SECONDARY_SCHOOL: 'profile/PROFILEID/work-experience/',
-    DELETE_SKILL_SECONDARY_SCHOOL: 'profile/PROFILEID/work-experience/',
+    ADD_SKILL: 'profile/PROFILEID/work-experience',
+    GET_SKILL: 'profile/PROFILEID/work-experience',
+    UPDATE_SKILL: 'profile/PROFILEID/work-experience/',
+    DELETE_SKILL: 'profile/PROFILEID/work-experience/',
     //DEFAULT CONFIGS
     GET_ALL_RELIGIONS: 'settings/religions',
     GET_ALL_TRIBES: 'settings/tribes',
