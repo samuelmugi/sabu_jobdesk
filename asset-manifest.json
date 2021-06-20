@@ -1,32 +1,31 @@
 {
   "files": {
     "main.css": "/sabu_jobdesk/static/css/main.f34df336.chunk.css",
-    "main.js": "/sabu_jobdesk/static/js/main.85c9ae21.chunk.js",
-    "main.js.map": "/sabu_jobdesk/static/js/main.85c9ae21.chunk.js.map",
+    "main.js": "/sabu_jobdesk/static/js/main.82983e6f.chunk.js",
+    "main.js.map": "/sabu_jobdesk/static/js/main.82983e6f.chunk.js.map",
     "runtime-main.js": "/sabu_jobdesk/static/js/runtime-main.850b1387.js",
     "runtime-main.js.map": "/sabu_jobdesk/static/js/runtime-main.850b1387.js.map",
-    "static/css/2.bc31d483.chunk.css": "/sabu_jobdesk/static/css/2.bc31d483.chunk.css",
-    "static/js/2.4b14c7b5.chunk.js": "/sabu_jobdesk/static/js/2.4b14c7b5.chunk.js",
-    "static/js/2.4b14c7b5.chunk.js.map": "/sabu_jobdesk/static/js/2.4b14c7b5.chunk.js.map",
+    "static/css/2.bc732e29.chunk.css": "/sabu_jobdesk/static/css/2.bc732e29.chunk.css",
+    "static/js/2.12e48a70.chunk.js": "/sabu_jobdesk/static/js/2.12e48a70.chunk.js",
+    "static/js/2.12e48a70.chunk.js.map": "/sabu_jobdesk/static/js/2.12e48a70.chunk.js.map",
     "index.html": "/sabu_jobdesk/index.html",
-    "precache-manifest.30c55abab2e3d25748f8d21cad9b9d60.js": "/sabu_jobdesk/precache-manifest.30c55abab2e3d25748f8d21cad9b9d60.js",
+    "precache-manifest.15d9953af60bc7f12245d1651d634dfb.js": "/sabu_jobdesk/precache-manifest.15d9953af60bc7f12245d1651d634dfb.js",
     "service-worker.js": "/sabu_jobdesk/service-worker.js",
-    "static/css/2.bc31d483.chunk.css.map": "/sabu_jobdesk/static/css/2.bc31d483.chunk.css.map",
+    "static/css/2.bc732e29.chunk.css.map": "/sabu_jobdesk/static/css/2.bc732e29.chunk.css.map",
     "static/css/main.f34df336.chunk.css.map": "/sabu_jobdesk/static/css/main.f34df336.chunk.css.map",
-    "static/js/2.4b14c7b5.chunk.js.LICENSE.txt": "/sabu_jobdesk/static/js/2.4b14c7b5.chunk.js.LICENSE.txt",
-    "static/js/main.85c9ae21.chunk.js.LICENSE.txt": "/sabu_jobdesk/static/js/main.85c9ae21.chunk.js.LICENSE.txt",
+    "static/js/2.12e48a70.chunk.js.LICENSE.txt": "/sabu_jobdesk/static/js/2.12e48a70.chunk.js.LICENSE.txt",
+    "static/js/main.82983e6f.chunk.js.LICENSE.txt": "/sabu_jobdesk/static/js/main.82983e6f.chunk.js.LICENSE.txt",
     "static/media/semantic.min.css": "/sabu_jobdesk/static/media/outline-icons.ef60a4f6.woff",
     "static/media/font-awesome.min.css": "/sabu_jobdesk/static/media/fontawesome-webfont.fee66e71.woff",
     "static/media/github.svg": "/sabu_jobdesk/static/media/github.4ffd4fe7.svg",
     "static/media/google.svg": "/sabu_jobdesk/static/media/google.87be59a1.svg",
-    "static/media/nucleo.css": "/sabu_jobdesk/static/media/nucleo-icons.f82ec6ba.ttf",
-    "static/media/team-4-800x800.jpg": "/sabu_jobdesk/static/media/team-4-800x800.23007132.jpg"
+    "static/media/nucleo.css": "/sabu_jobdesk/static/media/nucleo-icons.f82ec6ba.ttf"
   },
   "entrypoints": [
     "static/js/runtime-main.850b1387.js",
-    "static/css/2.bc31d483.chunk.css",
-    "static/js/2.4b14c7b5.chunk.js",
+    "static/css/2.bc732e29.chunk.css",
+    "static/js/2.12e48a70.chunk.js",
     "static/css/main.f34df336.chunk.css",
-    "static/js/main.85c9ae21.chunk.js"
+    "static/js/main.82983e6f.chunk.js"
   ]
 }
