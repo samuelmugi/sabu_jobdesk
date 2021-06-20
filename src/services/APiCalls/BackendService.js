@@ -9,9 +9,7 @@ toast.configure();
 
 
 const headersConfig = {
-    'Access-Control-Allow-Origin': '*',
-    'Content-Type': 'application/json;charset=UTF-8',
-    Accept: 'application/json'
+     'Accept': 'application/json'
 };
 const baseURL = REST_APIS.BASE_URL;
 const BASE_SETTINGS_URL = REST_APIS.BASE_SETTINGS_URL;
@@ -20,7 +18,8 @@ const UNAUTHORIZED = 401;
 // Add a request interceptor
 axios.interceptors.request.use((config) => {
     const jwtToken = STORAGE.fetchAuthToken();
-    const token = 'Bearer ' + jwtToken;
+    // const token = 'Bearer ' + jwtToken;
+    const token = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYnVrYXNvemlAZ21haWwuY29tIiwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQVBQTElDQU5UIn1dLCJpYXQiOjE2MjM4NjkxMjYsImV4cCI6MTYyNTAxMTIwMH0.d12VQdS7L_J4tPH_kYSxvtxlRfluKqiYhAuJhstflOE';
     headersConfig.Authorization = token;
     config.headers = headersConfig;
 

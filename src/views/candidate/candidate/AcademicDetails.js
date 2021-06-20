@@ -10,11 +10,11 @@ import ClipLoader from "react-spinners/PropagateLoader";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import PostSecondary from './postsecondary';
-import ProfessionalQualification from './professionalqualification';
 import BackendService from "services/APiCalls/BackendService";
 import REST_APIS from "services/APiCalls/config/apiUrl";
 import STORAGE from "services/APiCalls/config/storage";
 import CandidateConstants from "views/candidate/candidate/candidateconstants";
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -65,7 +65,7 @@ export default function AcademicDetails(props) {
     useEffect(() => {
         (async function () {
             if (!isMountedRef.current) {
-                await initializeAcademicValues;
+                await initializeAcademicValues();
                 setMounted(true);
             }
         })();
@@ -73,11 +73,11 @@ export default function AcademicDetails(props) {
 
 
     const initializeAcademicValues = async () => {
-        console.log(JSON.stringify(user));
-        academicValuesFields.map(fieldObj => {
+         academicValuesFields.map(fieldObj => {
             setAcademicValues((prevValues) => {
                 return {...prevValues, [fieldObj.field]: user[fieldObj.field]};
             });
+            setEditing(true);
         })
     }
     const handleOtherSelects = (e, {name, value}) => {
@@ -108,9 +108,7 @@ export default function AcademicDetails(props) {
                 hasErrors = true;
             }
         });
-        if (!!academicValuesErrorsRef.current?.dateOfBirth) {
-            BackendService.notifyError('PLease select date of birth');
-        }
+
 
         console.log(JSON.stringify(academicValuesErrorsRef.current))
         return hasErrors;
@@ -132,7 +130,7 @@ export default function AcademicDetails(props) {
                         props.handleComplete();
                     },
                     (error) => {
-                        BackendService.notifySuccess('oops! error occured during personal data update. pLease try later ');
+                        BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
                         setLoading(false);
                     }
                 );
@@ -175,7 +173,9 @@ export default function AcademicDetails(props) {
                                     <Form.Field
                                         control={Select}
                                         label='Grade'
+                                        fluid selection
                                         options={optionsGrades}
+                                        value={academicValuesRef.current?.secondaryOverallGrade}
                                         placeholder='Grade'
                                         name='secondaryOverallGrade'
                                         onChange={handleOtherSelects}
@@ -191,7 +191,7 @@ export default function AcademicDetails(props) {
                                             selected={startDate}
                                             name='secondarySchoolYearOfCompletion'
                                             onChange={(date) => {
-                                                setFieldValues('secondarySchoolYearOfCompletion', date);
+                                                setFieldValues('secondarySchoolYearOfCompletion', moment(date).format("YYYY"));
                                                 setStartDate(date);
                                             }} showYearPicker
                                             dateFormat="yyyy"
@@ -205,6 +205,7 @@ export default function AcademicDetails(props) {
                                         control={Select}
                                         label='Mathematics'
                                         options={optionsGrades}
+                                        value={academicValuesRef.current?.mathGrade}
                                         placeholder='Mathematics'
                                         name='mathGrade'
                                         onChange={handleOtherSelects}
@@ -216,6 +217,7 @@ export default function AcademicDetails(props) {
                                         control={Select}
                                         label='English'
                                         options={optionsGrades}
+                                        value={academicValuesRef.current?.englishGrade}
                                         placeholder='English'
                                         name='englishGrade'
                                         onChange={handleOtherSelects}
@@ -228,6 +230,7 @@ export default function AcademicDetails(props) {
                                         label='Kiswahili'
                                         options={optionsGrades}
                                         name='kiswahiliGrade'
+                                        value={academicValuesRef.current?.kiswahiliGrade}
                                         onChange={handleOtherSelects}
                                         error={displayError('kiswahiliGrade') ? {
                                             content: academicValuesErrorsRef.current?.kiswahiliGrade
@@ -238,6 +241,7 @@ export default function AcademicDetails(props) {
                                         control={Select}
                                         label='Biology'
                                         options={optionsGrades}
+                                        value={academicValuesRef.current?.biologyGrade}
                                         placeholder='Biology'
                                         name='biologyGrade'
                                         onChange={handleOtherSelects}
@@ -249,6 +253,7 @@ export default function AcademicDetails(props) {
                                         control={Select}
                                         label='Physics'
                                         options={optionsGrades}
+                                        value={academicValuesRef.current?.physicsGrade}
                                         placeholder='Physics'
                                         name='physicsGrade'
                                         onChange={handleOtherSelects}
@@ -260,6 +265,7 @@ export default function AcademicDetails(props) {
                                         control={Select}
                                         label='Chemistry'
                                         options={optionsGrades}
+                                        value={academicValuesRef.current?.chemistryGrade}
                                         placeholder='Chemistry'
                                         name='chemistryGrade'
                                         onChange={handleOtherSelects}

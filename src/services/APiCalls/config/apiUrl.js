@@ -34,5 +34,9 @@ module.exports = Object.freeze({
     GET_ALL_COUNTIES: 'api/v1/counties/',
     GET_ALL_SUB_COUNTIES: '/sub-counties/',
     GET_ALL_WARDS: '/wards',
+    //JOBS
+    GET_ALL_JOB_VACANCIES:'job-vacancies',
+    APPLY_JOB_VACANCY:'job-applications'
+
 
 });

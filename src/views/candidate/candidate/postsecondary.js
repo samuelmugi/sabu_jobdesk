@@ -13,6 +13,7 @@ import STORAGE from "services/APiCalls/config/storage";
 import CandidateConstants from "views/candidate/candidate/candidateconstants";
 import ClipLoader from "react-spinners/PropagateLoader";
 import LoadingOverlay from "react-loading-overlay";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -42,6 +43,7 @@ const postSecondaryValuesFields = CandidateConstants.postSecondaryValuesFields;
 export default function PostSecondary() {
     const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
     const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [fullWidth, setFullWidth] = React.useState(true);
@@ -125,13 +127,13 @@ export default function PostSecondary() {
             let postSecondaryValues = postSecondaryValuesRef.current;
             postSecondaryValues.id = user.id;
             const url = REST_APIS.ADD_POST_SECONDARY_SCHOOL.replace('PROFILEID', user.id);
-            await BackendService.putRequest(url, postSecondaryValues)
+            await BackendService.postRequest(url, postSecondaryValues)
                 .then(() => {
-                        BackendService.notifySuccess('Personal Data updated successfully')
+                        BackendService.notifySuccess('Post Secondary added successfully')
                         setLoading(false);
                     },
                     (error) => {
-                        BackendService.notifySuccess('oops! error occured during personal data update. pLease try later ');
+                        BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
                         setLoading(false);
                     }
                 );
@@ -222,7 +224,7 @@ export default function PostSecondary() {
                                         selected={startDate}
                                         name='start'
                                         onChange={(date) => {
-                                            setFieldValues('start', date);
+                                            setFieldValues('start',  moment(date).format("YYYY"));
                                             setStartDate(date);
                                         }}
                                         showYearPicker
@@ -235,11 +237,11 @@ export default function PostSecondary() {
                                 >
                                     Year Of Completion<br/>
                                     <DatePicker
-                                        selected={startDate}
+                                        selected={endDate}
                                         name='end'
                                         onChange={(date) => {
-                                            setFieldValues('end', date);
-                                            setStartDate(date);
+                                            setFieldValues('end',  moment(date).format("YYYY"));
+                                            setEndDate(date);
                                         }}
                                         showYearPicker
                                         dateFormat="yyyy"

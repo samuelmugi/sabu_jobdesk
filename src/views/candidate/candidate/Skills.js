@@ -10,6 +10,7 @@ import ClipLoader from "react-spinners/PropagateLoader";
 import "react-datepicker/dist/react-datepicker.css";
 import BackendService from "services/APiCalls/BackendService";
 import REST_APIS from "services/APiCalls/config/apiUrl";
+import STORAGE from "services/APiCalls/config/storage";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Skills(props) {
     const classes = useStyles();
-    const user = {username: 'mugi'};
+    const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
     const [color, setColor] = useState("#60991f");
     const [startDate, setStartDate] = useState(new Date());
     const [loading, setLoading, loadingRef] = useState(false);
@@ -91,14 +92,14 @@ export default function Skills(props) {
             let skillValues = skillValuesRef.current;
             skillValues.id = user.id;
             const url = REST_APIS.ADD_SKILL.replace('PROFILEID', user.id);
-            await BackendService.putRequest(url, skillValues)
+            await BackendService.postRequest(url, skillValues)
                 .then(() => {
                         props.handleComplete();
-                        BackendService.notifySuccess('Personal Data updated successfully')
+                        BackendService.notifySuccess('Skill Added successfully')
                         setLoading(false);
                     },
                     (error) => {
-                        BackendService.notifySuccess('oops! error occured during personal data update. pLease try later ');
+                        BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
                         setLoading(false);
                     }
                 );

@@ -25,7 +25,7 @@ import 'semantic-ui-css/semantic.min.css';
 import CandidateMain from 'views/candidate/candidate/candidateMain.js';
 import Faq from 'views/faq/faq/faq';
 import Index from 'views/Index.js';
-import Jobs from 'views/jobs/jobs/jobs';
+import Jobs from 'views/jobs/jobs/jobsmain';
 import 'semantic-ui-css/semantic.min.css'
 
 ReactDOM.render(

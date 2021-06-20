@@ -13,6 +13,7 @@ import REST_APIS from "services/APiCalls/config/apiUrl";
 import LoadingOverlay from "react-loading-overlay";
 import ClipLoader from "react-spinners/PropagateLoader";
 import STORAGE from "services/APiCalls/config/storage";
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -35,6 +36,7 @@ const employmentValuesFields = CandidateConstants.experienceValuesFields;
 export default function EmploymentHistory() {
     const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
     const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [fullWidth, setFullWidth] = React.useState(true);
@@ -102,9 +104,7 @@ export default function EmploymentHistory() {
                 hasErrors = true;
             }
         });
-        if (!!employmentValuesErrorsRef.current?.dateOfBirth) {
-            BackendService.notifyError('PLease select date of birth');
-        }
+
 
         console.log(JSON.stringify(employmentValuesErrorsRef.current))
         return hasErrors;
@@ -119,13 +119,13 @@ export default function EmploymentHistory() {
             let employmentValues = employmentValuesRef.current;
             employmentValues.id = user.id;
             const url = REST_APIS.ADD_EXPERIENCE.replace('PROFILEID', user.id);
-            await BackendService.putRequest(url, employmentValues)
+            await BackendService.postRequest(url, employmentValues)
                 .then(() => {
-                        BackendService.notifySuccess('Personal Data updated successfully')
+                        BackendService.notifySuccess('Employment history added successfully')
                         setLoading(false);
                     },
                     (error) => {
-                        BackendService.notifySuccess('oops! error occured during personal data update. pLease try later ');
+                        BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
                         setLoading(false);
                     }
                 );
@@ -224,7 +224,7 @@ export default function EmploymentHistory() {
                                     selected={startDate}
                                     name='startDate'
                                     onChange={(date) => {
-                                        setFieldValues('startDate', date);
+                                        setFieldValues('startDate', moment(date).format("YYYY-MM-DD"));
                                         setStartDate(date);
                                     }} showYearDropdown
                                     showMonthYearDropdown
@@ -238,11 +238,11 @@ export default function EmploymentHistory() {
                             >
                                 To<br/>
                                 <DatePicker
-                                    selected={startDate}
+                                    selected={endDate}
                                     name='endDate'
                                     onChange={(date) => {
-                                        setFieldValues('endDate', date);
-                                        setStartDate(date);
+                                        setFieldValues('endDate', moment(date).format("YYYY-MM-DD"));
+                                        setEndDate(date);
                                     }} showYearDropdown
                                     showMonthYearDropdown
                                     useShortMonthInDropdown

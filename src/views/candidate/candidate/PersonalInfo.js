@@ -13,6 +13,7 @@ import CandidateConstants from './candidateconstants';
 import REST_APIS from 'services/APiCalls/config/apiUrl'
 import BackendService from 'services/APiCalls/BackendService';
 import STORAGE from 'services/APiCalls/config/storage'
+import moment from 'moment';
 
 const personalInfoFields = CandidateConstants.personalInfoFields;
 const dropDownConstants = CandidateConstants.dropDownConstants;
@@ -56,26 +57,44 @@ export default function PersonalInfo(props) {
     useEffect(() => {
         (async function () {
             if (!isMountedRef.current) {
-                await BackendService.getAllSetings().then(data => setSettings(data));
-                await initializePersonalInfo;
+                await BackendService.getAllSetings()
+                    .then(data => setSettings(data))
+                    .then(() => initializePersonalInfo());
                 setMounted(true);
             }
         })();
-    }, [settings, isEdited,personalInfoValues]);
+    }, [settings, isEdited, personalInfoValues]);
 
 
     const initializePersonalInfo = async () => {
-        console.log(JSON.stringify(user));
+        await initializeDefaultData()
+            .finally(() => {
+                initializeCountySelect();
+            })
+    }
+    const initializeDefaultData = async () => {
         personalInfoFields.map(fieldObj => {
             setPersonalInfoValues((prevValues) => {
                 return {...prevValues, [fieldObj.field]: user[fieldObj.field]};
             });
-        })
+        });
     }
 
-    const handleCounties = (e, {name, value}) => {
-        setFieldValues(name, value);
-
+    const initializeCountySelect = async () => {
+        const homeCounty = user?.homeCounty;
+        const homeSubCounty = user?.homeSubCounty;
+        fetchSubCounties('homeCounty', homeCounty)
+            .finally(() => {
+                fetchWard('homeSubCounty', homeSubCounty);
+            })
+        const countyOfResidence = user?.countyOfResidence;
+        const subCountyOfResidence = user?.subCountyOfResidence;
+        fetchSubCounties('countyOfResidence', countyOfResidence)
+            .finally(() => {
+                fetchWard('subCountyOfResidence', subCountyOfResidence);
+            })
+    }
+    const fetchSubCounties = async (name, value) => {
         if (name === 'homeCounty') {
             BackendService.getSubCounty(value).then(subCounties => {
                 setSettings((prevValues) => {
@@ -90,14 +109,15 @@ export default function PersonalInfo(props) {
                 });
             });
         }
-
     }
-    const handleSubCounties = (e, {name, value}) => {
+    const handleCounties = (e, {name, value}) => {
         setFieldValues(name, value);
+        fetchSubCounties(name, value);
+    }
+    const fetchWard = async (name, value) => {
         if (name === 'homeSubCounty') {
             const county = personalInfoValuesRef.current?.homeCounty;
             BackendService.getWards(county, value).then(wards => {
-                console.log('wards' + JSON.stringify(wards));
                 setSettings((prevValues) => {
                     return {...prevValues, homeWards: wards};
                 });
@@ -110,6 +130,11 @@ export default function PersonalInfo(props) {
                 });
             });
         }
+    }
+    const handleSubCounties = (e, {name, value}) => {
+        setFieldValues(name, value);
+        fetchWard(name, value);
+
     }
     const handleWards = (e, {name, value}) => {
         setFieldValues(name, value);
@@ -166,7 +191,7 @@ export default function PersonalInfo(props) {
                         props.handleComplete();
                     },
                     (error) => {
-                        BackendService.notifySuccess('oops! error occured during personal data update. pLease try later ');
+                        BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
                         setLoading(false);
                     }
                 );
@@ -201,6 +226,7 @@ export default function PersonalInfo(props) {
                                 control={Select}
                                 label='Salutation'
                                 placeholder='Salutation'
+                                value={personalInfoValuesRef.current.salutation}
                                 options={settingsRef.current?.salutations}
                                 name='salutation'
                                 onChange={handleOtherSelects}
@@ -259,6 +285,7 @@ export default function PersonalInfo(props) {
                                 label='Gender'
                                 name='gender'
                                 onChange={handleOtherSelects}
+                                value={personalInfoValuesRef.current.gender}
                                 options={optionsGender}
                                 placeholder='Gender'
                                 error={displayError('gender') ? {
@@ -274,7 +301,7 @@ export default function PersonalInfo(props) {
                                     name='dateOfBirth'
                                     selected={startDate}
                                     onChange={(date) => {
-                                        setFieldValues('dateOfBirth', date);
+                                        setFieldValues('dateOfBirth', moment(date).format("YYYY-MM-DD"));
                                         setStartDate(date);
                                     }}
                                     showYearDropdown
@@ -334,6 +361,7 @@ export default function PersonalInfo(props) {
                                 label='Marital Status'
                                 name='maritalStatus'
                                 onChange={handleOtherSelects}
+                                value={personalInfoValuesRef.current.maritalStatus}
                                 options={settingsRef.current?.maritals}
                                 placeholder='Marital Status'
                                 error={displayError('maritalStatus') ? {
@@ -345,6 +373,7 @@ export default function PersonalInfo(props) {
                                 label='Religion'
                                 name='religion'
                                 onChange={handleOtherSelects}
+                                value={personalInfoValuesRef.current.religion}
                                 options={settingsRef.current?.religions}
                                 placeholder='Religion'
                                 error={displayError('religion') ? {
@@ -356,6 +385,7 @@ export default function PersonalInfo(props) {
                                 label='Ethnicity'
                                 name='ethnicity'
                                 onChange={handleOtherSelects}
+                                value={personalInfoValuesRef.current.ethnicity}
                                 options={settingsRef.current?.tribes}
                                 placeholder='Ethnicity'
                                 error={displayError('ethnicity') ? {
@@ -367,6 +397,7 @@ export default function PersonalInfo(props) {
                                 label='Any Disability?'
                                 name='disabled'
                                 onChange={handleOtherSelects}
+                                value={personalInfoValuesRef.current.disabled}
                                 options={optionsDisability}
                                 placeholder='Any Disability?'
                                 error={displayError('disabled') ? {
@@ -380,6 +411,7 @@ export default function PersonalInfo(props) {
                                 label='Home County'
                                 name='homeCounty'
                                 onChange={handleCounties}
+                                value={personalInfoValuesRef.current.homeCounty}
                                 options={settingsRef.current?.homeCounties}
                                 placeholder='Home County'
                                 error={displayError('homeCounty') ? {
@@ -391,6 +423,7 @@ export default function PersonalInfo(props) {
                                 label='Home Sub County'
                                 name='homeSubCounty'
                                 onChange={handleSubCounties}
+                                value={personalInfoValuesRef.current.homeSubCounty}
                                 options={settingsRef.current?.homeSubCounties}
                                 placeholder='Home Sub County'
                                 error={displayError('homeSubCounty') ? {
@@ -402,6 +435,7 @@ export default function PersonalInfo(props) {
                                 label='Home Ward'
                                 name='homeWard'
                                 onChange={handleWards}
+                                value={personalInfoValuesRef.current.homeWard}
                                 options={settingsRef.current?.homeWards}
                                 placeholder='Home Ward'
                                 error={displayError('homeWard') ? {
@@ -415,6 +449,7 @@ export default function PersonalInfo(props) {
                                 label='Residence County'
                                 name='countyOfResidence'
                                 onChange={handleCounties}
+                                value={personalInfoValuesRef.current.countyOfResidence}
                                 options={settingsRef.current?.residentCounties}
                                 placeholder='Residence County'
                                 error={displayError('countyOfResidence') ? {
@@ -426,6 +461,7 @@ export default function PersonalInfo(props) {
                                 label='Residence Sub County'
                                 name='subCountyOfResidence'
                                 onChange={handleSubCounties}
+                                value={personalInfoValuesRef.current.subCountyOfResidence}
                                 options={settingsRef.current?.residentSubCounties}
                                 placeholder='Residence Sub County'
                                 error={displayError('subCountyOfResidence') ? {
@@ -437,6 +473,7 @@ export default function PersonalInfo(props) {
                                 name='countyOfResidenceWard'
                                 label='Residence Ward'
                                 onChange={handleWards}
+                                value={personalInfoValuesRef.current.countyOfResidenceWard}
                                 options={settingsRef.current?.residentWards}
                                 placeholder='Residence Ward'
                                 error={displayError('countyOfResidenceWard') ? {
