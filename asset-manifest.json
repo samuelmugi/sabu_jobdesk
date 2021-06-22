@@ -1,20 +1,20 @@
 {
   "files": {
     "main.css": "/sabu_jobdesk/static/css/main.f34df336.chunk.css",
-    "main.js": "/sabu_jobdesk/static/js/main.82983e6f.chunk.js",
-    "main.js.map": "/sabu_jobdesk/static/js/main.82983e6f.chunk.js.map",
+    "main.js": "/sabu_jobdesk/static/js/main.1e0acd77.chunk.js",
+    "main.js.map": "/sabu_jobdesk/static/js/main.1e0acd77.chunk.js.map",
     "runtime-main.js": "/sabu_jobdesk/static/js/runtime-main.850b1387.js",
     "runtime-main.js.map": "/sabu_jobdesk/static/js/runtime-main.850b1387.js.map",
     "static/css/2.bc732e29.chunk.css": "/sabu_jobdesk/static/css/2.bc732e29.chunk.css",
-    "static/js/2.12e48a70.chunk.js": "/sabu_jobdesk/static/js/2.12e48a70.chunk.js",
-    "static/js/2.12e48a70.chunk.js.map": "/sabu_jobdesk/static/js/2.12e48a70.chunk.js.map",
+    "static/js/2.d9856677.chunk.js": "/sabu_jobdesk/static/js/2.d9856677.chunk.js",
+    "static/js/2.d9856677.chunk.js.map": "/sabu_jobdesk/static/js/2.d9856677.chunk.js.map",
     "index.html": "/sabu_jobdesk/index.html",
-    "precache-manifest.15d9953af60bc7f12245d1651d634dfb.js": "/sabu_jobdesk/precache-manifest.15d9953af60bc7f12245d1651d634dfb.js",
+    "precache-manifest.b1d01b7bd59b5e80769deb53177c0008.js": "/sabu_jobdesk/precache-manifest.b1d01b7bd59b5e80769deb53177c0008.js",
     "service-worker.js": "/sabu_jobdesk/service-worker.js",
     "static/css/2.bc732e29.chunk.css.map": "/sabu_jobdesk/static/css/2.bc732e29.chunk.css.map",
     "static/css/main.f34df336.chunk.css.map": "/sabu_jobdesk/static/css/main.f34df336.chunk.css.map",
-    "static/js/2.12e48a70.chunk.js.LICENSE.txt": "/sabu_jobdesk/static/js/2.12e48a70.chunk.js.LICENSE.txt",
-    "static/js/main.82983e6f.chunk.js.LICENSE.txt": "/sabu_jobdesk/static/js/main.82983e6f.chunk.js.LICENSE.txt",
+    "static/js/2.d9856677.chunk.js.LICENSE.txt": "/sabu_jobdesk/static/js/2.d9856677.chunk.js.LICENSE.txt",
+    "static/js/main.1e0acd77.chunk.js.LICENSE.txt": "/sabu_jobdesk/static/js/main.1e0acd77.chunk.js.LICENSE.txt",
     "static/media/semantic.min.css": "/sabu_jobdesk/static/media/outline-icons.ef60a4f6.woff",
     "static/media/font-awesome.min.css": "/sabu_jobdesk/static/media/fontawesome-webfont.fee66e71.woff",
     "static/media/github.svg": "/sabu_jobdesk/static/media/github.4ffd4fe7.svg",
@@ -24,8 +24,8 @@
   "entrypoints": [
     "static/js/runtime-main.850b1387.js",
     "static/css/2.bc732e29.chunk.css",
-    "static/js/2.12e48a70.chunk.js",
+    "static/js/2.d9856677.chunk.js",
     "static/css/main.f34df336.chunk.css",
-    "static/js/main.82983e6f.chunk.js"
+    "static/js/main.1e0acd77.chunk.js"
   ]
 }
