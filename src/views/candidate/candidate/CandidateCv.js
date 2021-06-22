@@ -5,6 +5,7 @@ import {Divider} from 'semantic-ui-react'
 
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import UploadFiles from "components/fileupload/upload-files";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,11 +36,8 @@ export default function CandidateCv(props) {
                             </CardHeader>
                             <CardBody className="px-lg-5 py-lg-5">
                                 <Form role="form">
-                                    <FormGroup className="mb-3">
-                                        <InputGroup className="input-group-alternative">
-                                            <Input type="file" name="file"/>
-                                        </InputGroup>
-                                    </FormGroup>
+                                     <UploadFiles />
+
 
                                     <Divider/>
                                     <div>

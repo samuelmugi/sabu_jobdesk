@@ -237,6 +237,8 @@ export default function AcademicDetails(props) {
                                         } : false}
                                         placeholder='Kiswahili'
                                     />
+                                </Form.Group>
+                                <Form.Group widths='equal'>
                                     <Form.Field
                                         control={Select}
                                         label='Biology'
@@ -274,19 +276,7 @@ export default function AcademicDetails(props) {
                                         } : false}
                                     />
                                 </Form.Group>
-                                <Form.Group>
-                                    <Form.Field
-                                        control={Select}
-                                        label='Attach Certificate (pdf or image)'
-                                        placeholder='Attach Certificate (pdf or image'
-                                        type="file"
-                                        name='salutation'
-                                        onChange={handleOtherSelects}
-                                        error={displayError('salutation') ? {
-                                            content: academicValuesErrorsRef.current?.salutation
-                                        } : false}
-                                    />
-                                </Form.Group>
+
                                 <Divider horizontal>Post Secondary School Qualification eg Diploma, Bachelors,
                                     Masters.</Divider>
                                 <PostSecondary/>

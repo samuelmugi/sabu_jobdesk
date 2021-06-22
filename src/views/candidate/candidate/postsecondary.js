@@ -249,14 +249,6 @@ export default function PostSecondary() {
                                 </Form.Field>
                             </Form.Group>
 
-                            <Form.Group>
-                                <Form.Field
-                                    control={Select}
-                                    label='Attach Certificate (pdf or image)'
-                                    placeholder='Attach Certificate (pdf or image'
-                                    type="file"
-                                />
-                            </Form.Group>
                             <Button onClick={submitPostSecondaryValues} positive>
                                 Save
                             </Button>

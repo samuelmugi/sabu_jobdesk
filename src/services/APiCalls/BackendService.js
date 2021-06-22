@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {toast, Zoom} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import REST_APIS from './config/apiUrl'
-import STORAGE from './config/storage'
+import REST_APIS from 'services/APiCalls/config/apiUrl'
+import STORAGE from 'services/APiCalls/config/storage'
 
 
 toast.configure();
@@ -14,6 +14,7 @@ const headersConfig = {
 const baseURL = REST_APIS.BASE_URL;
 const BASE_SETTINGS_URL = REST_APIS.BASE_SETTINGS_URL;
 const UNAUTHORIZED = 401;
+const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
 
 // Add a request interceptor
 axios.interceptors.request.use((config) => {
@@ -140,6 +141,29 @@ class BackendService {
             progress: undefined,
         });
     }
+
+    upload(file, onUploadProgress) {
+        let formData = new FormData();
+
+        const requestUrl = baseURL + REST_APIS.UPLOAD_CV;
+
+        formData.append("image", file);
+        formData.append("title", user?.firstName);
+
+        return axios.post(requestUrl.replace('PROFILEID', user?.id), formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+            onUploadProgress,
+        });
+    }
+
+    getFiles() {
+        const requestUrl = baseURL + REST_APIS.DOWNLOAD_CV;
+
+        return axios.get(requestUrl.replace('PROFILEID', user?.id));
+    }
+
 }
 
 

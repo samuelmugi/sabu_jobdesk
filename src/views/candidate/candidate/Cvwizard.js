@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-    return ['Upload CV', 'Personal Info', 'Academic Details', 'Experience', 'Skills', 'Cover Letter & Testimonials'];
+    return ['Upload CV', 'Personal Info', 'Academic Details', 'Experience', 'Skills'];
 }
 
 function getStepContent(activeStep, completed, steps, handleNext, handleBack, completedSteps, totalSteps, handleComplete) {
@@ -69,13 +69,7 @@ function getStepContent(activeStep, completed, steps, handleNext, handleBack, co
                 totalSteps={totalSteps} handleBack={handleBack} handleNext={handleNext}
                 handleComplete={handleComplete}
             />;
-        case 5:
-            return <Testimonial
-                activeStep={activeStep} completed={completed} steps={steps}
-                completedSteps={completedSteps}
-                totalSteps={totalSteps} handleBack={handleBack} handleNext={handleNext}
-                handleComplete={handleComplete}
-            />;
+
     }
 }
 

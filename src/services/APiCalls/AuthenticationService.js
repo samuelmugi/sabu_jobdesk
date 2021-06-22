@@ -1,6 +1,6 @@
 import axios from 'axios';
-import REST_APIS from './config/apiUrl'
-import STORAGE from './config/storage'
+import REST_APIS from 'services/APiCalls/config/apiUrl';
+import STORAGE from 'services/APiCalls/config/storage';
 
 const reqheaders = {
     'Content-Type': 'application/json;charset=UTF-8',
