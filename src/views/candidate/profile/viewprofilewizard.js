@@ -317,7 +317,7 @@ function getStepContent(step) {
                                                         ]}/>
                                                     </Grid.Column>
                                                 </Grid.Row>
-
+                                                <Divider></Divider>
 
                                             </>
                                         )
@@ -400,6 +400,9 @@ export default function ViewProfileStepper() {
 
     const handleNext = () => {
         let newSkipped = skipped;
+        if(activeStep===getSteps().length-1){
+            setActiveStep(0);
+        }
         if (isStepSkipped(activeStep)) {
             newSkipped = new Set(newSkipped.values());
             newSkipped.delete(activeStep);
@@ -452,32 +455,13 @@ export default function ViewProfileStepper() {
                 })}
             </Stepper>
             <div>
-                {activeStep === steps.length ? (
-                    <div>
-                        <Typography className={classes.instructions}>
-                            All steps completed - you&apos;re finished
-                        </Typography>
-                        <Button onClick={handleReset} className={classes.button}>
-                            Reset
-                        </Button>
-                    </div>
-                ) : (
+
                     <div>
                         <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
                         <div>
                             <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
                                 Back
                             </Button>
-                            {isStepOptional(activeStep) && (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleSkip}
-                                    className={classes.button}
-                                >
-                                    Skip
-                                </Button>
-                            )}
 
                             <Button
                                 variant="contained"
@@ -485,11 +469,11 @@ export default function ViewProfileStepper() {
                                 onClick={handleNext}
                                 className={classes.button}
                             >
-                                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                Next
                             </Button>
                         </div>
                     </div>
-                )}
+
             </div>
         </div>
     );

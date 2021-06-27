@@ -20,7 +20,7 @@ const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
 axios.interceptors.request.use((config) => {
     const jwtToken = STORAGE.fetchAuthToken();
     // const token = 'Bearer ' + jwtToken;
-    const token = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYnVrYXNvemlAZ21haWwuY29tIiwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQVBQTElDQU5UIn1dLCJpYXQiOjE2MjM4NjkxMjYsImV4cCI6MTYyNTAxMTIwMH0.d12VQdS7L_J4tPH_kYSxvtxlRfluKqiYhAuJhstflOE';
+    const token = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaW5kYUBnbWFpbC5jb20iLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiYXBwbGljYW50OnJlYWQifSx7ImF1dGhvcml0eSI6ImpvYjpyZWFkIn0seyJhdXRob3JpdHkiOiJqb2I6d3JpdGUifSx7ImF1dGhvcml0eSI6ImFwcGxpY2FudDp3cml0ZSJ9LHsiYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaWF0IjoxNjI0NjMxOTI0LCJleHAiOjE2MjU3ODg4MDB9.Tsbu5U7R6JFIGNQbz7M4aPw03tVQkZDVoq-qG1W5SHE';
     headersConfig.Authorization = token;
     config.headers = headersConfig;
 

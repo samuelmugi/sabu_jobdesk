@@ -11,6 +11,10 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import ViewProfileStepper from "views/candidate/profile/viewprofilewizard";
+import REST_APIS from "services/APiCalls/config/apiUrl";
+import BackendService from "services/APiCalls/BackendService";
+import useState from "react-usestateref";
+import STORAGE from "services/APiCalls/config/storage";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -31,6 +35,10 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(1),
     }, appBar: {
         position: 'relative',
+        background: '#eed61f'
+    }, profileVIew: {
+        'overflow-y': 'scroll',
+        height: '100vh'
     },
     title: {
         marginLeft: theme.spacing(2),
@@ -38,47 +46,77 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function MyProfile() {
-
+export default function MyProfile(props) {
+    const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const [loading, setLoading, loadingRef] = useState(false);
 
-    const handleClickOpen = () => {
+     const handleClickOpen = () => {
         setOpen(true);
     };
 
     const handleClose = () => {
         setOpen(false);
     };
+    const submitApplication = async () => {
+        setLoading(true);
+        if (user.hasOwnProperty('id')) {
+            const jobApplication = {
+                jobApplicantProfileId: user.id,
+                jobVacancyId: props.job?.id
+            };
+            const url = REST_APIS.APPLY_JOB_VACANCY.replace('PROFILEID', user.id);
+            await BackendService.postRequest(url, jobApplication)
+                .then(() => {
+                        BackendService.notifySuccess('Job Applied successfully')
+                        setLoading(false);
+                        window.location.reload();
 
+                    },
+                    (error) => {
+                        BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
+                        setLoading(false);
+                        window.location.reload();
+
+                    }
+                );
+
+        } else {
+            BackendService.notifyError('Please log in to apply for the Job.');
+            setLoading(false);
+
+        }
+    }
 
     return (
         <>
             <Row>
-                <Col md="4">
+                <Col>
 
                     <a
                         className="text-warning"
                         href="#myprofile"
                         onClick={handleClickOpen}
                     >
-                        Learn more
-                    </a>
+                        View My Profile </a>
                     <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-                        <AppBar className={classes.appBar}>
+                        <AppBar position="sticky" className={classes.appBar}>
                             <Toolbar>
                                 <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
                                     <CloseIcon/>
                                 </IconButton>
                                 <Typography variant="h6" className={classes.title}>
-                                    View My Profile
+                                    My Profile
                                 </Typography>
-                                <Button autoFocus color="inherit" onClick={handleClose}>
-                                    Close
-                                </Button>
+                                {props.job &&
+                                <Button onClick={submitApplication} color="green">Apply</Button>
+                                }
                             </Toolbar>
                         </AppBar>
+                        <div className={classes.profileVIew}>
                         <ViewProfileStepper/>
+                        </div>
                     </Dialog>
                 </Col>
             </Row>

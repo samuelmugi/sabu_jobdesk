@@ -27,6 +27,8 @@ import Faq from 'views/faq/faq/faq';
 import Index from 'views/Index.js';
 import Jobs from 'views/jobs/jobs/jobsmain';
 import 'semantic-ui-css/semantic.min.css'
+import About from "views/about/about";
+import Notices from "views/notices/notices";
 
 ReactDOM.render(
   <BrowserRouter>
@@ -36,11 +38,23 @@ ReactDOM.render(
         path="/candidate-page"
         exact
         render={props => <CandidateMain {...props} />}
-      /> <Route
+      />
+      <Route
       path="/jobs-page"
       exact
       render={props => <Jobs {...props} />}
-    /> <Route
+    />
+    <Route
+      path="/notices-page"
+      exact
+      render={props => <Notices {...props} />}
+    />
+    <Route
+      path="/about-page"
+      exact
+      render={props => <About {...props} />}
+    />
+    <Route
       path="/faq-page"
       exact
       render={props => <Faq {...props} />}

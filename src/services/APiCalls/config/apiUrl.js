@@ -1,6 +1,6 @@
 module.exports = Object.freeze({
-    BASE_URL: 'http://3.128.179.111:8080/',
-    BASE_SETTINGS_URL: 'http://3.128.179.111:8083/',
+    BASE_URL: 'http://3.16.69.34:8080/',
+    BASE_SETTINGS_URL: 'http://3.16.69.34:8083/',
     SIGN_UP: 'signup',
     SIGN_IN: 'login',
     //USER DETAILS

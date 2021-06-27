@@ -51,5 +51,4 @@ module.exports = Object.freeze({
         {field: 'endDate', index: 0},
         {field: 'description', index: 0},
     ],
-})
-;
+});

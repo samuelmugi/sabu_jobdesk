@@ -69,8 +69,10 @@ const Signin = () => {
                 .then((response) => {
                         if (response.status === 200) {
                             BackendService.notifySuccess('Logged in Successfully.');
+
                         }
                         setLoading(false);
+                        window.location.reload();
                     },
                     (error) => {
                         console.error(error);

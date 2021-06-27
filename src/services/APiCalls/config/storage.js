@@ -40,14 +40,19 @@ class Storage {
     }
     getCurrentUser = () => {
         const data = localStorage.getItem(LS_KEY.user_det);
-        if (data) {
+         if (data) {
             try {
                 const decoded = JSON.parse(data);
                 return decoded[LS_KEY.user_det];
             } catch (err) {
                 console.log(err);
-                return {[LS_KEY.user_det]: 'has no user'};
+                const user={jobApplicantProfileViewModel: 'NA'}
+                return user;
             }
+        }else{
+            const user={jobApplicantProfileViewModel: 'NA'}
+             return user;
+
         }
     };
 

@@ -72,6 +72,7 @@ const Signup = () => {
                 .then(() => {
                         BackendService.notifySuccess(form.firstName + ' ' + form.middleName + ' ' + form.lastName + ' signed up successfully')
                         setLoading(false);
+                        window.location.reload();
                     },
                     (error) => {
                         BackendService.notifySuccess('oops! error occured during sign up. pLease try later ');
@@ -136,18 +137,19 @@ const Signup = () => {
                                         <h3 className="h4 text-warning text-center font-weight-bold mb-4">
 
                                             Want to work with us?
+                                        <button
+                                        aria-label="Close"
+                                        className="close"
+                                        data-dismiss="modal"
+                                        type="button"
+                                        onClick={handleClose}
+                                    >
+                                        <span aria-hidden={true}>×</span>
+                                    </button>
                                         </h3>
                                         <div className="text-muted text-center mb-3">
                                             <small>Sign up with</small>
-                                            <button
-                                                aria-label="Close"
-                                                className="close"
-                                                data-dismiss="modal"
-                                                type="button"
-                                                onClick={handleClose}
-                                            >
-                                                <span aria-hidden={true}>×</span>
-                                            </button>
+
                                         </div>
                                         <div className="text-center">
                                             <Button

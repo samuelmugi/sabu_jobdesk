@@ -67,8 +67,8 @@ $colors: map-merge((
   "gray-dark":  $gray-800
 ), $colors);
 
-$default:       #1c1b40 !default;
-$primary:       #1c1b40 !default;
+$default: #00421b !default;
+$primary: #00421b !default;
 $secondary:     #f4f5f7 !default;
 $success:       $green !default;
 $info:          $teal !default;
@@ -118,8 +118,8 @@ $brand-colors: map-merge((
 
 $shape-colors: () !default;
 $shape-colors: map-merge((
-  "default":      #32325d,
-  "primary":      #5533ff,
+  "default":      #00421b,
+  "primary":      #00421b,
   "secondary":    #24b47e,
   "neutral":      #e9ecef,
   "blue-gray":    #b2cbe1,
@@ -128,8 +128,8 @@ $shape-colors: map-merge((
 
 $shapes-primary-colors: () !default;
 $shapes-primary-colors: map-merge((
-  "step-1-gradient-bg":         #281483,
-  "step-2-gradient-bg":         #8f6ed5,
+  "step-1-gradient-bg": #00421b,
+  "step-2-gradient-bg": #00421b,
   "step-3-gradient-bg":         #d782d9,
   "span-1-bg":                  #53f,
   "span-2-bg":                  #4553ff,
@@ -140,11 +140,11 @@ $shapes-primary-colors: map-merge((
 
 $shapes-default-colors: () !default;
 $shapes-default-colors: map-merge((
-  "step-1-gradient-bg":         #7795f8,
-  "step-2-gradient-bg":         #6772e5,
-  "step-3-gradient-bg":         #555abf,
-  "span-1-bg":                  #7795f8,
-  "span-2-bg":                  #7b9aff,
+  "step-1-gradient-bg":         #00421b,
+  "step-2-gradient-bg":         #eed61f,
+  "step-3-gradient-bg":         #eed61f,
+  "span-1-bg":                  #a1aaad,
+  "span-2-bg":                  #a1aaad,
   "span-3-bg":                  #6f8ff8,
   "span-4-bg":                  #76eea7,
   "span-5-bg":                  #6adaff
@@ -153,8 +153,8 @@ $shapes-default-colors: map-merge((
 $shapes-light-colors: () !default;
 $shapes-light-colors: map-merge((
   "step-1-gradient-bg":         #b2cbe1,
-  "step-2-gradient-bg":         #f6f9fc,
-  "step-3-gradient-bg":         #f6f9fc,
+  "step-2-gradient-bg":         #a1aaad,
+  "step-3-gradient-bg":         #eed61f,
   "span-1-bg":                  #b4cce1,
   "span-2-bg":                  #c5dbef,
   "span-3-bg":                  #b9d5ed,

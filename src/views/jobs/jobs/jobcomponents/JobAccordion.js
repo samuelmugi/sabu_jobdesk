@@ -16,6 +16,7 @@ import STORAGE from "services/APiCalls/config/storage";
 import useState from "react-usestateref";
 import LoadingOverlay from 'react-loading-overlay'
 import ClipLoader from "react-spinners/PropagateLoader";
+import ApplyJob from "views/jobs/jobs/jobcomponents/applyjob";
 
 const useStyles = makeStyles((theme) => ({
         root: {
@@ -59,9 +60,10 @@ const JobAccordion = (props) => {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
     const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
-    const [loading, setLoading, loadingRef] = useState(false);
+    const [loading, setLoading, loadingRef] = useState(true);
     const [color, setColor] = useState("#60991f");
 
+    setTimeout(()=>setLoading(false),3000)
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     };
@@ -93,13 +95,13 @@ const JobAccordion = (props) => {
 
     return (
         <div className={classes.root}>
-            {(props?.jobs !== undefined && props?.jobs.length > 0) && props?.jobs.map((item) => {
+            <LoadingOverlay
+                active={loadingRef.current}
+                spinner={<ClipLoader color={color} loading={loadingRef.current}/>}
+            >    {(props?.jobs !== undefined && props?.jobs.length > 0) && props?.jobs.map((item) => {
                 return (
                     <>
-                        <LoadingOverlay
-                            active={loadingRef.current}
-                            spinner={<ClipLoader color={color} loading={loadingRef.current}/>}
-                        >
+
                             <Accordion expanded={expanded === 'panel1' + item?.id}
                                        onChange={handleChange('panel1' + item?.id)}>
                                 <AccordionSummary
@@ -136,16 +138,9 @@ const JobAccordion = (props) => {
                                 <Divider/>
                                 <AccordionDetails>
                                     <Box width={'100%'}>
-                                        <Typography>
-                                            <Button size='mini'
-                                                    positive
-                                                    onClick={(e, data) => {
-                                                        e.preventDefault();
-                                                        submitApplication(item);
-                                                    }}
-                                            >Apply</Button>
+                                             <ApplyJob job={item}/>
 
-                                        </Typography>
+
                                         <Header as='h3'>Job Requirements</Header>
                                         <Typography paragraph style={{whiteSpace: "pre-line"}}>
                                             {item?.jobRequirements.split("\n").join("\n")}
@@ -154,14 +149,18 @@ const JobAccordion = (props) => {
                                         <Typography paragraph style={{whiteSpace: "pre-line"}}>
                                             {item?.jobDescription.split("\n").join("\n")}
                                         </Typography>
+
+                                        <ApplyJob job={item}/>
+
                                     </Box>
                                 </AccordionDetails>
                             </Accordion>
-                        </LoadingOverlay>
+                            <Divider/>
+
                     </>
                 )
             })}
-
+            </LoadingOverlay>
         </div>
     );
 }
