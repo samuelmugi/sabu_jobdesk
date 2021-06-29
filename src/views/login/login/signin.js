@@ -121,7 +121,7 @@ const Signin = () => {
 
                     ><span className="nav-link-inner--text ml-1 btn-inner--icon">
                         <i className="fa fa-cloud-download mr-2">
-                         &nbsp;SIGN_IN </i></span>
+                         &nbsp;Log In </i></span>
                     </a>
                     <Modal
                         className="modal-dialog-centered"

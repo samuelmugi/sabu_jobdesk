@@ -119,7 +119,7 @@ const Signup = () => {
                         onClick={handleClickOpen}
                     ><span className="nav-link-inner--text ml-1 btn-inner--icon">
                         <i className="fa fa-user-plus mr-2">
-                         &nbsp;SIGN_UP </i></span> </a>
+                         &nbsp;Register </i></span> </a>
                     <Modal
                         className="modal-dialog-centered"
                         size="lg"
