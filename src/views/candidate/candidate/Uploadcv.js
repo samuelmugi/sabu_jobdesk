@@ -58,7 +58,7 @@ export default function Uploadcv() {
                         <Typography variant="h6" className={classes.title}>
                             Build my profile
                         </Typography>
-                        <Button autoFocus color="inherit" onClick={handleClose}>
+                        <Button autoFocus  onClick={handleClose}>
                             Close
                         </Button>
                     </Toolbar>

@@ -58,6 +58,8 @@ export default function Skills(props) {
         setFieldValues(name, value);
     }
     const setField = (e) => {
+        console.log('e.target.name',e.target.name);
+        console.log('e.target.value',e.target.value);
         setFieldValues(e.target.name, e.target.value);
     };
     const setFieldValues = (key, value) => {
@@ -86,15 +88,16 @@ export default function Skills(props) {
 
     const submitSkillValues = async () => {
         const hasErrors = validateValues();
-        console.log('hasErrors', hasErrors)
         if (!hasErrors) {
+            console.log('hasErrors', hasErrors)
+
             setLoading(true);
             let skillValues = skillValuesRef.current;
             skillValues.id = user.id;
             const url = REST_APIS.ADD_SKILL.replace('PROFILEID', user.id);
             await BackendService.postRequest(url, skillValues)
                 .then(() => {
-                        props.handleComplete();
+                        // props.handleComplete();
                         BackendService.notifySuccess('Skill Added successfully')
                         setLoading(false);
                     },

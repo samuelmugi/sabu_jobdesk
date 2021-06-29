@@ -1,6 +1,6 @@
 module.exports = Object.freeze({
-    BASE_URL: 'http://3.16.69.34:8080/',
-    // BASE_URL: 'http://localhost:8989/',
+    // BASE_URL: 'http://3.16.69.34:8080/',
+    BASE_URL: 'http://localhost:8989/',
     BASE_SETTINGS_URL: 'http://3.16.69.34:8083/',
     SIGN_UP: 'api/auth/signup',
     SIGN_IN: 'api/auth/signin',
@@ -23,10 +23,10 @@ module.exports = Object.freeze({
     UPDATE_EXPERIENCE: 'profile/PROFILEID/work-experience/',
     DELETE_EXPERIENCE: 'profile/PROFILEID/work-experience/',
     //SKILL
-    ADD_SKILL: 'profile/PROFILEID/work-experience',
-    GET_SKILL: 'profile/PROFILEID/work-experience',
-    UPDATE_SKILL: 'profile/PROFILEID/work-experience/',
-    DELETE_SKILL: 'profile/PROFILEID/work-experience/',
+    ADD_SKILL: 'profile/PROFILEID/skills',
+    GET_SKILL: 'profile/PROFILEID/skills',
+    UPDATE_SKILL: 'profile/PROFILEID/skills',
+    DELETE_SKILL: 'profile/PROFILEID/skills',
     //DEFAULT CONFIGS
     GET_ALL_RELIGIONS: 'settings/religions',
     GET_ALL_TRIBES: 'settings/tribes',

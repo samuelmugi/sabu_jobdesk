@@ -3,8 +3,9 @@ import REST_APIS from 'services/APiCalls/config/apiUrl';
 import STORAGE from 'services/APiCalls/config/storage';
 
 const reqheaders = {
-    'Content-Type': 'application/json;charset=UTF-8',
+    'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': "GET, PUT, POST, DELETE, HEAD, OPTIONS",
     'Accept': 'application/json',
     'xsrfHeaderName': 'X-XSRF-TOKEN',
     'xsrfCookieName': 'XSRF-TOKEN'

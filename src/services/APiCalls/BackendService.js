@@ -9,7 +9,12 @@ toast.configure();
 
 
 const headersConfig = {
-     'Accept': 'application/json'
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': "GET, PUT, POST, DELETE, HEAD, OPTIONS",
+    'Accept': 'application/json',
+    'xsrfHeaderName': 'X-XSRF-TOKEN',
+    'xsrfCookieName': 'XSRF-TOKEN'
 };
 const baseURL = REST_APIS.BASE_URL;
 const BASE_SETTINGS_URL = REST_APIS.BASE_SETTINGS_URL;
@@ -28,7 +33,9 @@ axios.interceptors.request.use((config) => {
 });
 
 axios.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        return response;
+    },
     (error) => {
         if (error.response?.status === UNAUTHORIZED) {
             STORAGE.destroyAuthTOken();
@@ -39,21 +46,24 @@ axios.interceptors.response.use(
     }
 );
 
-class BackendService {
-
-      refershUserDetails(){
-        const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
-        if(user!=='NA'){
-            const url=REST_APIS.GET_USER_DETAILS+user.email;
-            this.getRequest(url).then(response=>{
-                if(response?.status=='200'){
-                    STORAGE.setUserDetials(response.data);
-                }
-            })
-        }
+function refershUserDetails() {
+    const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
+    if (user !== 'NA') {
+        const url = REST_APIS.GET_USER_DETAILS + user?.profile.email;
+        this.getRequest(url).then(response => {
+            if (response?.status == '200') {
+                STORAGE.setUserDetials(response.data);
+            }
+        })
+    }
 
 
 }
+
+class BackendService {
+
+
+
     async getPaginatedRequest(url, page, size, search) {
         const requestUrl =
             baseURL +
@@ -73,13 +83,13 @@ class BackendService {
     }
 
     async postRequest(url, payload) {
-        this.refershUserDetails();
+        // this.refershUserDetails();
         const requestUrl = baseURL + url;
         return await axios.post(requestUrl, payload);
     }
 
     async putRequest(url, payload) {
-        this.refershUserDetails();
+        // this.refershUserDetails();
         const requestUrl = baseURL + url;
         return await axios.put(requestUrl, payload);
     }
