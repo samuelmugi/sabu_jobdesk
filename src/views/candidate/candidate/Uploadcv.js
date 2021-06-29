@@ -14,7 +14,9 @@ import { Button } from 'semantic-ui-react'
 const useStyles = makeStyles((theme) => ({
     appBar: {
         color: !'yellow',
-        position: 'relative'
+        position: 'relative',
+        background: '#e0d8ca'
+
     },
     title: {
         marginLeft: theme.spacing(2),
