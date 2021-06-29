@@ -114,14 +114,14 @@ const Signin = () => {
         <>
 
             <Row>
-                <Col md="4">
+                <Col >
 
                     <a
                         onClick={handleClickOpen}
 
                     ><span className="nav-link-inner--text ml-1 btn-inner--icon">
                         <i className="fa fa-cloud-download mr-2">
-                         &nbsp;Log In </i></span>
+                         &nbsp;Log in </i></span>
                     </a>
                     <Modal
                         className="modal-dialog-centered"

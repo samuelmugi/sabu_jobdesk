@@ -2,8 +2,7 @@ import React from 'react';
 // reactstrap components
 import {Col, Row} from 'reactstrap';
 import {makeStyles} from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
+ import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -15,6 +14,7 @@ import REST_APIS from "services/APiCalls/config/apiUrl";
 import BackendService from "services/APiCalls/BackendService";
 import useState from "react-usestateref";
 import STORAGE from "services/APiCalls/config/storage";
+import {Button} from "semantic-ui-react";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(1),
     }, appBar: {
         position: 'relative',
-        background: '#eed61f'
+        background: '#e0d8ca'
     }, profileVIew: {
         'overflow-y': 'scroll',
         height: '100vh'
@@ -110,11 +110,14 @@ export default function MyProfile(props) {
                                     My Profile
                                 </Typography>
                                 {props.job &&
-                                <Button onClick={submitApplication} color="green">Apply</Button>
+                                <Button    onClick={submitApplication} color="green">
+                                    <strong>Submit Application {props.job.title}</strong>
+                                </Button>
                                 }
                             </Toolbar>
                         </AppBar>
                         <div className={classes.profileVIew}>
+
                         <ViewProfileStepper/>
                         </div>
                     </Dialog>

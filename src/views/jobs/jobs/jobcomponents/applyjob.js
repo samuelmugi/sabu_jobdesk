@@ -12,6 +12,8 @@ import REST_APIS from "services/APiCalls/config/apiUrl";
 import BackendService from "services/APiCalls/BackendService";
 import STORAGE from "services/APiCalls/config/storage";
 import MyProfile from "views/candidate/profile/Profile";
+import Signup from "views/login/login/SIgnup";
+import Signin from "views/login/login/signin";
 
 toast.configure();
 const color = "#80e70b";
@@ -22,7 +24,7 @@ const ApplyJob = (props) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading, loadingRef] = useState(false);
 
-     const handleClickOpen = () => {
+    const handleClickOpen = () => {
         setOpen(!open);
     };
     const handleClose = () => {
@@ -81,11 +83,30 @@ const ApplyJob = (props) => {
                         >
                             <div className="modal-body p-0">
                                 <Card className="bg-secondary shadow border-0">
-                                    <Button.Group>
-                                        <Button onClick={submitApplication} positive>Apply</Button>
-                                        <Button.Or/>
-                                        <Button><MyProfile job={props.job}/></Button>
-                                    </Button.Group>
+                                    {user !== 'NA' ? (<Button.Group>
+                                            <Button onClick={submitApplication} positive>Apply</Button>
+                                            <Button.Or/>
+                                            <Button><MyProfile job={props.job}/></Button>
+                                        </Button.Group>) :
+                                        (<>
+                                                <Button
+                                                    className="btn-neutral btn-icon"
+                                                    color="default"
+                                                >  <span>
+                                        <Signup/>
+                                        </span>
+                                                </Button>
+                                                <Button.Or/>
+                                                <Button
+                                                    className="btn-neutral btn-icon"
+                                                    color="default"
+                                                >  <span>
+                                        <Signin/>
+                                        </span>
+                                                </Button>
+                                            </>
+                                        )
+                                    }
                                 </Card>
                             </div>
                         </LoadingOverlay> </Modal>

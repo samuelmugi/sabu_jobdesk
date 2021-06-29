@@ -31,6 +31,7 @@ class Storage {
     };
 
     setUserDetials = (userDetials) => {
+        localStorage.removeItem(LS_KEY.user_det);
         localStorage.setItem(
             LS_KEY.user_det,
             JSON.stringify({

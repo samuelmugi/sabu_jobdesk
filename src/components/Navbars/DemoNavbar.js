@@ -62,6 +62,10 @@ class DemoNavbar extends React.Component {
             collapseClasses: ''
         });
     };
+    logout = () => {
+        STORAGE.destroyAuthTOken();
+        window.location.reload();
+    }
 
     render() {
         return (
@@ -103,11 +107,13 @@ class DemoNavbar extends React.Component {
                                     </Row>
                                 </div>
                                 <Nav className="navbar-nav-hover align-items-lg-center" navbar>
+                                    {user !== 'NA' &&
                                     <NavItem>
                                         <NavLink className="nav-link-icon" to="/candidate-page" tag={Link}>
                                             MY CANDIDATURE
                                         </NavLink>
                                     </NavItem>
+                                    }
                                     <NavItem> <NavLink className="nav-link-icon" to="/jobs-page" tag={Link}>
                                         JOBS
                                     </NavLink>
@@ -158,6 +164,18 @@ class DemoNavbar extends React.Component {
                                             </Button>
                                         </NavItem>
                                     </>
+                                    }
+                                    {user !== 'NA' &&
+                                    <NavItem className="nav-link-icon">
+                                        <Button
+                                            onClick={this.logout}
+                                            className="btn-neutral btn-icon"
+                                            color="default"
+                                        >  <span>
+                                        Log Out
+                                        </span>
+                                        </Button>
+                                    </NavItem>
                                     }
                                 </Nav>
                             </UncontrolledCollapse>

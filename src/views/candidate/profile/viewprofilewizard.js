@@ -81,7 +81,7 @@ function getStepContent(step) {
                                     }
                                 )
                             }
-                            <Grid.Row>
+                            {     (user!== 'NA' && user?.homeCounty!==null) && (<Grid.Row>
                                 <Grid.Column>
                                     <Feed events={[
                                         {
@@ -107,7 +107,8 @@ function getStepContent(step) {
                                     ]}/>
                                 </Grid.Column>
                             </Grid.Row>
-                            <Grid.Row>
+                          )}
+                            {(user!== 'NA' && user?.countyOfResidence!==null) && ( <Grid.Row>
                                 <Grid.Column>
                                     <Feed events={[
                                         {
@@ -133,6 +134,7 @@ function getStepContent(step) {
                                     ]}/>
                                 </Grid.Column>
                             </Grid.Row>
+                            )}
                         </Grid>
                     </Box>
                 </Paper>
@@ -436,25 +438,26 @@ export default function ViewProfileStepper() {
     };
 
     return (
-        <div className={classes.root}>
-            <Stepper activeStep={activeStep}>
-                {steps.map((label, index) => {
-                    const stepProps = {};
-                    const labelProps = {};
-                    if (isStepOptional(index)) {
-                        labelProps.optional = <Typography variant="caption">Optional</Typography>;
-                    }
-                    if (isStepSkipped(index)) {
-                        stepProps.completed = false;
-                    }
-                    return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}>{label}</StepLabel>
-                        </Step>
-                    );
-                })}
-            </Stepper>
-            <div>
+        <>
+            {user !== 'NA' && <div className={classes.root}>
+                <Stepper activeStep={activeStep}>
+                    {steps.map((label, index) => {
+                        const stepProps = {};
+                        const labelProps = {};
+                        if (isStepOptional(index)) {
+                            labelProps.optional = <Typography variant="caption">Optional</Typography>;
+                        }
+                        if (isStepSkipped(index)) {
+                            stepProps.completed = false;
+                        }
+                        return (
+                            <Step key={label} {...stepProps}>
+                                <StepLabel {...labelProps}>{label}</StepLabel>
+                            </Step>
+                        );
+                    })}
+                </Stepper>
+                <div>
 
                     <div>
                         <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
@@ -474,7 +477,9 @@ export default function ViewProfileStepper() {
                         </div>
                     </div>
 
+                </div>
             </div>
-        </div>
+            }
+        </>
     );
 }

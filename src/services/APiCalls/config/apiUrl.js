@@ -1,10 +1,11 @@
 module.exports = Object.freeze({
     BASE_URL: 'http://3.16.69.34:8080/',
+    // BASE_URL: 'http://localhost:8989/',
     BASE_SETTINGS_URL: 'http://3.16.69.34:8083/',
-    SIGN_UP: 'signup',
-    SIGN_IN: 'login',
+    SIGN_UP: 'api/auth/signup',
+    SIGN_IN: 'api/auth/signin',
     //USER DETAILS
-    GET_USER_DETAILS: 'user-details/',
+    GET_USER_DETAILS: 'api/auth/user-details/',
     UPDATE_USER_DETAILS: 'profile/PROFILEID/personal-info',
     //CV
     UPLOAD_CV: 'profile/PROFILEID/upload-cv',

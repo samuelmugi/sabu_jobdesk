@@ -1,5 +1,4 @@
 import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
 import Slide from '@material-ui/core/Slide';
@@ -9,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
 import Cvwizard from './Cvwizard';
+import { Button } from 'semantic-ui-react'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -41,13 +41,11 @@ export default function Uploadcv() {
     return (
         <React.Fragment>
 
-            <a
-                className="text-warning"
-                href="#uploadcv"
-                onClick={handleClickOpen}
-            >
-                Create profile...
-            </a>
+
+            <Button   onClick={handleClickOpen} positive>
+                Create or Update profile...
+            </Button>
+
 
             <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
                 <AppBar className={classes.appBar}>

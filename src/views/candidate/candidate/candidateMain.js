@@ -3,13 +3,15 @@ import CardsFooter from 'components/Footers/CardsFooter.js';
 import DemoNavbar from 'components/Navbars/DemoNavbar.js';
 import React from 'react';
 // reactstrap components
-import {Card, CardBody, Col, Container, Row} from 'reactstrap';
-import MyProfile from '../profile/Profile';
-import Uploadcv from './Uploadcv';
+import {Card, CardBody, CardTitle, Col, Container, Row} from 'reactstrap';
 import STORAGE from "services/APiCalls/config/storage";
-import NotSignedIn from "views/notsignedup/notsigned";
+import {Label} from "semantic-ui-react";
+import ViewProfileStepper from "views/candidate/profile/viewprofilewizard";
+import Uploadcv from "views/candidate/candidate/Uploadcv";
 
 const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
+const style = {width: "80rem"};
+const styleImg = {width: "100px"};
 
 class CandidateMain extends React.Component {
     state = {};
@@ -27,60 +29,22 @@ class CandidateMain extends React.Component {
             <>
                 <DemoNavbar/>
                 <main ref="main">
-                    <div className=" component-jobs position-relative">
+                    <div className=" component-about position-relative">
                         {/* shape Hero */}
                         <section className="section section-lg section-shaped pb-250">
                             <div className="shape shape-style-1 shape-default">
-
+                                <span/>
+                                <span/>
+                                <span/>
+                                <span/>
+                                <span/>
+                                <span/>
+                                <span/>
+                                <span/>
+                                <span/>
                             </div>
-                            <Container>
-                                <Row>
-                                    <Col>
-                                        <Row className="justify-content-center">
-                                            <Col >
-                                                <Row className="row-grid justify-content-center">
-                                                    <Col lg="4">
-                                                        <Card className="card-lift--hover shadow border-0">
-                                                            <CardBody className="py-5">
-                                                                <div
-                                                                    className="icon icon-shape icon-shape-primary rounded-circle mb-4">
-                                                                    <i className="ni ni-single-02"/>
-                                                                </div>
-                                                                <h6 className="text-primary text-uppercase">
-                                                                    View My Profile
-                                                                </h6>
-                                                                {
-                                                                    user === 'NA' ? <NotSignedIn/>
-                                                                        : <MyProfile/>
-                                                                }
+                            <Container className="py-lg-md d-flex">
 
-                                                            </CardBody>
-                                                        </Card>
-                                                    </Col>
-                                                    <Col lg="4">
-                                                        <Card className="card-lift--hover shadow border-0">
-                                                            <CardBody className="py-5">
-                                                                <div
-                                                                    className="icon icon-shape icon-shape-success rounded-circle mb-4">
-                                                                    <i className="ni ni-single-copy-04"/>
-                                                                </div>
-                                                                <h6 className="text-success text-uppercase">
-                                                                    Create Profile
-                                                                </h6>
-                                                                {
-                                                                    user === 'NA' ? <NotSignedIn/>
-                                                                        : <Uploadcv/>
-                                                                }
-
-                                                            </CardBody>
-                                                        </Card>
-                                                    </Col>
-                                                </Row>
-                                            </Col>
-                                        </Row>
-
-                                    </Col>
-                                </Row>
                             </Container>
                             {/* SVG separator */}
                             <div className="separator separator-bottom separator-skew">
@@ -101,7 +65,39 @@ class CandidateMain extends React.Component {
                         </section>
                         {/* 1st Hero Variation */}
                     </div>
+                    <section className="section pt-lg-0 mt--200">
+                        <Container>
+                            <Row className="justify-content-center">
+                                <Col>
+                                    <Row className="row-grid justify-content-center">
+                                        <Col>
+                                            <Card style={style}>
+                                                <CardTitle>
+                                                    <Row>
+                                                        <Col>
+                                                            <Label as='a' color='red' ribbon>
+                                                                Preview Your Profile
+                                                            </Label>
+                                                        </Col>
+                                                        <Col md="2">
+                                                             <Uploadcv/>
 
+                                                        </Col>
+                                                    </Row>
+                                                </CardTitle>
+
+                                                <CardBody>
+
+                                                    <ViewProfileStepper/>
+                                                </CardBody>
+                                            </Card>
+                                        </Col>
+
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </Container>
+                    </section>
 
                 </main>
                 <CardsFooter/>

@@ -24,7 +24,7 @@ class About extends React.Component {
             <>
                 <DemoNavbar/>
                 <main ref="main">
-                    <div className="position-relative">
+                    <div className=" component-about position-relative">
                         {/* shape Hero */}
                         <section className="section section-lg section-shaped pb-250">
                             <div className="shape shape-style-1 shape-default">
@@ -61,7 +61,7 @@ class About extends React.Component {
                         {/* 1st Hero Variation */}
                     </div>
                     <section className="section pt-lg-0 mt--200">
-                        <Container>
+                        <Container  >
                             <Row className="justify-content-center">
                                 <Col>
                                     <Row className="row-grid justify-content-center">
