@@ -1,16 +1,21 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
-import {Divider, Feed, Grid, Label} from 'semantic-ui-react'
+import {Button, Divider, Feed, Grid, Label} from 'semantic-ui-react'
 import STORAGE from "services/APiCalls/config/storage";
 import {Card} from "reactstrap";
 import ProfileConstants from "views/candidate/profile/profileconstants";
+import useState from "react-usestateref";
+ import StepButton from "@material-ui/core/StepButton";
+ import PostSecondary from "views/candidate/candidate/postsecondary";
+import EmploymentHistory from "views/candidate/candidate/employmenthistory";
+import Skills from "views/candidate/candidate/Skills";
+import UploadFiles from "components/fileupload/upload-files";
+import PersonalInfoDialog from "views/candidate/candidate/personaldialog";
+import SecondarySchoolDialog from "views/candidate/candidate/secondarydialog";
 
 const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
 
@@ -28,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-    return ['Personal Info', 'Academic Details', 'Experience', 'Skills'];
+    return ['Personal Info', 'Academic Details', 'Experience', 'Skills', 'Upload Cv'];
 }
 
 function getStepContent(step) {
@@ -43,7 +48,6 @@ function getStepContent(step) {
             } else {
                 noOfRows = +sizeOfFields / 4;
             }
-            console.log('noOfRows=', noOfRows)
             const events = [
                 {
                     date: '4 Likes',
@@ -52,9 +56,11 @@ function getStepContent(step) {
             ]
             let col = 0;
             return <Card className="bg-secondary shadow  ">
-                <Paper variant="outlined" circle>
+                <PersonalInfoDialog/>
+                <Paper variant="outlined">
+
                     <Box m={4}>
-                        <Grid columns='equal'>
+                        <Grid stackable columns='equal'>
                             {
                                 [...Array(noOfRows).keys()].map((row) => {
                                         return (<Grid.Row>
@@ -81,64 +87,67 @@ function getStepContent(step) {
                                     }
                                 )
                             }
-                            {     (user!== 'NA' && user?.homeCounty!==null) && (<Grid.Row>
-                                <Grid.Column>
-                                    <Feed events={[
-                                        {
-                                            date: 'homeCounty',
-                                            summary: user?.homeCounty.name,
-                                        }
-                                    ]}/>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Feed events={[
-                                        {
-                                            date: 'homeSubCounty',
-                                            summary: user?.homeSubCounty.name,
-                                        }
-                                    ]}/>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Feed events={[
-                                        {
-                                            date: 'homeWard',
-                                            summary: user?.homeWard.wardName,
-                                        }
-                                    ]}/>
-                                </Grid.Column>
-                            </Grid.Row>
-                          )}
-                            {(user!== 'NA' && user?.countyOfResidence!==null) && ( <Grid.Row>
-                                <Grid.Column>
-                                    <Feed events={[
-                                        {
-                                            date: 'county Of Residence',
-                                            summary: user?.countyOfResidence.name,
-                                        }
-                                    ]}/>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Feed events={[
-                                        {
-                                            date: 'Residence sub County',
-                                            summary: user?.subCountyOfResidence.name,
-                                        }
-                                    ]}/>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Feed events={[
-                                        {
-                                            date: 'Residence Ward',
-                                            summary: user?.countyOfResidenceWard.wardName,
-                                        }
-                                    ]}/>
-                                </Grid.Column>
-                            </Grid.Row>
+                            {(user !== 'NA' && user?.homeCounty !== null) && (<Grid.Row>
+                                    <Grid.Column>
+                                        <Feed events={[
+                                            {
+                                                date: 'homeCounty',
+                                                summary: user?.homeCounty.name,
+                                            }
+                                        ]}/>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <Feed events={[
+                                            {
+                                                date: 'homeSubCounty',
+                                                summary: user?.homeSubCounty.name,
+                                            }
+                                        ]}/>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <Feed events={[
+                                            {
+                                                date: 'homeWard',
+                                                summary: user?.homeWard.wardName,
+                                            }
+                                        ]}/>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            )}
+                            {(user !== 'NA' && user?.countyOfResidence !== null) && (<Grid.Row>
+                                    <Grid.Column>
+                                        <Feed events={[
+                                            {
+                                                date: 'county Of Residence',
+                                                summary: user?.countyOfResidence.name,
+                                            }
+                                        ]}/>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <Feed events={[
+                                            {
+                                                date: 'Residence sub County',
+                                                summary: user?.subCountyOfResidence.name,
+                                            }
+                                        ]}/>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <Feed events={[
+                                            {
+                                                date: 'Residence Ward',
+                                                summary: user?.countyOfResidenceWard.wardName,
+                                            }
+                                        ]}/>
+                                    </Grid.Column>
+                                </Grid.Row>
                             )}
                         </Grid>
                     </Box>
+
+
                 </Paper>
             </Card>
+
 
         }
 
@@ -163,9 +172,10 @@ function getStepContent(step) {
             const academicQualifications = user?.academicQualifications;
 
             return <Card className="bg-secondary shadow border-left-4">
+                <SecondarySchoolDialog/>
                 <Paper variant="outlined" circle>
                     <Box m={4}>
-                        <Grid columns='equal'>
+                        <Grid stackable columns='equal'>
                             {
                                 [...Array(noOfRows).keys()].map((row) => {
                                         return (<Grid.Row>
@@ -193,6 +203,11 @@ function getStepContent(step) {
                                 )
                             }
                             <Divider horizontal>Academic Qualifications</Divider>
+                            <Grid.Row>
+                                <Grid.Column>
+                                    <PostSecondary/>
+                                </Grid.Column>
+                            </Grid.Row>
                             {
                                 academicQualifications.map((val, key) => {
 
@@ -258,6 +273,7 @@ function getStepContent(step) {
             const workExperiences = user?.workExperiences;
 
             return <Card className="bg-secondary shadow border-left-4">
+                <EmploymentHistory/>
                 <Paper variant="outlined" circle>
                     <Box m={4}>
                         <Grid columns='equal'>
@@ -348,27 +364,34 @@ function getStepContent(step) {
 
             let col = 0;
             return <Card className="bg-secondary shadow  ">
+                <Skills/>
                 <Paper variant="outlined" circle>
                     <Box m={4}>
                         <Grid columns='equal'>
                             {
                                 [...Array(noOfRows).keys()].map((row) => {
+                                        const colNos = skills.length > 4 ? 4 : skills.length;
                                         return (<Grid.Row>
                                             {
-                                                [...Array(4).keys()].map((coll) => {
-                                                    const skill = skills[col];
-                                                    col++;
-                                                    return (
-                                                        <Grid.Column>
-                                                            <Label as='a' color='red' tag>
-                                                                {skill}
-                                                            </Label>
-                                                        </Grid.Column>
-                                                    )
+                                                [...Array(colNos).keys()].map((coll) => {
+                                                    if (skills.length > col) {
+                                                        const skill = JSON.parse(skills[col]);
+                                                        col++;
+                                                        return (
+                                                            <Grid.Column>
+                                                                <Label as='a' color='teal' tag>
+                                                                    {skill?.skill}
+                                                                </Label>
+                                                            </Grid.Column>
+                                                        )
+                                                    } else {
+                                                        return <Grid.Column></Grid.Column>
+                                                    }
                                                 })
 
                                             }
-                                        </Grid.Row>)
+                                        </Grid.Row>);
+                                        col++;
 
                                     }
                                 )
@@ -378,6 +401,10 @@ function getStepContent(step) {
                     </Box>
                 </Paper>
             </Card>
+
+        }
+        case 4: {
+            return <UploadFiles/>;
 
         }
             ;
@@ -390,77 +417,83 @@ export default function ViewProfileStepper() {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set());
+    const [isMounted, setMounted, isMountedRef] = useState(false);
+    const [completed, setCompleted] = React.useState({});
+
+
+    useEffect(() => {
+        (async function () {
+            if (!isMountedRef.current) {
+                setMounted(true);
+            }
+        })();
+    }, []);
+
     const steps = getSteps();
 
-    const isStepOptional = (step) => {
-        return step === 1;
+    const totalSteps = () => {
+        return steps.length;
     };
 
-    const isStepSkipped = (step) => {
-        return skipped.has(step);
+    const completedSteps = () => {
+        return Object.keys(completed).length;
+    };
+
+    const isLastStep = () => {
+        return activeStep === totalSteps() - 1;
+    };
+
+    const allStepsCompleted = () => {
+        return completedSteps() === totalSteps();
     };
 
     const handleNext = () => {
-        let newSkipped = skipped;
-        if(activeStep===getSteps().length-1){
-            setActiveStep(0);
-        }
-        if (isStepSkipped(activeStep)) {
-            newSkipped = new Set(newSkipped.values());
-            newSkipped.delete(activeStep);
-        }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped(newSkipped);
+        const newActiveStep =
+            isLastStep() && !allStepsCompleted()
+                ? // It's the last step, but not all steps have been completed,
+                  // find the first step that has been completed
+                steps.findIndex((step, i) => !(i in completed))
+                : activeStep + 1;
+        setActiveStep(newActiveStep);
     };
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleSkip = () => {
-        if (!isStepOptional(activeStep)) {
-            // You probably want to guard against something like this,
-            // it should never occur unless someone's actively trying to break something.
-            throw new Error("You can't skip a step that isn't optional.");
-        }
+    const handleStep = (step) => () => {
+        setActiveStep(step);
+    };
 
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped((prevSkipped) => {
-            const newSkipped = new Set(prevSkipped.values());
-            newSkipped.add(activeStep);
-            return newSkipped;
-        });
+    const handleComplete = () => {
+        const newCompleted = completed;
+        newCompleted[activeStep] = true;
+        setCompleted(newCompleted);
+        handleNext();
     };
 
     const handleReset = () => {
         setActiveStep(0);
+        setCompleted({});
     };
+
 
     return (
         <>
-            {user !== 'NA' && <div className={classes.root}>
-                <Stepper activeStep={activeStep}>
-                    {steps.map((label, index) => {
-                        const stepProps = {};
-                        const labelProps = {};
-                        if (isStepOptional(index)) {
-                            labelProps.optional = <Typography variant="caption">Optional</Typography>;
-                        }
-                        if (isStepSkipped(index)) {
-                            stepProps.completed = false;
-                        }
-                        return (
-                            <Step key={label} {...stepProps}>
-                                <StepLabel {...labelProps}>{label}</StepLabel>
-                            </Step>
-                        );
-                    })}
+            {(user !== 'NA' && isMountedRef.current) && <div className={classes.root}>
+                <Stepper nonLinear activeStep={activeStep}>
+                    {steps.map((label, index) => (
+                        <Step key={label}>
+                            <StepButton onClick={handleStep(index)} completed={completed[index]}>
+                                {label}
+                            </StepButton>
+                        </Step>
+                    ))}
                 </Stepper>
                 <div>
 
                     <div>
-                        <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
+                        <div className={classes.instructions}>{getStepContent(activeStep)}</div>
                         <div>
                             <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
                                 Back

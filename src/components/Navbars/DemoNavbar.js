@@ -64,13 +64,12 @@ class DemoNavbar extends React.Component {
     };
     logout = () => {
         STORAGE.destroyAuthTOken();
-        window.location.reload();
-    }
+     }
 
     render() {
         return (
             <>
-                <header className="header-global">
+                <header  >
                     <Navbar
                         className="navbar-main navbar-transparent navbar-light headroom"
                         expand="lg"

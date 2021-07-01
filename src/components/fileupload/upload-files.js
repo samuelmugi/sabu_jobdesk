@@ -120,7 +120,7 @@ export default class UploadFiles extends Component {
                         className="btn-choose"
                         variant="outlined"
                         component="span" >
-                        Choose Files
+                        Choose Resume File
                     </Button>
                 </label>
                 <div className="file-name">
@@ -141,7 +141,7 @@ export default class UploadFiles extends Component {
                 </Typography>
 
                 <Typography variant="h6" className="list-header">
-                    List of Files
+                    List of File
                 </Typography>
                 <ul className="list-group">
                     {fileInfos &&

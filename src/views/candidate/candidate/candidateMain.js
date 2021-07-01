@@ -3,15 +3,13 @@ import CardsFooter from 'components/Footers/CardsFooter.js';
 import DemoNavbar from 'components/Navbars/DemoNavbar.js';
 import React from 'react';
 // reactstrap components
-import {Card, CardBody, CardTitle, Col, Container, Row} from 'reactstrap';
+import {Card, CardBody, Col, Container, Row} from 'reactstrap';
 import STORAGE from "services/APiCalls/config/storage";
 import {Label} from "semantic-ui-react";
 import ViewProfileStepper from "views/candidate/profile/viewprofilewizard";
-import Uploadcv from "views/candidate/candidate/Uploadcv";
 
 const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
 const style = {width: "80rem"};
-const styleImg = {width: "100px"};
 
 class CandidateMain extends React.Component {
     state = {};
@@ -20,7 +18,6 @@ class CandidateMain extends React.Component {
         document.documentElement.scrollTop = 0;
         document.scrollingElement.scrollTop = 0;
         this.refs.main.scrollTop = 0;
-        console.log('user==', JSON.stringify(user));
 
     }
 
@@ -69,25 +66,13 @@ class CandidateMain extends React.Component {
                         <Container>
                             <Row className="justify-content-center">
                                 <Col>
+                                    <Label as='a' color='red'>
+                                        Preview Your Profile
+                                    </Label>
                                     <Row className="row-grid justify-content-center">
                                         <Col>
                                             <Card style={style}>
-                                                <CardTitle>
-                                                    <Row>
-                                                        <Col>
-                                                            <Label as='a' color='red' ribbon>
-                                                                Preview Your Profile
-                                                            </Label>
-                                                        </Col>
-                                                        <Col md="2">
-                                                             <Uploadcv/>
-
-                                                        </Col>
-                                                    </Row>
-                                                </CardTitle>
-
                                                 <CardBody>
-
                                                     <ViewProfileStepper/>
                                                 </CardBody>
                                             </Card>

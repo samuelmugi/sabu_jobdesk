@@ -1,6 +1,6 @@
 module.exports = Object.freeze({
-    // BASE_URL: 'http://3.16.69.34:8080/',
-    BASE_URL: 'http://localhost:8989/',
+    BASE_URL: 'http://3.16.69.34:8080/',
+    // BASE_URL: 'http://localhost:8989/',
     BASE_SETTINGS_URL: 'http://3.16.69.34:8083/',
     SIGN_UP: 'api/auth/signup',
     SIGN_IN: 'api/auth/signin',
@@ -38,6 +38,5 @@ module.exports = Object.freeze({
     //JOBS
     GET_ALL_JOB_VACANCIES:'job-vacancies',
     APPLY_JOB_VACANCY:'job-applications'
-
 
 });

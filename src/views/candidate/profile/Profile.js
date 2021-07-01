@@ -2,7 +2,7 @@ import React from 'react';
 // reactstrap components
 import {Col, Row} from 'reactstrap';
 import {makeStyles} from '@material-ui/core/styles';
- import Dialog from '@material-ui/core/Dialog';
+import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -38,7 +38,11 @@ const useStyles = makeStyles((theme) => ({
         background: '#e0d8ca'
     }, profileVIew: {
         'overflow-y': 'scroll',
-        height: '100vh'
+        height: '100vh',
+        paddingtop: '50px',
+        paddingRight: '30px',
+        paddingBottom: '50px',
+        paddingLeft: '80px'
     },
     title: {
         marginLeft: theme.spacing(2),
@@ -52,7 +56,7 @@ export default function MyProfile(props) {
     const [open, setOpen] = React.useState(false);
     const [loading, setLoading, loadingRef] = useState(false);
 
-     const handleClickOpen = () => {
+    const handleClickOpen = () => {
         setOpen(true);
     };
 
@@ -69,9 +73,13 @@ export default function MyProfile(props) {
             const url = REST_APIS.APPLY_JOB_VACANCY.replace('PROFILEID', user.id);
             await BackendService.postRequest(url, jobApplication)
                 .then(() => {
-                        BackendService.notifySuccess('Job Applied successfully')
-                        setLoading(false);
-                        window.location.reload();
+                        BackendService.notifySuccess('Application Submitted successfully')
+
+                        setTimeout(function () {
+                            setLoading(false);
+                            window.location.reload();
+                        }, 4000);
+
 
                     },
                     (error) => {
@@ -94,12 +102,9 @@ export default function MyProfile(props) {
             <Row>
                 <Col>
 
-                    <a
-                        className="text-warning"
-                        href="#myprofile"
-                        onClick={handleClickOpen}
-                    >
-                        View My Profile </a>
+
+                    <Button onClick={handleClickOpen} positive>Apply</Button>
+
                     <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
                         <AppBar position="sticky" className={classes.appBar}>
                             <Toolbar>
@@ -107,10 +112,11 @@ export default function MyProfile(props) {
                                     <CloseIcon/>
                                 </IconButton>
                                 <Typography variant="h6" className={classes.title}>
-                                    My Profile
+                                    <strong style={{color: 'red'}}> Review Profile Before submitting
+                                        application</strong>
                                 </Typography>
                                 {props.job &&
-                                <Button    onClick={submitApplication} color="green">
+                                <Button onClick={submitApplication} color="green">
                                     <strong>Submit Application {props.job.title}</strong>
                                 </Button>
                                 }
@@ -118,7 +124,7 @@ export default function MyProfile(props) {
                         </AppBar>
                         <div className={classes.profileVIew}>
 
-                        <ViewProfileStepper/>
+                            <ViewProfileStepper/>
                         </div>
                     </Dialog>
                 </Col>

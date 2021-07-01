@@ -23,7 +23,7 @@ class About extends React.Component {
 
             <>
                 <DemoNavbar/>
-                <main ref="main">
+                <main className=" component-about" ref="main">
                     <div className=" component-about position-relative">
                         {/* shape Hero */}
                         <section className="section section-lg section-shaped pb-250">

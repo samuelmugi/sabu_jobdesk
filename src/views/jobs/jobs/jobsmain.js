@@ -6,6 +6,9 @@ import DemoNavbar from 'components/Navbars/DemoNavbar.js';
 import CardsFooter from 'components/Footers/CardsFooter.js';
 import Alljobs from 'views/jobs/jobs/alljobs';
 import JobApplications from 'views/jobs/jobs/applications';
+import STORAGE from "services/APiCalls/config/storage";
+
+const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
 
 export default class JobsMain extends Component {
     state = {
@@ -55,6 +58,7 @@ export default class JobsMain extends Component {
                                                         Jobs
                                                     </NavLink>
                                                 </NavItem>
+                                                {user !== 'NA' &&
                                                 <NavItem>
                                                     <NavLink
                                                         aria-selected={this.state.iconTabs === 2}
@@ -68,7 +72,7 @@ export default class JobsMain extends Component {
                                                         <i className="ni ni-bell-55 mr-2"/>
                                                         Applications
                                                     </NavLink>
-                                                </NavItem>
+                                                </NavItem>}
 
                                             </Nav>
                                         </div>

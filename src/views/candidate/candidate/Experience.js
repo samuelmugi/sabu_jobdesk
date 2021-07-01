@@ -54,7 +54,6 @@ export default function Experience(props) {
 
 
     const initializeExperienceValues = async () => {
-        console.log(JSON.stringify(user));
 
     }
 

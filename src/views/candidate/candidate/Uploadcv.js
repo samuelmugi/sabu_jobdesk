@@ -9,6 +9,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
 import Cvwizard from './Cvwizard';
 import { Button } from 'semantic-ui-react'
+import BackendService from "services/APiCalls/BackendService";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +37,9 @@ export default function Uploadcv() {
     };
 
     const handleClose = () => {
-        setOpen(false);
+         setOpen(false);
+        window.location.reload();
+
     };
 
 

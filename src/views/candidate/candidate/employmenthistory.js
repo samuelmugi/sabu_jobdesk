@@ -3,7 +3,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {Button, Form} from "semantic-ui-react";
+import {Button, Form, Grid, Icon, Label} from "semantic-ui-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import useState from "react-usestateref";
@@ -45,7 +45,7 @@ export default function EmploymentHistory() {
     const [loading, setLoading, loadingRef] = useState(false);
     const [isMounted, setMounted, isMountedRef] = useState(false);
     const [isEdited, setEditing, isEditedRef] = useState(false);
-    const [employmentValues, setEmploymentValues, employmentValuesRef] = useState({});
+    const [employmentValues, setEmploymentValues, employmentValuesRef] = useState({currentActive:false});
     const [employmentValuesErrors, setEmploymentValuesErrors, employmentValuesErrorsRef] = useState({});
 
 
@@ -54,7 +54,7 @@ export default function EmploymentHistory() {
     };
 
     const handleClose = () => {
-        setOpen(false);
+        BackendService.refershUserDetails().then(() => setOpen(false));
     };
 
 
@@ -121,8 +121,10 @@ export default function EmploymentHistory() {
             const url = REST_APIS.ADD_EXPERIENCE.replace('PROFILEID', user.id);
             await BackendService.postRequest(url, employmentValues)
                 .then(() => {
+
                         BackendService.notifySuccess('Employment history added successfully')
-                        setLoading(false);
+                            .then(() => setLoading(false))
+                            .finally(() => handleClose());
                     },
                     (error) => {
                         BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
@@ -146,13 +148,28 @@ export default function EmploymentHistory() {
 
     return (
         <React.Fragment>
-            <a
-                className="text-warning"
-                href="#uploadcv" onClick={handleClickOpen}
-            >
-                <i className="fa fa-plus" aria-hidden="true"></i>
-                &nbsp; Add Employment History
-            </a>
+            {/*<a*/}
+            {/*    className="text-warning"*/}
+            {/*    href="#uploadcv" onClick={handleClickOpen}*/}
+            {/*>*/}
+            {/*    <i className="fa fa-plus" aria-hidden="true"></i>*/}
+            {/*    &nbsp; Add Employment History*/}
+            {/*</a>*/}
+            <Grid stackable>
+                <Grid.Column>
+                    <Button as='div' labelPosition='right'
+                    >
+                        <Button onClick={handleClickOpen} color='green'>
+                            <Icon name='add'/>
+                            Add
+                        </Button>
+                        <Label as='a' basic color='red' pointing='left'>
+                            Employment History
+                        </Label>
+                    </Button>
+
+                </Grid.Column>
+            </Grid>
             <Dialog
                 fullWidth={fullWidth}
                 maxWidth={maxWidth}

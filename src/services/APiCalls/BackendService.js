@@ -33,36 +33,47 @@ axios.interceptors.request.use((config) => {
 });
 
 axios.interceptors.response.use(
-    (response) => {
-        return response;
-    },
+    (response) => response,
     (error) => {
         if (error.response?.status === UNAUTHORIZED) {
             STORAGE.destroyAuthTOken();
-            this.notifyError('PLease login to access this resource');
+            toast.error('PLease login to access this resource', {
+                position: "top-right",
+                autoClose: 2500,
+                transition: Zoom, hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            window.location.href = '/';
+            STORAGE.destroyAuthTOken();
+
         } else {
             return Promise.reject(error);
         }
     }
 );
 
-function refershUserDetails() {
-    const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
-    if (user !== 'NA') {
-        const url = REST_APIS.GET_USER_DETAILS + user?.profile.email;
-        this.getRequest(url).then(response => {
-            if (response?.status == '200') {
-                STORAGE.setUserDetials(response.data);
-            }
-        })
-    }
-
-
-}
 
 class BackendService {
 
+    async refershUserDetails() {
+        const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
+        console.log('refershUserDetails')
+        if (user !== 'NA') {
+            const url = REST_APIS.GET_USER_DETAILS + user?.emailAddress;
+            this.getRequest(url).then(response => {
+                if (response?.status == '200') {
+                    STORAGE.setUserDetials(response.data);
+                    window.location.reload();
 
+                }
+            })
+        } else {
+            STORAGE.destroyAuthTOken();
+        }
+    }
 
     async getPaginatedRequest(url, page, size, search) {
         const requestUrl =
@@ -130,10 +141,10 @@ class BackendService {
         return requestWards.data.map(val => ({key: val.id, text: val.wardName, value: val}))
     }
 
-    notifySuccess(value) {
+    async  notifySuccess(value) {
         toast.success(value, {
             position: "top-right",
-            autoClose: 2500,
+            autoClose: 4000,
             transition: Zoom, hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -145,7 +156,7 @@ class BackendService {
     notifyError(value) {
         toast.error(value, {
             position: "top-right",
-            autoClose: 2500,
+            autoClose: 4000,
             transition: Zoom, hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,

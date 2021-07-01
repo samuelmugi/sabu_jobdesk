@@ -59,6 +59,7 @@ class Storage {
 
     destroyAuthTOken = () => {
         localStorage.clear();
+        window.location.href = '/';
     };
 
 }

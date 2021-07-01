@@ -3,7 +3,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {Button, Form, Select} from "semantic-ui-react";
+import {Button, Form, Icon, Label, Select} from "semantic-ui-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import useState from "react-usestateref";
@@ -60,7 +60,7 @@ export default function PostSecondary() {
     };
 
     const handleClose = () => {
-        setOpen(false);
+        BackendService.refershUserDetails().then(() => setOpen(false));
     };
 
 
@@ -129,8 +129,10 @@ export default function PostSecondary() {
             const url = REST_APIS.ADD_POST_SECONDARY_SCHOOL.replace('PROFILEID', user.id);
             await BackendService.postRequest(url, postSecondaryValues)
                 .then(() => {
+
                         BackendService.notifySuccess('Post Secondary added successfully')
-                        setLoading(false);
+                            .then(() => setLoading(false))
+                            .finally(() => handleClose());
                     },
                     (error) => {
                         BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
@@ -154,13 +156,17 @@ export default function PostSecondary() {
 
     return (
         <React.Fragment>
-            <a
-                className="text-warning"
-                href="#uploadcv" onClick={handleClickOpen}
+
+            <Button as='div' labelPosition='right'
             >
-                <i className="fa fa-plus" aria-hidden="true"></i>
-                &nbsp; Add PostSecondary Qualification
-            </a>
+                <Button onClick={handleClickOpen} color='green'>
+                    <Icon name='add'/>
+                    Add
+                </Button>
+                <Label as='a' basic color='red' pointing='left'>
+                    PostSecondary Qualification
+                </Label>
+            </Button>
             <Dialog
                 fullWidth={fullWidth}
                 maxWidth={maxWidth}
@@ -224,7 +230,7 @@ export default function PostSecondary() {
                                         selected={startDate}
                                         name='start'
                                         onChange={(date) => {
-                                            setFieldValues('start',  moment(date).format("YYYY"));
+                                            setFieldValues('start', moment(date).format("YYYY"));
                                             setStartDate(date);
                                         }}
                                         showYearPicker
@@ -240,7 +246,7 @@ export default function PostSecondary() {
                                         selected={endDate}
                                         name='end'
                                         onChange={(date) => {
-                                            setFieldValues('end',  moment(date).format("YYYY"));
+                                            setFieldValues('end', moment(date).format("YYYY"));
                                             setEndDate(date);
                                         }}
                                         showYearPicker

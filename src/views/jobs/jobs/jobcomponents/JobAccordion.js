@@ -7,8 +7,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import {grey} from '@material-ui/core/colors';
-import {Badge} from 'reactstrap';
-import {Button, Divider, Header} from 'semantic-ui-react'
+import {Divider, Header, Label} from 'semantic-ui-react'
 import Box from '@material-ui/core/Box';
 import REST_APIS from "services/APiCalls/config/apiUrl";
 import BackendService from "services/APiCalls/BackendService";
@@ -17,6 +16,8 @@ import useState from "react-usestateref";
 import LoadingOverlay from 'react-loading-overlay'
 import ClipLoader from "react-spinners/PropagateLoader";
 import ApplyJob from "views/jobs/jobs/jobcomponents/applyjob";
+import moment from 'moment';
+import MyProfile from "views/candidate/profile/Profile";
 
 const useStyles = makeStyles((theme) => ({
         root: {
@@ -37,13 +38,13 @@ const useStyles = makeStyles((theme) => ({
         headingJOb: {
             fontSize: theme.typography.pxToRem(14),
             fontWeight: theme.typography.fontWeightBold,
-            flexBasis: '75%',
+            flexBasis: '90%',
             flexShrink: 0,
         },
         secondaryHeading: {
             fontSize: theme.typography.pxToRem(12),
             color: theme.palette.text.secondary,
-            flexBasis: '12%',
+            flexBasis: '22%',
             flexShrink: 0,
 
         }, lineBreak: {
@@ -63,7 +64,7 @@ const JobAccordion = (props) => {
     const [loading, setLoading, loadingRef] = useState(true);
     const [color, setColor] = useState("#60991f");
 
-    setTimeout(()=>setLoading(false),3000)
+    setTimeout(() => setLoading(false), 3000)
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     };
@@ -102,60 +103,66 @@ const JobAccordion = (props) => {
                 return (
                     <>
 
-                            <Accordion expanded={expanded === 'panel1' + item?.id}
-                                       onChange={handleChange('panel1' + item?.id)}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon/>}
-                                    aria-controls="panel1bh-content"
-                                    id="panel1bh-header"
-                                >
-                                    <Typography className={classes.headingAvatar}>
-                                        <Avatar alt="Remy Sharp" src={require('assets/img/icons8-work.png')}
-                                                className={classes.avatar}>
-                                        </Avatar>
-                                    </Typography>
+                        <Accordion expanded={expanded === 'panel1' + item?.id}
+                                   onChange={handleChange('panel1' + item?.id)}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon/>}
+                                aria-controls="panel1bh-content"
+                                id="panel1bh-header"
+                            >
+                                <Typography className={classes.headingAvatar}>
+                                    <Avatar alt="Remy Sharp" src={require('assets/img/icons8-work.png')}
+                                            className={classes.avatar}>
+                                    </Avatar>
+                                </Typography>
 
-                                    <Typography className={classes.headingJOb}>
+                                <Typography className={classes.headingJOb}>
+
+
                                         {item?.title}
+                                            <Divider/>
+                                    <Typography>
+
+                                        {item?.location !== null &&
+                                        <Label as='a' color='grey'>
+                                            {item?.location}
+                                        </Label>}
+                                        {(item?.contractType.trim() !== null && item?.contractType.trim().length>0) &&
+                                        <Label as='a' color='grey'>
+                                            {item?.contractType}
+                                        </Label>}
+                                        {item?.applicationDeadline !== null &&
+                                        <Label as='a' color='grey'>
+                                            Application
+                                            Deadline {moment(item?.applicationDeadline).format("MMM Do YYYY")}
+                                        </Label>}
                                     </Typography>
 
-                                    <Typography className={classes.secondaryHeading}>
-                                        <div>
-                                            <Badge color="primary" pill className="mr-1">
-                                                {item?.location}
-                                            </Badge>
-                                            <Badge color="primary" pill className="mr-1">
-                                                {item?.contractType}
-                                            </Badge>
+                                </Typography>
 
-                                        </div>
-                                    </Typography>
-                                    <Typography className={classes.secondaryHeading}>
-                                        {item?.applicationDeadline}
-                                    </Typography>
-
-                                </AccordionSummary>
-                                <Divider/>
-                                <AccordionDetails>
-                                    <Box width={'100%'}>
-                                             <ApplyJob job={item}/>
-
-
-                                        <Header as='h3'>Job Requirements</Header>
-                                        <Typography paragraph style={{whiteSpace: "pre-line"}}>
-                                            {item?.jobRequirements.split("\n").join("\n")}
-                                        </Typography>
-                                        <Header as='h3'>Job Description</Header>
-                                        <Typography paragraph style={{whiteSpace: "pre-line"}}>
-                                            {item?.jobDescription.split("\n").join("\n")}
-                                        </Typography>
-
-                                        <ApplyJob job={item}/>
-
-                                    </Box>
-                                </AccordionDetails>
-                            </Accordion>
+                            </AccordionSummary>
                             <Divider/>
+                            <AccordionDetails>
+                                <Box width={'100%'}>
+                                    {/*<ApplyJob job={item}/>*/}
+                                    <MyProfile job={item}/>
+
+                                    <Header as='h3'>Job Requirements</Header>
+                                    <Typography paragraph style={{whiteSpace: "pre-line"}}>
+                                        {item?.jobRequirements.split("\n").join("\n")}
+                                    </Typography>
+                                    <Header as='h3'>Job Description</Header>
+                                    <Typography paragraph style={{whiteSpace: "pre-line"}}>
+                                        {item?.jobDescription.split("\n").join("\n")}
+                                    </Typography>
+
+                                    {/*<ApplyJob job={item}/>*/}
+                                    <MyProfile job={item}/>
+
+                                </Box>
+                            </AccordionDetails>
+                        </Accordion>
+                        <Divider/>
 
                     </>
                 )

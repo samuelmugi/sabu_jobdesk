@@ -1,9 +1,7 @@
 import React, {useEffect} from 'react';
 // reactstrap components
-import {Card, CardBody, Col, Row} from 'reactstrap';
-import {Button, Divider, Form} from 'semantic-ui-react';
+import {Form, Grid} from 'semantic-ui-react';
 import {makeStyles} from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import useState from 'react-usestateref';
 import LoadingOverlay from 'react-loading-overlay'
 import ClipLoader from "react-spinners/PropagateLoader";
@@ -51,16 +49,13 @@ export default function Skills(props) {
 
 
     const initializeSkillValues = async () => {
-        console.log(JSON.stringify(user));
 
     }
     const handleOtherSelects = (e, {name, value}) => {
         setFieldValues(name, value);
     }
     const setField = (e) => {
-        console.log('e.target.name',e.target.name);
-        console.log('e.target.value',e.target.value);
-        setFieldValues(e.target.name, e.target.value);
+           setFieldValues(e.target.name, e.target.value);
     };
     const setFieldValues = (key, value) => {
         setSkillValues((prevValues) => {
@@ -97,9 +92,10 @@ export default function Skills(props) {
             const url = REST_APIS.ADD_SKILL.replace('PROFILEID', user.id);
             await BackendService.postRequest(url, skillValues)
                 .then(() => {
-                        // props.handleComplete();
+
                         BackendService.notifySuccess('Skill Added successfully')
-                        setLoading(false);
+                            .then(() => setLoading(false))
+                            .finally(() =>  BackendService.refershUserDetails());
                     },
                     (error) => {
                         BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
@@ -126,54 +122,28 @@ export default function Skills(props) {
             active={loadingRef.current}
             spinner={<ClipLoader color={color} loading={loadingRef.current}/>}
         >
-            <Card className="bg-secondary shadow border-0">
+            <Grid stackable>
+                <Grid.Column>
 
-                <CardBody className="px-lg-5 py-lg-5">
-                    <Form>
-                        <Form.Group>
-                            <Form.Input
-                                placeholder="Skill"
-                                name="skill"
-                                value={skillValuesRef.current.skill}
-                                onChange={setField}
-                                error={displayError('skill') ? {
-                                    content: skillValuesErrorsRef.current?.skill
-                                } : false}
-                            />
-                            <Form.Button circular positive icon="add" onClick={submitSkillValues}/>
-                        </Form.Group>
-                    </Form>
-                    <Divider horizontal>Your Skills </Divider>
-                    <Row>
-                        <Col>
-                            <Button disabled={props.activeStep === 0} onClick={props.handleBack}
-                                    className={classes.button}>
-                                Back
-                            </Button>
-                            {props.activeStep !== props.steps.length &&
-                            (props.completed[props.activeStep] ? (
-                                <Typography variant="caption" className={classes.completed}>
-                                    Step: Experience Data already completed
-                                </Typography>
-                            ) : (
-                                <Button variant="contained" positive
-                                        onClick={props.handleComplete}>
-                                    Save Academic Data
-                                </Button>
-                            ))}
-                            <Button
-                                variant="contained"
-                                color="yellow"
-                                onClick={props.handleNext}
-                                className={classes.button}
-                            >
-                                Next
-                            </Button>
+                        <Form>
+                            <Form.Group>
+                                <Form.Input
+                                    placeholder="Skill"
+                                    name="skill"
+                                    value={skillValuesRef.current.skill}
+                                    onChange={setField}
+                                    error={displayError('skill') ? {
+                                        content: skillValuesErrorsRef.current?.skill
+                                    } : false}
+                                />
+                                <Form.Button circular positive icon="add" onClick={submitSkillValues}/>
+                            </Form.Group>
+                        </Form>
+                </Grid.Column>
+            </Grid>
 
-                        </Col>
-                    </Row>
-                </CardBody>
-            </Card>
+
+
 
         </LoadingOverlay>
         </>
