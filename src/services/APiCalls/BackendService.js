@@ -59,10 +59,10 @@ axios.interceptors.response.use(
 class BackendService {
 
     async refershUserDetails() {
-        const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
+        const user = STORAGE.getCurrentUser();
         console.log('refershUserDetails')
         if (user !== 'NA') {
-            const url = REST_APIS.GET_USER_DETAILS + user?.emailAddress;
+            const url = REST_APIS.GET_USER_DETAILS + user?.email;
             this.getRequest(url).then(response => {
                 if (response?.status == '200') {
                     STORAGE.setUserDetials(response.data);
@@ -94,14 +94,17 @@ class BackendService {
     }
 
     async postRequest(url, payload) {
-        // this.refershUserDetails();
-        const requestUrl = baseURL + url;
+         const requestUrl = baseURL + url;
         return await axios.post(requestUrl, payload);
     }
 
+    async deleteRequest(url) {
+         const requestUrl = baseURL + url;
+        return await axios.delete(requestUrl);
+    }
+
     async putRequest(url, payload) {
-        // this.refershUserDetails();
-        const requestUrl = baseURL + url;
+         const requestUrl = baseURL + url;
         return await axios.put(requestUrl, payload);
     }
 

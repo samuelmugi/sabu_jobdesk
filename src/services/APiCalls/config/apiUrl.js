@@ -9,7 +9,7 @@ module.exports = Object.freeze({
     UPDATE_USER_DETAILS: 'profile/PROFILEID/personal-info',
     //CV
     UPLOAD_CV: 'profile/PROFILEID/upload-cv',
-    DOWNLOAD_CV: 'profile/PROFILEID/download-cv',
+    DOWNLOAD_CV: 'profile/PROFILEID/download-cv2',
     //SECONDARY SCHOOL
     ADD_SECONDARY_SCHOOL: 'profile/PROFILEID/academic-details',
     //POST SECONDARY
@@ -37,6 +37,7 @@ module.exports = Object.freeze({
     GET_ALL_WARDS: '/wards',
     //JOBS
     GET_ALL_JOB_VACANCIES:'job-vacancies',
-    APPLY_JOB_VACANCY:'job-applications'
+    APPLY_JOB_VACANCY:'job-applications',
+    MY_JOB_APPLICATIONS:'job-applications/'
 
 });

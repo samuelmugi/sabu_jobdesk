@@ -59,6 +59,13 @@ module.exports = Object.freeze({
         {field: 'startDate'},
         {field: 'endDate'},
         {field: 'description'},
+     ],coverLetterFields: [
+        {field: 'coverLetter'},
+        {field: 'kraClearace'},
+        {field: 'helbClearance'},
+        {field: 'eaccClearance'},
+        {field: 'crbClearance'},
+        {field: 'goodConductClearance'},
      ],
 })
 ;

@@ -14,9 +14,7 @@ const useJobStyles = makeStyles((theme) => ({
 
 const Alljobs = () => {
     const classes = useJobStyles();
-    const [personalInfoValues, setPersonalInfoValues, personalInfoValuesRef] = useState({});
-    const [loading, setLoading, loadingRef] = useState(false);
-    const [isMounted, setMounted, isMountedRef] = useState(false);
+     const [isMounted, setMounted, isMountedRef] = useState(false);
     const [alljobs, setAllJobs, alljobsRef] = useState({});
 
     useEffect(() => {

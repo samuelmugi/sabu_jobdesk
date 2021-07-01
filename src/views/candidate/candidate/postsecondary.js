@@ -14,6 +14,7 @@ import CandidateConstants from "views/candidate/candidate/candidateconstants";
 import ClipLoader from "react-spinners/PropagateLoader";
 import LoadingOverlay from "react-loading-overlay";
 import moment from "moment";
+import swal from 'sweetalert';
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -40,7 +41,7 @@ const optionsQualification = [
 ];
 const postSecondaryValuesFields = CandidateConstants.postSecondaryValuesFields;
 
-export default function PostSecondary() {
+export default function PostSecondary(props) {
     const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
@@ -67,20 +68,24 @@ export default function PostSecondary() {
     useEffect(() => {
         (async function () {
             if (!isMountedRef.current) {
-                await initializePostSecondaryValues;
+                await initializePostSecondaryValues();
                 setMounted(true);
             }
         })();
-    }, [isEdited]);
+    }, [postSecondaryValues, isEdited]);
 
 
     const initializePostSecondaryValues = async () => {
-        console.log(JSON.stringify(user));
-        postSecondaryValuesFields.map(fieldObj => {
-            setPostSecondaryValues((prevValues) => {
-                return {...prevValues, [fieldObj.field]: user[fieldObj.field]};
-            });
-        })
+        const qualification = props.qualification;
+        if (props.edit) {
+            setStartDate(moment(qualification?.start + '-01-01').toDate());
+            setEndDate(moment(qualification?.end + '-01-01').toDate());
+            postSecondaryValuesFields.map(fieldObj => {
+                setPostSecondaryValues((prevValues) => {
+                    return {...prevValues, [fieldObj.field]: qualification[fieldObj.field]};
+                });
+            })
+        }
     }
     const handleOtherSelects = (e, {name, value}) => {
         setFieldValues(name, value);
@@ -125,8 +130,9 @@ export default function PostSecondary() {
         if (!hasErrors) {
             setLoading(true);
             let postSecondaryValues = postSecondaryValuesRef.current;
-            postSecondaryValues.id = user.id;
-            const url = REST_APIS.ADD_POST_SECONDARY_SCHOOL.replace('PROFILEID', user.id);
+            postSecondaryValues.id = props.edit ? props.qualification?.id : user.id;
+            const url = props.edit ? REST_APIS.UPDATE_POST_SECONDARY_SCHOOL.replace('PROFILEID', user.id) + props.qualification?.id
+                : REST_APIS.ADD_POST_SECONDARY_SCHOOL.replace('PROFILEID', user.id);
             await BackendService.postRequest(url, postSecondaryValues)
                 .then(() => {
 
@@ -153,20 +159,72 @@ export default function PostSecondary() {
             return false;
         }
     }
+    const handleDelete = async () => {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("data has been deleted!", {
+                        icon: "success",
+                    });
+                    deleteAcademic();
+                } else {
+                    swal("Deletion not done!");
+                }
+            });
 
+    }
+    const deleteAcademic=async ()=>{
+        const url = REST_APIS.DELETE_POST_SECONDARY_SCHOOL.replace('PROFILEID', user.id) + props.qualification?.id ;
+        await BackendService.deleteRequest(url)
+            .then(() => {
+                    BackendService.notifySuccess('Post Secondary deleted successfully')
+                        .then(() => setLoading(false))
+                        .finally(() => handleClose());
+                },
+                (error) => {
+                    BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
+                    setLoading(false);
+                }
+            );
+    }
     return (
         <React.Fragment>
+            {props.delete ?
+                <a
+                    className="text-danger"
+                    href="#uploadcv" onClick={handleDelete}
+                >
+                    <i className="fa fa-trash" aria-hidden="true"></i>
+                    &nbsp; Delete
+                </a>
 
-            <Button as='div' labelPosition='right'
-            >
-                <Button onClick={handleClickOpen} color='green'>
-                    <Icon name='add'/>
-                    Add
-                </Button>
-                <Label as='a' basic color='red' pointing='left'>
-                    PostSecondary Qualification
-                </Label>
-            </Button>
+
+                : (
+                    props.edit ?
+                        <a
+                            className="text-warning"
+                            href="#uploadcv" onClick={handleClickOpen}
+                        >
+                            <i className="fa fa-edit" aria-hidden="true"></i>
+                            &nbsp; Edit
+                        </a>
+                        : <Button as='div' labelPosition='right'>
+                            <Button onClick={handleClickOpen} color='green'>
+                                <Icon name='add'/>
+                                Add
+                            </Button>
+                            <Label as='a' basic color='red' pointing='left'>
+                                PostSecondary Qualification
+                            </Label>
+                        </Button>
+
+                )}
             <Dialog
                 fullWidth={fullWidth}
                 maxWidth={maxWidth}
@@ -192,6 +250,7 @@ export default function PostSecondary() {
                                     options={optionsQualification}
                                     placeholder='Education Level'
                                     name='educationLevel'
+                                    value={postSecondaryValuesRef.current.educationLevel}
                                     onChange={handleOtherSelects}
                                     error={displayError('educationLevel') ? {
                                         content: postSecondaryValuesErrorsRef.current?.educationLevel
@@ -231,6 +290,7 @@ export default function PostSecondary() {
                                         name='start'
                                         onChange={(date) => {
                                             setFieldValues('start', moment(date).format("YYYY"));
+                                            console.log('date==', date)
                                             setStartDate(date);
                                         }}
                                         showYearPicker

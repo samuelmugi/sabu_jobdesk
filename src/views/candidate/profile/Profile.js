@@ -125,6 +125,7 @@ export default function MyProfile(props) {
                         <div className={classes.profileVIew}>
 
                             <ViewProfileStepper/>
+
                         </div>
                     </Dialog>
                 </Col>

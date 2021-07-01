@@ -3,7 +3,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {Button, Form, Grid, Icon, Label} from "semantic-ui-react";
+import {Button, Form, Icon, Label} from "semantic-ui-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import useState from "react-usestateref";
@@ -14,6 +14,7 @@ import LoadingOverlay from "react-loading-overlay";
 import ClipLoader from "react-spinners/PropagateLoader";
 import STORAGE from "services/APiCalls/config/storage";
 import moment from 'moment';
+import swal from "sweetalert";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 const employmentValuesFields = CandidateConstants.experienceValuesFields;
 
 
-export default function EmploymentHistory() {
+export default function EmploymentHistory(props) {
     const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
@@ -45,7 +46,7 @@ export default function EmploymentHistory() {
     const [loading, setLoading, loadingRef] = useState(false);
     const [isMounted, setMounted, isMountedRef] = useState(false);
     const [isEdited, setEditing, isEditedRef] = useState(false);
-    const [employmentValues, setEmploymentValues, employmentValuesRef] = useState({currentActive:false});
+    const [employmentValues, setEmploymentValues, employmentValuesRef] = useState({currentActive: false});
     const [employmentValuesErrors, setEmploymentValuesErrors, employmentValuesErrorsRef] = useState({});
 
 
@@ -61,24 +62,27 @@ export default function EmploymentHistory() {
     useEffect(() => {
         (async function () {
             if (!isMountedRef.current) {
-                await initializeEmploymentValues;
+                await initializeEmploymentValues();
                 setMounted(true);
             }
         })();
-    }, [isEdited]);
+    }, [employmentValues, isEdited]);
 
 
     const initializeEmploymentValues = async () => {
-        console.log(JSON.stringify(user));
-        employmentValuesFields.map(fieldObj => {
-            setEmploymentValues((prevValues) => {
-                return {...prevValues, [fieldObj.field]: user[fieldObj.field]};
-            });
-        })
+        const experience = props.experience;
+         if (props.edit) {
+            setStartDate(moment(experience?.startDate + ' 01').toDate());
+            setEndDate(moment(experience?.endDate + ' 01').toDate());
+            employmentValuesFields.map(fieldObj => {
+                setEmploymentValues((prevValues) => {
+                    return {...prevValues, [fieldObj.field]: experience[fieldObj.field]};
+                });
+            })
+        }
     }
-    const handleOtherSelects = (e, {name, value}) => {
-        setFieldValues(name, value);
-    }
+
+
     const setField = (e) => {
         setFieldValues(e.target.name, e.target.value);
     };
@@ -117,8 +121,9 @@ export default function EmploymentHistory() {
         if (!hasErrors) {
             setLoading(true);
             let employmentValues = employmentValuesRef.current;
-            employmentValues.id = user.id;
-            const url = REST_APIS.ADD_EXPERIENCE.replace('PROFILEID', user.id);
+            employmentValues.id = props.edit ? props.experience?.id : user.id;
+            const url = props.edit ? REST_APIS.UPDATE_EXPERIENCE.replace('PROFILEID', user.id) + props.experience?.id
+                : REST_APIS.ADD_EXPERIENCE.replace('PROFILEID', user.id);
             await BackendService.postRequest(url, employmentValues)
                 .then(() => {
 
@@ -145,31 +150,73 @@ export default function EmploymentHistory() {
             return false;
         }
     }
+    const handleDelete = async () => {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("data has been deleted!", {
+                        icon: "success",
+                    });
+                    deleteExperience();
+                } else {
+                    swal("Deletion not done!");
+                }
+            });
 
+    }
+    const deleteExperience = async () => {
+        const url = REST_APIS.DELETE_EXPERIENCE.replace('PROFILEID', user.id) + props.experience?.id;
+        await BackendService.deleteRequest(url)
+            .then(() => {
+                    BackendService.notifySuccess('Post Secondary deleted successfully')
+                        .then(() => setLoading(false))
+                        .finally(() => handleClose());
+                },
+                (error) => {
+                    BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
+                    setLoading(false);
+                }
+            );
+    }
     return (
         <React.Fragment>
-            {/*<a*/}
-            {/*    className="text-warning"*/}
-            {/*    href="#uploadcv" onClick={handleClickOpen}*/}
-            {/*>*/}
-            {/*    <i className="fa fa-plus" aria-hidden="true"></i>*/}
-            {/*    &nbsp; Add Employment History*/}
-            {/*</a>*/}
-            <Grid stackable>
-                <Grid.Column>
-                    <Button as='div' labelPosition='right'
-                    >
-                        <Button onClick={handleClickOpen} color='green'>
-                            <Icon name='add'/>
-                            Add
-                        </Button>
-                        <Label as='a' basic color='red' pointing='left'>
-                            Employment History
-                        </Label>
-                    </Button>
+            {props.delete ?
+                <a
+                    className="text-danger"
+                    href="#uploadcv" onClick={handleDelete}
+                >
+                    <i className="fa fa-trash" aria-hidden="true"></i>
+                    &nbsp; Delete
+                </a>
 
-                </Grid.Column>
-            </Grid>
+
+                : (
+                    props.edit ?
+                        <a
+                            className="text-warning"
+                            href="#uploadcv" onClick={handleClickOpen}
+                        >
+                            <i className="fa fa-edit" aria-hidden="true"></i>
+                            &nbsp; Edit
+                        </a>
+                        : <Button as='div' labelPosition='right'>
+                            <Button onClick={handleClickOpen} color='green'>
+                                <Icon name='add'/>
+                                Add
+                            </Button>
+                            <Label as='a' basic color='red' pointing='left'>
+                                Employment History
+                            </Label>
+                        </Button>
+
+                )}
+
             <Dialog
                 fullWidth={fullWidth}
                 maxWidth={maxWidth}

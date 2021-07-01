@@ -4,18 +4,21 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
-import {Button, Divider, Feed, Grid, Label} from 'semantic-ui-react'
+import {Button, Divider, Feed, Form, Grid, GridColumn, GridRow, Label} from 'semantic-ui-react'
 import STORAGE from "services/APiCalls/config/storage";
 import {Card} from "reactstrap";
 import ProfileConstants from "views/candidate/profile/profileconstants";
 import useState from "react-usestateref";
- import StepButton from "@material-ui/core/StepButton";
- import PostSecondary from "views/candidate/candidate/postsecondary";
+import StepButton from "@material-ui/core/StepButton";
+import PostSecondary from "views/candidate/candidate/postsecondary";
 import EmploymentHistory from "views/candidate/candidate/employmenthistory";
 import Skills from "views/candidate/candidate/Skills";
 import UploadFiles from "components/fileupload/upload-files";
 import PersonalInfoDialog from "views/candidate/candidate/personaldialog";
 import SecondarySchoolDialog from "views/candidate/candidate/secondarydialog";
+import Typography from "@material-ui/core/Typography";
+import CoverLetter from "views/candidate/candidate/coverletter";
+import moment from "moment";
 
 const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
 
@@ -33,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-    return ['Personal Info', 'Academic Details', 'Experience', 'Skills', 'Upload Cv'];
+    return ['Personal Info', 'Academic Details', 'Experience', 'Skills', 'Cover Letter', 'Upload Cv'];
 }
 
 function getStepContent(step) {
@@ -70,7 +73,7 @@ function getStepContent(step) {
                                                     const fieldFeed = [
                                                         {
                                                             date: field?.field,
-                                                            summary: user[field?.field],
+                                                            summary: field?.field==='dateOfBirth'?moment(user[field?.field]).format("YYYY-MM-DD"):user[field?.field],
                                                         }
                                                     ];
                                                     col++;
@@ -161,8 +164,7 @@ function getStepContent(step) {
             } else {
                 noOfRows = +sizeOfFields / 4;
             }
-            console.log('noOfRows=', noOfRows)
-            const events = [
+             const events = [
                 {
                     date: '4 Likes',
                     summary: 'Elliot Fu added you as a friend',
@@ -254,6 +256,12 @@ function getStepContent(step) {
                                                             }
                                                         ]}/>
                                                     </Grid.Column>
+                                                    <Grid.Column>
+                                                        <PostSecondary qualification={val}  edit={true}/>
+                                                    </Grid.Column>
+                                                    <Grid.Column>
+                                                        <PostSecondary qualification={val}  delete={true}/>
+                                                    </Grid.Column>
                                                 </Grid.Row>
 
                                             </>
@@ -276,7 +284,7 @@ function getStepContent(step) {
                 <EmploymentHistory/>
                 <Paper variant="outlined" circle>
                     <Box m={4}>
-                        <Grid columns='equal'>
+                        <Grid stackable columns='equal'>
 
                             {
                                 workExperiences.map((val, key) => {
@@ -324,6 +332,12 @@ function getStepContent(step) {
                                                             }
                                                         ]}/>
                                                     </Grid.Column>
+                                                    <Grid.Column>
+                                                        <EmploymentHistory experience={val}  edit={true}/>
+                                                    </Grid.Column>
+                                                    <Grid.Column>
+                                                        <EmploymentHistory experience={val}  delete={true}/>
+                                                    </Grid.Column>
                                                 </Grid.Row>
                                                 <Grid.Row>
                                                     <Grid.Column>
@@ -367,7 +381,7 @@ function getStepContent(step) {
                 <Skills/>
                 <Paper variant="outlined" circle>
                     <Box m={4}>
-                        <Grid columns='equal'>
+                        <Grid stackable columns='equal'>
                             {
                                 [...Array(noOfRows).keys()].map((row) => {
                                         const colNos = skills.length > 4 ? 4 : skills.length;
@@ -404,6 +418,68 @@ function getStepContent(step) {
 
         }
         case 4: {
+            return <Card className="bg-secondary shadow  ">
+                <CoverLetter/>
+                <Paper variant="outlined" circle>
+                    <Box m={4}>
+                        <Grid stackable columns='equal'>
+                            <GridRow>
+                                <GridColumn>
+                                    <Label>Cover Letter.</Label>
+                                    <Typography>
+                                        {user?.coverLetter}
+                                    </Typography>
+                                </GridColumn>
+                            </GridRow>
+                            <GridRow>
+                                <GridColumn>
+                                    <Form.Checkbox
+                                        label="KRA Clerance"
+                                        name="kraClearace"
+                                        checked={user?.kraClearace}
+                                    />
+                                </GridColumn>
+
+                                <GridColumn>
+                                    <Form.Checkbox
+                                        label="Helb CLearance"
+                                        name="helbClearance"
+                                        checked={user?.helbClearance}
+                                    /> </GridColumn>
+
+                                <GridColumn>
+                                    <Form.Checkbox
+                                        label="EACC Clearance"
+                                        name="eaccClearance"
+                                        checked={user?.eaccClearance}
+                                    />
+                                </GridColumn>
+
+                                <GridColumn>
+                                    <Form.Checkbox
+                                        label="CRB CLearance"
+                                        name="crbClearance"
+                                        checked={user?.crbClearance}
+                                    /> </GridColumn>
+
+                                <GridColumn>
+                                    <Form.Checkbox
+                                        label="Good Conduct"
+                                        name="goodConductClearance"
+                                        checked={user?.goodConductClearance}
+                                    />
+
+
+                                </GridColumn>
+                            </GridRow>
+                        </Grid>
+                    </Box>
+                </Paper>
+            </Card>
+                ;
+
+        }
+        case 5: {
             return <UploadFiles/>;
 
         }
@@ -425,6 +501,7 @@ export default function ViewProfileStepper() {
         (async function () {
             if (!isMountedRef.current) {
                 setMounted(true);
+               // BackendService.refershUserDetails().then(() => setMounted(true));
             }
         })();
     }, []);

@@ -1,7 +1,10 @@
 import React, {Component} from "react";
 import LinearProgress from '@material-ui/core/LinearProgress';
-import {Box, Button, ListItem, Typography, withStyles} from '@material-ui/core';
+import {Box, Button, Typography, withStyles} from '@material-ui/core';
 import BackendService from "services/APiCalls/BackendService";
+import {Divider, Grid, GridColumn, GridRow} from "semantic-ui-react";
+import REST_APIS from "services/APiCalls/config/apiUrl";
+import STORAGE from "services/APiCalls/config/storage";
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -16,6 +19,8 @@ const BorderLinearProgress = withStyles((theme) => ({
         backgroundColor: '#1a90ff',
     },
 }))(LinearProgress);
+
+const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
 
 export default class UploadFiles extends Component {
     constructor(props) {
@@ -86,6 +91,11 @@ export default class UploadFiles extends Component {
         });
     }
 
+    download(){
+        const url=REST_APIS.DOWNLOAD_CV.replace('PROFILEID', user.id)
+        BackendService.getRequest(url);
+    }
+
     render() {
         const {
             selectedFiles,
@@ -101,7 +111,7 @@ export default class UploadFiles extends Component {
                 {currentFile && (
                     <Box className="mb25" display="flex" alignItems="center">
                         <Box width="100%" mr={1}>
-                            <BorderLinearProgress variant="determinate" value={progress} />
+                            <BorderLinearProgress variant="determinate" value={progress}/>
                         </Box>
                         <Box minWidth={35}>
                             <Typography variant="body2" color="textSecondary">{`${progress}%`}</Typography>
@@ -109,51 +119,51 @@ export default class UploadFiles extends Component {
                     </Box>)
                 }
 
-                <label htmlFor="btn-upload">
-                    <input
-                        id="btn-upload"
-                        name="btn-upload"
-                        style={{ display: 'none' }}
-                        type="file"
-                        onChange={this.selectFile} />
-                    <Button
-                        className="btn-choose"
-                        variant="outlined"
-                        component="span" >
-                        Choose Resume File
-                    </Button>
-                </label>
-                <div className="file-name">
-                    {selectedFiles && selectedFiles.length > 0 ? selectedFiles[0].name : null}
-                </div>
-                <Button
-                    className="btn-upload"
-                    color="primary"
-                    variant="contained"
-                    component="span"
-                    disabled={!selectedFiles}
-                    onClick={this.upload}>
-                    Upload
-                </Button>
+                <Grid stackable>
+                    <GridRow>
+                        <GridColumn>
+                            <label htmlFor="btn-upload">
+                                <input
+                                    id="btn-upload"
+                                    name="btn-upload"
+                                    style={{display: 'none'}}
+                                    type="file"
+                                    onChange={this.selectFile}/>
+                                <Button
+                                    className="btn-choose"
+                                    variant="outlined"
+                                    component="span">
+                                    Choose Resume File
+                                </Button>
+                            </label>
+                            <div className="file-name">
+                                {selectedFiles && selectedFiles.length > 0 ? selectedFiles[0].name : null}
+                            </div>
+                            <Button
+                                className="btn-upload"
+                                color="primary"
+                                variant="contained"
+                                component="span"
+                                disabled={!selectedFiles}
+                                onClick={this.upload}>
+                                Upload
+                            </Button>
 
-                <Typography variant="subtitle2" className={`upload-message ${isError ? "error" : ""}`}>
-                    {message}
-                </Typography>
 
-                <Typography variant="h6" className="list-header">
-                    List of File
-                </Typography>
-                <ul className="list-group">
-                    {fileInfos &&
-                    fileInfos.map((file, index) => (
-                        <ListItem
-                            divider
-                            key={index}>
-                            <a href={file.url}>{file.name}</a>
-                        </ListItem>
-                    ))}
-                </ul>
-            </div >
+                        </GridColumn>
+                    </GridRow>
+                    <GridRow>
+                        <GridColumn>
+                        <Button
+                             color="secondary"
+                              onClick={this.download}>
+                            Download
+                        </Button>
+                        </GridColumn>
+                    </GridRow>
+                </Grid>
+                <Divider/>
+            </div>
         );
     }
 }

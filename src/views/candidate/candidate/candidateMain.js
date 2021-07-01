@@ -8,8 +8,7 @@ import STORAGE from "services/APiCalls/config/storage";
 import {Label} from "semantic-ui-react";
 import ViewProfileStepper from "views/candidate/profile/viewprofilewizard";
 
-const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
-const style = {width: "80rem"};
+ const style = {width: "80rem"};
 
 class CandidateMain extends React.Component {
     state = {};
@@ -20,6 +19,7 @@ class CandidateMain extends React.Component {
         this.refs.main.scrollTop = 0;
 
     }
+
 
     render() {
         return (
