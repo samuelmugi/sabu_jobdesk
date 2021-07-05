@@ -61,21 +61,21 @@ export default function PostSecondary(props) {
     };
 
     const handleClose = () => {
-        BackendService.refershUserDetails().then(() => setOpen(false));
+        BackendService.refershUserDetails(props?.isJobApplication).then(() => setOpen(false));
     };
 
 
     useEffect(() => {
         (async function () {
             if (!isMountedRef.current) {
-                await initializePostSecondaryValues();
+                initializePostSecondaryValues();
                 setMounted(true);
             }
         })();
     }, [postSecondaryValues, isEdited]);
 
 
-    const initializePostSecondaryValues = async () => {
+    const initializePostSecondaryValues = () => {
         const qualification = props.qualification;
         if (props.edit) {
             setStartDate(moment(qualification?.start + '-01-01').toDate());
@@ -118,9 +118,16 @@ export default function PostSecondary(props) {
         if (!!postSecondaryValuesErrorsRef.current?.dateOfBirth) {
             BackendService.notifyError('PLease select date of birth');
         }
+  return hasErrors;
+    }
 
-        console.log(JSON.stringify(postSecondaryValuesErrorsRef.current))
-        return hasErrors;
+    const resetValues=()=>{
+         postSecondaryValuesFields.map((fieldObj) => {
+            setPostSecondaryValues((prevValues) => {
+                    return {...prevValues, [fieldObj.field]:''};
+                });
+
+        });
     }
 
 
@@ -133,18 +140,35 @@ export default function PostSecondary(props) {
             postSecondaryValues.id = props.edit ? props.qualification?.id : user.id;
             const url = props.edit ? REST_APIS.UPDATE_POST_SECONDARY_SCHOOL.replace('PROFILEID', user.id) + props.qualification?.id
                 : REST_APIS.ADD_POST_SECONDARY_SCHOOL.replace('PROFILEID', user.id);
-            await BackendService.postRequest(url, postSecondaryValues)
-                .then(() => {
-
-                        BackendService.notifySuccess('Post Secondary added successfully')
-                            .then(() => setLoading(false))
-                            .finally(() => handleClose());
-                    },
-                    (error) => {
-                        BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
-                        setLoading(false);
-                    }
-                );
+            if (props.edit) {
+                await BackendService.putRequest(url, postSecondaryValues)
+                    .then((response) => {
+                            const user = response.data?.payload;
+                            props.refreshUserDetails(user);
+                            BackendService.notifySuccess('Post Secondary added successfully')
+                                .then(() => setLoading(false)).finally(() => handleClose()) ;
+                            resetValues();
+                        },
+                        (error) => {
+                            BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
+                            setLoading(false);
+                        }
+                    );
+            } else {
+                await BackendService.postRequest(url, postSecondaryValues)
+                    .then((response) => {
+                            const user = response.data?.payload;
+                            props.refreshUserDetails(user);
+                            BackendService.notifySuccess('Post Secondary added successfully')
+                                .then(() => setLoading(false)) ;
+                            resetValues()
+                        },
+                        (error) => {
+                            BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
+                            setLoading(false);
+                        }
+                    );
+            }
 
         }
     }
@@ -179,10 +203,12 @@ export default function PostSecondary(props) {
             });
 
     }
-    const deleteAcademic=async ()=>{
-        const url = REST_APIS.DELETE_POST_SECONDARY_SCHOOL.replace('PROFILEID', user.id) + props.qualification?.id ;
+    const deleteAcademic = async () => {
+        const url = REST_APIS.DELETE_POST_SECONDARY_SCHOOL.replace('PROFILEID', user.id) + props.qualification?.id;
         await BackendService.deleteRequest(url)
-            .then(() => {
+            .then((response) => {
+                    const user = response.data?.payload;
+                    props.refreshUserDetails(user);
                     BackendService.notifySuccess('Post Secondary deleted successfully')
                         .then(() => setLoading(false))
                         .finally(() => handleClose());

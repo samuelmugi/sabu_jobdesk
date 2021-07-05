@@ -4,11 +4,10 @@ import DemoNavbar from 'components/Navbars/DemoNavbar.js';
 import React from 'react';
 // reactstrap components
 import {Card, CardBody, Col, Container, Row} from 'reactstrap';
-import STORAGE from "services/APiCalls/config/storage";
 import {Label} from "semantic-ui-react";
 import ViewProfileStepper from "views/candidate/profile/viewprofilewizard";
 
- const style = {width: "80rem"};
+const style = {width: "80rem"};
 
 class CandidateMain extends React.Component {
     state = {};
@@ -73,7 +72,7 @@ class CandidateMain extends React.Component {
                                         <Col>
                                             <Card style={style}>
                                                 <CardBody>
-                                                    <ViewProfileStepper/>
+                                                    <ViewProfileStepper isJobApplication={false}/>
                                                 </CardBody>
                                             </Card>
                                         </Col>

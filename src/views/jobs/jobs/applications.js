@@ -21,7 +21,7 @@ const JobApplications = () => {
     const classes = useStyles();
     const color = "#60991f";
     const [isMounted, setMounted, isMountedRef] = useState(false);
-    const [alljobs, setAllJobs, alljobsRef] = useState({});
+    const [alljobs, setAllJobs, alljobsRef] = useState([]);
     const [loading, setLoading, loadingRef] = useState(true);
 
     useEffect(() => {
@@ -29,18 +29,21 @@ const JobApplications = () => {
             setLoading(true);
 
             if (!isMountedRef.current) {
-                fetchData();
-                setMounted(true);
+                console.log('all job applications',(user !== 'NA' || user !== undefined))
+                if ((user !== 'NA' || user !== undefined)) {
+                    fetchData();
+                    setMounted(true);
+                }
             }
         })();
     }, [alljobs]);
 
     const fetchData = async () => {
         setLoading(true);
-
+        console.log('fetchData all job applications')
         await BackendService.getRequest(REST_APIS.MY_JOB_APPLICATIONS + user.id)
             .then(res => {
-                setAllJobs(res.data?.payload);
+                setAllJobs(res.data?.payload===null?[]:res.data?.payload);
                 setTimeout(() => setLoading(false), 3000)
 
             });
@@ -59,9 +62,9 @@ const JobApplications = () => {
                             <List.Item>
                                 <List.Icon name='certificate' size='large' verticalAlign='middle'/>
                                 <List.Content>
-                                    <List.Header as='a'>{'Title' + job.jobTitle}</List.Header>
+                                    <List.Header as='a'>{'Title :' + job.jobTitle}</List.Header>
                                     <List.Description
-                                        as='a'>{'Application Date' + moment(job.applicationDate).format("MMM Do YYYY")}</List.Description>
+                                        as='a'>{'Application Date :' + moment(job.applicationDate).format("MMM Do YYYY")}</List.Description>
                                 </List.Content>
                             </List.Item>
                         );

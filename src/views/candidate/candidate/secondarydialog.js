@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import useState from 'react-usestateref';
 // reactstrap components
-import {Card, CardBody, Col, Modal, Row} from 'reactstrap';
+import {Card, CardBody, Col, Row} from 'reactstrap';
 import {useHistory} from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import REST_APIS from 'services/APiCalls/config/apiUrl'
@@ -14,6 +14,7 @@ import STORAGE from "services/APiCalls/config/storage";
 import {makeStyles} from "@material-ui/core";
 import DatePicker from "react-datepicker";
 import * as CandidateConstants from "views/candidate/candidate/candidateconstants";
+import Dialog from "@material-ui/core/Dialog";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -48,7 +49,7 @@ const optionsGrades = [
 
 const academicValuesFields = CandidateConstants.academicValuesFields;
 
-const SecondarySchoolDialog = () => {
+const SecondarySchoolDialog = (props) => {
     const {push} = useHistory();
     const [open, setOpen] = useState(false);
     const classes = useStyles();
@@ -65,21 +66,25 @@ const SecondarySchoolDialog = () => {
         setOpen(!open);
     };
     const handleClose = () => {
-             BackendService.refershUserDetails().then(() => setOpen(false));
-     };
+        BackendService.refershUserDetails(props?.isJobApplication)
+            .then(() => {
+                setOpen(false);
+   });
+    };
 
 
     useEffect(() => {
         (async function () {
             if (!isMountedRef.current) {
-                await initializeAcademicValues();
+                initializeAcademicValues();
                 setMounted(true);
             }
         })();
     }, [isEdited]);
 
 
-    const initializeAcademicValues = async () => {
+    const initializeAcademicValues = () => {
+
         academicValuesFields.map(fieldObj => {
             setAcademicValues((prevValues) => {
                 return {...prevValues, [fieldObj.field]: user[fieldObj.field]};
@@ -108,31 +113,30 @@ const SecondarySchoolDialog = () => {
 
         const personalObj = academicValuesRef.current;
         academicValuesFields.map((fieldObj) => {
-            if (personalObj[fieldObj.field] === null || personalObj[fieldObj.field] === '' || personalObj[fieldObj.field] === undefined) {
+                if(!(fieldObj.field==='biologyGrade' || fieldObj.field==='physicsGrade' || fieldObj.field==='chemistryGrade')){
+                    if (personalObj[fieldObj.field] === null || personalObj[fieldObj.field] === '' || personalObj[fieldObj.field] === undefined) {
                 setAcademicValuesErrors((prevValues) => {
                     return {...prevValues, [fieldObj.field]: fieldObj.field + ' is required'};
                 });
                 hasErrors = true;
             }
-        });
-
-
-        console.log(JSON.stringify(academicValuesErrorsRef.current))
+        }}
+        );
         return hasErrors;
     }
 
 
     const submitAcademicValues = async () => {
         const hasErrors = validateValues();
-        console.log('hasErrors', hasErrors)
         if (!hasErrors) {
             setLoading(true);
             let academicValues = academicValuesRef.current;
             academicValues.id = user.id;
             const url = REST_APIS.ADD_SECONDARY_SCHOOL.replace('PROFILEID', user.id);
             await BackendService.putRequest(url, academicValues)
-                .then(() => {
-
+                .then((response) => {
+                        const user = response.data?.payload;
+                        props.refreshUserDetails(user);
                         BackendService.notifySuccess('Secondary school Data updated successfully')
                             .then(() => setLoading(false))
                             .finally(() => handleClose());
@@ -175,12 +179,14 @@ const SecondarySchoolDialog = () => {
                 </Grid.Column>
             </Grid>
 
-            <Modal
-                className="modal-dialog-centered"
-                size="xl"
-                backdrop={'static'}
-                isOpen={open}
-                toggle={handleClickOpen}
+            <Dialog
+                fullWidth={true}
+                maxWidth={'xl'}
+                disableBackdropClick={true}
+                disableEscapeKeyDown={true}
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="max-width-dialog-title"
             >
                 <LoadingOverlay
                     active={loadingRef.current}
@@ -325,7 +331,6 @@ const SecondarySchoolDialog = () => {
                                             </Form.Group>
 
 
-
                                         </Form>
                                     </Col>
                                 </Row>
@@ -336,7 +341,9 @@ const SecondarySchoolDialog = () => {
                                                 onClick={submitAcademicValues}>
                                             Save Academic Data
                                         </Button>
-
+                                        <Button onClick={handleClose} color="primary">
+                                            Close
+                                        </Button>
 
                                     </Col>
                                 </Row>
@@ -344,7 +351,7 @@ const SecondarySchoolDialog = () => {
                         </Card>
                     </div>
                 </LoadingOverlay>
-            </Modal>
+            </Dialog>
 
 
         </>

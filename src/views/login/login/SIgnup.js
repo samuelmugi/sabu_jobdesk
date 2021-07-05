@@ -2,7 +2,6 @@ import React from 'react';
 import useState from 'react-usestateref';
 // reactstrap components
 import {
-    Button,
     Card,
     CardBody,
     CardHeader,
@@ -24,6 +23,7 @@ import REST_APIS from 'services/APiCalls/config/apiUrl'
 import BackendService from 'services/APiCalls/BackendService';
 import LoadingOverlay from 'react-loading-overlay'
 import ClipLoader from "react-spinners/PropagateLoader";
+import {Button} from "semantic-ui-react";
 
 toast.configure();
 const color = "#80e70b";
@@ -34,7 +34,10 @@ const Signup = () => {
     const [form, setForm] = useState({});
     const [errors, setErrors] = useState({});
     const [loading, setLoading, loadingRef] = useState(false);
-
+    const [passwordShown, setPasswordShown] = useState(false);
+    const togglePasswordVisiblity = () => {
+        setPasswordShown(passwordShown ? false : true);
+    };
     const handleClickOpen = () => {
         setOpen(!open);
     };
@@ -61,29 +64,42 @@ const Signup = () => {
         // get our new errors
         const newErrors = findFormErrors();
         // Conditional logic:
+
         if (Object.keys(newErrors).length > 0) {
             // We got errors!
             setErrors(newErrors);
+            setLoading(false);
         } else {
-            setField('active', true)
-            // No errors! Put any logic here for the form submission!
-            console.log(JSON.stringify(form))
-            await BackendService.postRequest(REST_APIS.SIGN_UP, form)
-                .then(() => {
-                        BackendService.notifySuccess(form.firstName + ' ' + form.middleName + ' ' + form.lastName + ' signed up successfully')
-                        setLoading(false);
-                        window.location.reload();
-                    },
-                    (error) => {
-                        BackendService.notifySuccess('oops! error occured during sign up. pLease try later ');
-                        setLoading(false);
-                    }
-                );
+            if (form.password === form.confirmpassword) {
+                setField('active', true)
+                await BackendService.postRequest(REST_APIS.SIGN_UP, form)
+                    .then(() => {
+                            BackendService.notifySuccess(form.firstName + ' ' + form.middleName + ' ' + form.lastName + ' signed up successfully')
+                            setLoading(false);
+                            window.location.reload();
+                        },
+                        (error) => {
+                            BackendService.notifyError('oops! error occured during sign up. pLease try later ');
+                            setLoading(false);
+                        }
+                    );
+            } else {
+                const newErrors = {};
+                newErrors.password = 'password must match confirm password!';
+                newErrors.confirmpassword = 'confirm password must match password!';
+
+                setErrors(newErrors);
+
+                setLoading(false);
+                BackendService.notifyError('Password and confrim password must be equal');
+            }
+
         }
+
     };
 
     const findFormErrors = () => {
-        const {email, password, firstName, middleName, lastName, mobileNumber} = form;
+        const {email, password, firstName, confirmpassword, middleName, lastName, mobileNumber} = form;
         const newErrors = {};
 
         if (!email || email === '') {
@@ -104,22 +120,26 @@ const Signup = () => {
         if (!password || password === '') {
             newErrors.password = 'password cannot be blank!';
         }
-
-
-        console.log(JSON.stringify(newErrors))
-
+        if (!confirmpassword || confirmpassword === '') {
+            newErrors.confirmpassword = 'confirm password cannot be blank!';
+        }
         return newErrors;
     };
+
+
 
     return (
         <>
             <Row>
-                <Col md="4">
-                    <a
-                        onClick={handleClickOpen}
-                    ><span className="nav-link-inner--text ml-1 btn-inner--icon">
-                        <i className="fa fa-user-plus mr-2">
-                         &nbsp;Register </i></span> </a>
+                <Col>
+                    {/*<a*/}
+                    {/*    onClick={handleClickOpen}*/}
+                    {/*><span className="nav-link-inner--text ml-1 btn-inner--icon">*/}
+                    {/*    <i className="fa fa-user-plus mr-2">*/}
+                    {/*     &nbsp;Register </i></span> </a>*/}
+                    <Button onClick={handleClickOpen} color='orange'>
+                        Register
+                    </Button>
                     <Modal
                         className="modal-dialog-centered"
                         size="lg"
@@ -137,55 +157,22 @@ const Signup = () => {
                                         <h3 className="h4 text-warning text-center font-weight-bold mb-4">
 
                                             Want to work with us?
-                                        <button
-                                        aria-label="Close"
-                                        className="close"
-                                        data-dismiss="modal"
-                                        type="button"
-                                        onClick={handleClose}
-                                    >
-                                        <span aria-hidden={true}>×</span>
-                                    </button>
+                                            <button
+                                                aria-label="Close"
+                                                className="close"
+                                                data-dismiss="modal"
+                                                type="button"
+                                                onClick={handleClose}
+                                            >
+                                                <span aria-hidden={true}>×</span>
+                                            </button>
                                         </h3>
                                         <div className="text-muted text-center mb-3">
-                                            <small>Sign up with</small>
+                                            <small>Sign up</small>
 
-                                        </div>
-                                        <div className="text-center">
-                                            <Button
-                                                className="btn-neutral btn-icon mr-4"
-                                                color="default"
-                                                href="#pablo"
-                                                onClick={e => e.preventDefault()}
-                                            >
-                          <span className="btn-inner--icon mr-1">
-                            <img
-                                alt="..."
-                                src={require("assets/img/icons/common/github.svg")}
-                            />
-                          </span>
-                                                <span className="btn-inner--text">Github</span>
-                                            </Button>
-                                            <Button
-                                                className="btn-neutral btn-icon ml-1"
-                                                color="default"
-                                                href="#pablo"
-                                                onClick={e => e.preventDefault()}
-                                            >
-                          <span className="btn-inner--icon mr-1">
-                            <img
-                                alt="..."
-                                src={require("assets/img/icons/common/google.svg")}
-                            />
-                          </span>
-                                                <span className="btn-inner--text">Google</span>
-                                            </Button>
                                         </div>
                                     </CardHeader>
                                     <CardBody className="px-lg-5 py-lg-5">
-                                        <div className="text-center text-muted mb-4">
-                                            <small>Or sign up with credentials</small>
-                                        </div>
                                         <Form role="form">
                                             <Row>
                                                 <Col> <FormGroup>
@@ -265,28 +252,49 @@ const Signup = () => {
                                                     </FormGroup>
                                                 </Col>
 
+
+                                            </Row>
+                                            <Row>
                                                 <Col>
                                                     <FormGroup>
                                                         <InputGroup className="input-group-alternative">
                                                             <InputGroupAddon addonType="prepend">
                                                                 <InputGroupText>
-                                                                    <i className="ni ni-lock-circle-open"/>
+                                                                    <i onClick={togglePasswordVisiblity}
+                                                                       className="fa fa-eye"/>
                                                                 </InputGroupText>
                                                             </InputGroupAddon>
-                                                            <Input placeholder="Password" type="password"
+                                                            <Input placeholder="Password"
+                                                                   type={passwordShown ? "text" : "password"}
                                                                    onChange={(e) => setField('password', e.target.value)}
                                                                    invalid={!!errors.password}/>
                                                             <FormFeedback>{errors.password}</FormFeedback>
                                                         </InputGroup>
                                                     </FormGroup>
                                                 </Col>
+                                                <Col>
+                                                    <FormGroup>
+                                                        <InputGroup className="input-group-alternative">
+                                                            <InputGroupAddon addonType="prepend">
+                                                                <InputGroupText>
+                                                                    <i onClick={togglePasswordVisiblity}
+                                                                       className="fa fa-eye"/>
+                                                                </InputGroupText>
+                                                            </InputGroupAddon>
+                                                            <Input placeholder="confirm Password"
+                                                                   type={passwordShown ? "text" : "password"}
+                                                                   onChange={(e) => setField('confirmpassword', e.target.value)}
+                                                                   invalid={!!errors.confirmpassword}/>
+                                                            <FormFeedback>{errors.confirmpassword}</FormFeedback>
+                                                        </InputGroup>
+                                                    </FormGroup>
+                                                </Col>
                                             </Row>
-
 
                                             <div className="text-center">
                                                 <Button
                                                     className="mt-4"
-                                                    color="primary"
+                                                    color="green"
                                                     type="submit"
                                                     onClick={doSignUp}
 

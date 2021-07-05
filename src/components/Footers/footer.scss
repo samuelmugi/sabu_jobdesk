@@ -1,0 +1,8 @@
+
+.component-footer{
+  @media only screen and (max-width: 480px) {
+   div{
+     display: none;
+   }
+  }
+}

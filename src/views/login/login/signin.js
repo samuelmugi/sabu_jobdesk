@@ -1,8 +1,7 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import useState from 'react-usestateref';
 // reactstrap components
 import {
-    Button,
     Card,
     CardBody,
     CardHeader,
@@ -24,6 +23,9 @@ import AuthenticationService from 'services/APiCalls/AuthenticationService';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import BackendService from 'services/APiCalls/BackendService';
+import {Button} from "semantic-ui-react";
+import STORAGE from "services/APiCalls/config/storage";
+import REST_APIS from 'services/APiCalls/config/apiUrl'
 
 toast.configure();
 const color = "#80e70b";
@@ -34,7 +36,20 @@ const Signin = () => {
     const [form, setForm] = useState({});
     const [errors, setErrors] = useState({});
     const [loading, setLoading, loadingRef] = useState(false);
+    const [passwordShown, setPasswordShown] = useState(false);
+    const [resetPassword, setResetPassword] = useState(false);
 
+    useEffect(() => {
+        (async function () {
+
+        })();
+    }, [resetPassword]);
+    const togglePasswordVisiblity = () => {
+        setPasswordShown(passwordShown ? false : true);
+    };
+    const toggleResetPassword = () => {
+        setResetPassword(resetPassword ? false : true);
+    };
     const handleClickOpen = () => {
         setOpen(!open);
     };
@@ -63,42 +78,78 @@ const Signin = () => {
         // Conditional logic:
         if (Object.keys(newErrors).length > 0) {
             // We got errors!
+            setLoading(false);
             setErrors(newErrors);
         } else {
-            AuthenticationService.signin(form.username, form.password)
-                .then((response) => {
-                        if (response.status === 200) {
-                            BackendService.notifySuccess('Logged in Successfully.');
+            if (resetPassword) {
+                const {username, mobileNumber, confirmpassword, password} = form;
+
+                const url = REST_APIS.RESET_PASSWORD;
+                const resetForm = {
+                    email: form.username,
+                    password: form.password,
+                    mobileNumber: form.mobileNumber
+                };
+                if (form.password === form.confirmpassword) {
+                    BackendService.postRequest(url, resetForm)
+                        .then(() => {
+                            BackendService.notifySuccess('Password reset successful.');
+                        });
+                    setLoading(false);
+                    STORAGE.destroyAuthTOken();
+                } else {
+                    BackendService.notifyError('Passwords do not match.');
+                    setLoading(false);
+                    STORAGE.destroyAuthTOken();
+                }
+            } else {
+                AuthenticationService.signin(form.username, form.password)
+                    .then((response) => {
+                            console.log(response)
+
+                            if (response.status === 200) {
+                                BackendService.notifySuccess('Logged n in Successfully.');
+
+                                STORAGE.setAuthTOken(response.data?.payload?.jwtToken);
+                                STORAGE.setUserDetials(response.data.payload?.userDetails);
+                                window.location.reload();
+                            } else {
+                                setErrors({
+                                    password:
+                                        'Invalid credentials'
+                                });
+                            }
+                            setLoading(false);
+
+                        },
+                        (error) => {
+                            setLoading(false);
+
+                            console.log(error);
+                            if (error.toString().includes('401')) {
+                                BackendService.notifyError('oops! Please confirm your username and password')
+
+                                setErrors({
+                                    password:
+                                        'oops! Please confirm your username and password'
+                                });
+                            } else {
+                                BackendService.notifyError('Login fail');
+                                setErrors({
+                                    password:
+                                        'Please contact Sytem Admin to assist!'
+                                });
+                            }
+                            setLoading(false);
 
                         }
-                        setLoading(false);
-                        window.location.reload();
-                    },
-                    (error) => {
-                        console.error(error);
-                        if (error.toString().includes('401')) {
-                            BackendService.notifyError('oops! Please confirm your username and password')
-
-                            setErrors({
-                                logError:
-                                    'oops! Please confirm your username and password'
-                            });
-                        } else {
-                            BackendService.notifyError('Login fail');
-                            setErrors({
-                                logError:
-                                    'Login fail: error = { ' + error.toString() + ' }'
-                            });
-                        }
-                        setLoading(false);
-
-                    }
-                );
+                    );
+            }
         }
     };
 
     const findFormErrors = () => {
-        const {username, password} = form;
+        const {username, mobileNumber, confirmpassword, password} = form;
         const newErrors = {};
         // username errors
         if (!username || username === '')
@@ -106,23 +157,26 @@ const Signin = () => {
         // food errors
         if (!password || password === '')
             newErrors.password = 'password cannot be blank!';
-        console.log(JSON.stringify(newErrors))
-
+        if (resetPassword) {
+            if (!confirmpassword || confirmpassword === '')
+                newErrors.confirmpassword = 'confirmpassword cannot be blank!';
+            if (!mobileNumber || mobileNumber === '')
+                newErrors.mobileNumber = 'mobileNumber cannot be blank!';
+            if (!confirmpassword || confirmpassword === '') {
+                newErrors.confirmpassword = 'confirm password cannot be blank!';
+            }
+        }
         return newErrors;
     };
     return (
         <>
 
             <Row>
-                <Col >
+                <Col>
 
-                    <a
-                        onClick={handleClickOpen}
-
-                    ><span className="nav-link-inner--text ml-1 btn-inner--icon">
-                        <i className="fa fa-cloud-download mr-2">
-                         &nbsp;Log in </i></span>
-                    </a>
+                    <Button onClick={handleClickOpen} color='green'>
+                        Log in
+                    </Button>
                     <Modal
                         className="modal-dialog-centered"
                         size="sm"
@@ -138,7 +192,7 @@ const Signin = () => {
                                 <Card className="bg-secondary shadow border-0">
                                     <CardHeader className="bg-transparent pb-5">
                                         <div className="text-muted text-center mt-2 mb-3">
-                                            <small>Sign in with</small>
+                                            <small>Sign in with credentials</small>
                                             <button
                                                 aria-label="Close"
                                                 className="close"
@@ -149,41 +203,9 @@ const Signin = () => {
                                                 <span aria-hidden={true}>×</span>
                                             </button>
                                         </div>
-                                        <div className="btn-wrapper text-center">
-                                            <Button
-                                                className="btn-neutral btn-icon"
-                                                color="default"
-                                                href="#pablo"
-                                                onClick={e => e.preventDefault()}
-                                            >
-                        <span className="btn-inner--icon">
-                          <img
-                              alt="..."
-                              src={require('assets/img/icons/common/github.svg')}
-                          />
-                        </span>
-                                                <span className="btn-inner--text">Github</span>
-                                            </Button>
-                                            <Button
-                                                className="btn-neutral btn-icon"
-                                                color="default"
-                                                href="#pablo"
-                                                onClick={e => e.preventDefault()}
-                                            >
-                        <span className="btn-inner--icon">
-                          <img
-                              alt="..."
-                              src={require('assets/img/icons/common/google.svg')}
-                          />
-                        </span>
-                                                <span className="btn-inner--text">Google</span>
-                                            </Button>
-                                        </div>
                                     </CardHeader>
                                     <CardBody className="px-lg-5 py-lg-5">
-                                        <div className="text-center text-muted mb-4">
-                                            <small>Or sign in with credentials</small>
-                                        </div>
+
                                         <Form role="form">
                                             <FormGroup className="mb-3">
                                                 <InputGroup className="input-group-alternative">
@@ -199,40 +221,71 @@ const Signin = () => {
 
                                                 </InputGroup>
                                             </FormGroup>
-                                            <FormGroup>
+                                            {resetPassword && <FormGroup className="mb-3">
                                                 <InputGroup className="input-group-alternative">
                                                     <InputGroupAddon addonType="prepend">
                                                         <InputGroupText>
-                                                            <i className="ni ni-lock-circle-open"/>
+                                                            <i className="ni ni-email-83"/>
                                                         </InputGroupText>
                                                     </InputGroupAddon>
-                                                    <Input placeholder="Password" type="password"
+                                                    <Input placeholder="Phone Number" type="number"
+                                                           onChange={(e) => setField('mobileNumber', e.target.value)}
+                                                           invalid={!!errors.mobileNumber}/>
+                                                    <FormFeedback>{errors.mobileNumber}</FormFeedback>
+
+                                                </InputGroup>
+                                            </FormGroup>}
+                                            <FormGroup className="mb-3">
+                                                <InputGroup className="input-group-alternative">
+                                                    <InputGroupAddon addonType="prepend">
+                                                        <InputGroupText>
+                                                            <i onClick={togglePasswordVisiblity} className="fa fa-eye"/>
+                                                        </InputGroupText>
+                                                    </InputGroupAddon>
+                                                    <Input placeholder="Password"
+                                                           type={passwordShown ? "text" : "password"}
                                                            onChange={(e) => setField('password', e.target.value)}
                                                            invalid={!!errors.password}/>
                                                     <FormFeedback>{errors.password}</FormFeedback>
                                                 </InputGroup>
                                             </FormGroup>
-                                            <div className="custom-control custom-control-alternative custom-checkbox">
+                                            {resetPassword && <FormGroup className="mb-3">
+                                                <InputGroup className="input-group-alternative">
+                                                    <InputGroupAddon addonType="prepend">
+                                                        <InputGroupText>
+                                                            <i onClick={togglePasswordVisiblity} className="fa fa-eye"/>
+                                                        </InputGroupText>
+                                                    </InputGroupAddon>
+                                                    <Input placeholder="Confirm Password"
+                                                           type={passwordShown ? "text" : "password"}
+                                                           onChange={(e) => setField('confirmpassword', e.target.value)}
+                                                           invalid={!!errors.confirmpassword}/>
+                                                    <FormFeedback>{errors.confirmpassword}</FormFeedback>
+                                                </InputGroup>
+                                            </FormGroup>}
+                                            <div className="custom-control custom-checkbox mb-3">
                                                 <input
                                                     className="custom-control-input"
-                                                    id=" customCheckLogin"
+                                                    id="customCheck1"
                                                     type="checkbox"
+                                                    onChange={(e) => {
+                                                        console.log('reset password=' + e.target.checked)
+                                                        toggleResetPassword()
+                                                    }}
                                                 />
-                                                <label
-                                                    className="custom-control-label"
-                                                    htmlFor=" customCheckLogin"
-                                                >
-                                                    <span className="text-muted">Remember me</span>
+                                                <label className="custom-control-label" htmlFor="customCheck1">
+                                                    Reset Passord
                                                 </label>
                                             </div>
+
                                             <div className="text-center">
                                                 <Button
                                                     className="my-4"
-                                                    color="primary"
+                                                    color="green"
                                                     type="submit"
                                                     onClick={doLogin}
                                                 >
-                                                    Sign in
+                                                    {resetPassword ? 'Reset Password' : 'Sign in'}
                                                 </Button>
                                             </div>
                                         </Form>

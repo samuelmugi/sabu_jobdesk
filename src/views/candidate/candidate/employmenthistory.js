@@ -4,8 +4,6 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import {Button, Form, Icon, Label} from "semantic-ui-react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import useState from "react-usestateref";
 import CandidateConstants from "views/candidate/candidate/candidateconstants";
 import BackendService from "services/APiCalls/BackendService";
@@ -15,6 +13,7 @@ import ClipLoader from "react-spinners/PropagateLoader";
 import STORAGE from "services/APiCalls/config/storage";
 import moment from 'moment';
 import swal from "sweetalert";
+import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -36,8 +35,8 @@ const employmentValuesFields = CandidateConstants.experienceValuesFields;
 
 export default function EmploymentHistory(props) {
     const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
+    const [endDate, setEndDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [fullWidth, setFullWidth] = React.useState(true);
@@ -55,23 +54,23 @@ export default function EmploymentHistory(props) {
     };
 
     const handleClose = () => {
-        BackendService.refershUserDetails().then(() => setOpen(false));
+        BackendService.refershUserDetails(props?.isJobApplication).then(() => setOpen(false));
     };
 
 
     useEffect(() => {
         (async function () {
             if (!isMountedRef.current) {
-                await initializeEmploymentValues();
+                initializeEmploymentValues();
                 setMounted(true);
             }
         })();
     }, [employmentValues, isEdited]);
 
 
-    const initializeEmploymentValues = async () => {
+    const initializeEmploymentValues = () => {
         const experience = props.experience;
-         if (props.edit) {
+        if (props.edit) {
             setStartDate(moment(experience?.startDate + ' 01').toDate());
             setEndDate(moment(experience?.endDate + ' 01').toDate());
             employmentValuesFields.map(fieldObj => {
@@ -113,6 +112,14 @@ export default function EmploymentHistory(props) {
         console.log(JSON.stringify(employmentValuesErrorsRef.current))
         return hasErrors;
     }
+    const resetValues = () => {
+        employmentValuesFields.map((fieldObj) => {
+            setEmploymentValues((prevValues) => {
+                return {...prevValues, [fieldObj.field]: ''};
+            });
+
+        });
+    }
 
 
     const submitEmploymentValues = async () => {
@@ -124,21 +131,41 @@ export default function EmploymentHistory(props) {
             employmentValues.id = props.edit ? props.experience?.id : user.id;
             const url = props.edit ? REST_APIS.UPDATE_EXPERIENCE.replace('PROFILEID', user.id) + props.experience?.id
                 : REST_APIS.ADD_EXPERIENCE.replace('PROFILEID', user.id);
-            await BackendService.postRequest(url, employmentValues)
-                .then(() => {
+            if (props.edit) {
+                await BackendService.putRequest(url, employmentValues)
+                    .then((response) => {
+                            const user = response.data?.payload;
+                            props.refreshUserDetails(user);
+                            BackendService.notifySuccess('Employment history Updated successfully')
+                                .then(() => setLoading(false))
+                                .finally(() => handleClose());
+                            resetValues();
+                        },
+                        (error) => {
+                            BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
+                            setLoading(false);
+                        }
+                    );
+            } else {
+                await BackendService.postRequest(url, employmentValues)
+                    .then((response) => {
+                            const user = response.data?.payload;
+                            props.refreshUserDetails(user);
+                            BackendService.notifySuccess('Employment history added successfully')
+                                .then(() => setLoading(false));
+                            resetValues();
+                        },
+                        (error) => {
+                            BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
+                            setLoading(false);
+                        }
+                    );
+            }
 
-                        BackendService.notifySuccess('Employment history added successfully')
-                            .then(() => setLoading(false))
-                            .finally(() => handleClose());
-                    },
-                    (error) => {
-                        BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
-                        setLoading(false);
-                    }
-                );
 
         }
     }
+
     const displayError = (key) => {
         if (isEditedRef.current) {
             if (employmentValuesErrorsRef.current[key]) {
@@ -279,37 +306,44 @@ export default function EmploymentHistory(props) {
                                 } : false}/>
                         </Form.Group>
                         <Form.Group widths='equal'>
-                            <Form.Field error={displayError('startDate') ? {
-                                content: employmentValuesErrorsRef.current?.startDate
-                            } : false}
-                            >
-                                Period From<br/>
-                                <DatePicker
-                                    selected={startDate}
-                                    name='startDate'
-                                    onChange={(date) => {
-                                        setFieldValues('startDate', moment(date).format("YYYY-MM-DD"));
-                                        setStartDate(date);
-                                    }} showYearDropdown
-                                    showMonthYearDropdown
-                                    useShortMonthInDropdown
+                            <Form.Field>
+                                <TextField
+                                    error={displayError('startDate') ? {
+                                        content: employmentValuesErrorsRef.current?.startDate
+                                    } : false}
+                                    id="startDate"
+                                    label="Period From"
+                                    type="date"
+                                    onChange={(e) => {
+                                        setFieldValues('startDate', moment(e.target.value).format("YYYY-MM-DD"));
+                                        setStartDate(e.target.value);
+                                    }}
+                                    defaultValue={moment(employmentValuesRef.current?.startDate).format("YYYY-MM-DD")}
+                                    className={classes.textField}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
                                 />
                             </Form.Field>
 
-                            <Form.Field error={displayError('endDate') ? {
-                                content: employmentValuesErrorsRef.current?.endDate
-                            } : false}
-                            >
-                                To<br/>
-                                <DatePicker
-                                    selected={endDate}
-                                    name='endDate'
-                                    onChange={(date) => {
-                                        setFieldValues('endDate', moment(date).format("YYYY-MM-DD"));
-                                        setEndDate(date);
-                                    }} showYearDropdown
-                                    showMonthYearDropdown
-                                    useShortMonthInDropdown
+                            <Form.Field>
+
+                                <TextField
+                                    error={displayError('endDate') ? {
+                                        content: employmentValuesErrorsRef.current?.endDate
+                                    } : false}
+                                    id="endDate"
+                                    label="Period To"
+                                    type="date"
+                                    onChange={(e) => {
+                                        setFieldValues('endDate', moment(e.target.value).format("YYYY-MM-DD"));
+                                        setStartDate(e.target.value);
+                                    }}
+                                    defaultValue={moment(employmentValuesRef.current?.endDate).format("YYYY-MM-DD")}
+                                    className={classes.textField}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
                                 />
                             </Form.Field>
                         </Form.Group>

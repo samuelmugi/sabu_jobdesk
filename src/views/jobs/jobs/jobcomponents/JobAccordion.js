@@ -7,7 +7,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import {grey} from '@material-ui/core/colors';
-import {Divider, Header, Label} from 'semantic-ui-react'
+import {Divider, Grid, Header, Label} from 'semantic-ui-react'
 import Box from '@material-ui/core/Box';
 import REST_APIS from "services/APiCalls/config/apiUrl";
 import BackendService from "services/APiCalls/BackendService";
@@ -144,8 +144,10 @@ const JobAccordion = (props) => {
                             <Divider/>
                             <AccordionDetails>
                                 <Box width={'100%'}>
-                                    {/*<ApplyJob job={item}/>*/}
-                                    <MyProfile job={item}/>
+                                    {user !== 'NA' ?<MyProfile job={item}/>
+                                        :<ApplyJob job={item}/>
+                                    }
+
 
                                     <Header as='h3'>Job Requirements</Header>
                                     <Typography paragraph style={{whiteSpace: "pre-line"}}>

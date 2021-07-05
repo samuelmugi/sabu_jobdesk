@@ -5,6 +5,7 @@ import BackendService from "services/APiCalls/BackendService";
 import {Divider, Grid, GridColumn, GridRow} from "semantic-ui-react";
 import REST_APIS from "services/APiCalls/config/apiUrl";
 import STORAGE from "services/APiCalls/config/storage";
+import download from 'downloadjs'
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -93,8 +94,14 @@ export default class UploadFiles extends Component {
 
     download(){
         const url=REST_APIS.DOWNLOAD_CV.replace('PROFILEID', user.id)
-        BackendService.getRequest(url);
+        BackendService.DwonloadRequest(url)
+         .then((response ) => {
+             const content = response.headers['application/octetstream'];
+             download(new Blob([response.data],{ type: "application/octetstream" }),  user?.firstName+'_CV.pdf', content)
+
+        });
     }
+
 
     render() {
         const {

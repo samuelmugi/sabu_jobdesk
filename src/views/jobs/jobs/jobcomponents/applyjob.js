@@ -1,17 +1,14 @@
 import React from 'react';
 import useState from 'react-usestateref';
 // reactstrap components
-import {Card, Col, Modal, Row} from 'reactstrap';
+import {Card, CardBody, Modal} from 'reactstrap';
 import {useHistory} from 'react-router-dom';
-import LoadingOverlay from 'react-loading-overlay'
-import ClipLoader from "react-spinners/PropagateLoader";
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {Button} from "semantic-ui-react";
+import {Button, Grid} from "semantic-ui-react";
 import REST_APIS from "services/APiCalls/config/apiUrl";
 import BackendService from "services/APiCalls/BackendService";
 import STORAGE from "services/APiCalls/config/storage";
-import MyProfile from "views/candidate/profile/Profile";
 import Signup from "views/login/login/SIgnup";
 import Signin from "views/login/login/signin";
 
@@ -63,56 +60,41 @@ const ApplyJob = (props) => {
     return (
         <>
 
-            <Row>
-                <Col md="4">
 
-                    <Button size='mini'
-                            positive
-                            onClick={handleClickOpen}
-                    >Apply</Button>
-                    <Modal
-                        className="modal-dialog-centered"
-                        size="sm"
+            <Button size='mini'
+                    positive
+                    onClick={handleClickOpen}
+            >Apply</Button>
+            <Modal
+                className="modal-dialog-centered"
+                size="sm"
+                isOpen={open}
+                toggle={handleClickOpen}
+            >
+                <div className="modal-body p-0">
+                    <Card className="bg-secondary shadow border-0 justify-content-center">
+                        <CardBody className="px-lg-5 py-lg-5">
+                            <Grid stackable>
 
-                        isOpen={open}
-                        toggle={handleClickOpen}
-                    >
-                        <LoadingOverlay
-                            active={loadingRef.current}
-                            spinner={<ClipLoader color={color} loading={loadingRef.current}/>}
-                        >
-                            <div className="modal-body p-0">
-                                <Card className="bg-secondary shadow border-0">
-                                    {user !== 'NA' ? (<Button.Group>
-                                            <Button onClick={submitApplication} positive>Apply</Button>
+                                <Grid.Row stretched>
+                                    <Grid.Column width={9}>
+                                        To Apply for Jobs Please
+                                    </Grid.Column>
+                                </Grid.Row>
+                                <Grid.Row stretched>
+                                    <Grid.Column>
+                                        <Button.Group>
+                                            <Signup/>
                                             <Button.Or/>
-                                            <Button><MyProfile job={props.job}/></Button>
-                                        </Button.Group>) :
-                                        (<>
-                                                <Button
-                                                    className="btn-neutral btn-icon"
-                                                    color="default"
-                                                >  <span>
-                                        <Signup/>
-                                        </span>
-                                                </Button>
-                                                <Button.Or/>
-                                                <Button
-                                                    className="btn-neutral btn-icon"
-                                                    color="default"
-                                                >  <span>
-                                        <Signin/>
-                                        </span>
-                                                </Button>
-                                            </>
-                                        )
-                                    }
-                                </Card>
-                            </div>
-                        </LoadingOverlay> </Modal>
-                </Col>
-            </Row>
-
+                                            <Signin/>
+                                        </Button.Group>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        </CardBody>
+                    </Card>
+                </div>
+            </Modal>
         </>
     );
 

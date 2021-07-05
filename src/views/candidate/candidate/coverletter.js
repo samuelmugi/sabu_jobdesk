@@ -13,29 +13,12 @@ import LoadingOverlay from "react-loading-overlay";
 import ClipLoader from "react-spinners/PropagateLoader";
 import STORAGE from "services/APiCalls/config/storage";
 
-const useStyles = makeStyles((theme) => ({
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        margin: 'auto',
-        width: 'fit-content',
-    },
-    formControl: {
-        marginTop: theme.spacing(2),
-        minWidth: 120,
-    },
-    formControlLabel: {
-        marginTop: theme.spacing(1),
-    },
-}));
+
 const coverLetterFields = CandidateConstants.coverLetterFields;
 
 
-export default function CoverLetter() {
+export default function CoverLetter(props) {
     const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
-    const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [fullWidth, setFullWidth] = React.useState(true);
     const [maxWidth, setMaxWidth] = React.useState('sm');
@@ -52,7 +35,7 @@ export default function CoverLetter() {
     };
 
     const handleClose = () => {
-        BackendService.refershUserDetails().then(() => setOpen(false));
+        BackendService.refershUserDetails(props?.isJobApplication).then(() => setOpen(false));
     };
 
 
@@ -72,7 +55,6 @@ export default function CoverLetter() {
                 return {...prevValues, [fieldObj.field]: user[fieldObj.field]};
             });
         })
-        console.log(JSON.stringify(coverLetterValuesRef.current));
 
     }
 
@@ -115,19 +97,27 @@ export default function CoverLetter() {
             setLoading(true);
             let coverLetterValues = coverLetterValuesRef.current;
             coverLetterValues.id = user.id;
-            const url = REST_APIS.UPDATE_USER_DETAILS.replace('PROFILEID', user.id);
+            const url = REST_APIS.COVER_LETTER.replace('PROFILEID', user.id);
             await BackendService.putRequest(url, coverLetterValues)
-                .then(() => {
+                .then(()=>{
+                    delete coverLetterValues.coverLetter;
+                    delete coverLetterValues.id;
+                    const clearanceurl = REST_APIS.UPDATE_USER_DETAILS.replace('PROFILEID', user.id);
+                    BackendService.putRequest(clearanceurl, coverLetterValues).then((response) => {
+                            const user =response.data?.payload;
+                            props.refreshUserDetails(user);
 
-                        BackendService.notifySuccess('CoverLetter history added successfully')
-                            .then(() => setLoading(false))
-                            .finally(() => handleClose());
-                    },
-                    (error) => {
-                        BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
-                        setLoading(false);
-                    }
-                );
+                            BackendService.notifySuccess('CoverLetter  Updated successfully')
+                                .then(() => setLoading(false))
+                                .finally(() => handleClose());
+                        },
+                        (error) => {
+                            BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
+                            setLoading(false);
+                        }
+                    )
+                })
+                ;
 
         }
     }
@@ -155,7 +145,7 @@ export default function CoverLetter() {
                             Update
                         </Button>
                         <Label as='a' basic color='red' pointing='left'>
-                            Cover Letter
+                            Cover Letter & Clearances
                         </Label>
                     </Button>
 

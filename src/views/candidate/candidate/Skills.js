@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 // reactstrap components
-import {Form, Grid} from 'semantic-ui-react';
+import {Form, Grid, Icon} from 'semantic-ui-react';
 import {makeStyles} from "@material-ui/core/styles";
 import useState from 'react-usestateref';
 import LoadingOverlay from 'react-loading-overlay'
@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import BackendService from "services/APiCalls/BackendService";
 import REST_APIS from "services/APiCalls/config/apiUrl";
 import STORAGE from "services/APiCalls/config/storage";
+import swal from "sweetalert";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -51,11 +52,9 @@ export default function Skills(props) {
     const initializeSkillValues = async () => {
 
     }
-    const handleOtherSelects = (e, {name, value}) => {
-        setFieldValues(name, value);
-    }
+
     const setField = (e) => {
-           setFieldValues(e.target.name, e.target.value);
+        setFieldValues(e.target.name, e.target.value);
     };
     const setFieldValues = (key, value) => {
         setSkillValues((prevValues) => {
@@ -65,6 +64,9 @@ export default function Skills(props) {
             setSkillValuesErrors((prevValues) => {
                 return {...prevValues, [key]: null};
             });
+    }
+    const resetValues=()=>{
+        setFieldValues('skill', '');
     }
     const validateValues = () => {
         let hasErrors = false;
@@ -91,11 +93,13 @@ export default function Skills(props) {
             skillValues.id = user.id;
             const url = REST_APIS.ADD_SKILL.replace('PROFILEID', user.id);
             await BackendService.postRequest(url, skillValues)
-                .then(() => {
-
+                .then((response) => {
+                        const user = response.data?.payload;
+                        props.refreshSkills(user);
+                        resetValues();
                         BackendService.notifySuccess('Skill Added successfully')
                             .then(() => setLoading(false))
-                            .finally(() =>  BackendService.refershUserDetails());
+                            .finally(() => BackendService.refershUserDetails(props?.isJobApplication));
                     },
                     (error) => {
                         BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
@@ -117,35 +121,74 @@ export default function Skills(props) {
         }
     }
 
+    const handleDelete = async () => {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("data has been deleted!", {
+                        icon: "success",
+                    });
+                    deleteAcademic();
+                } else {
+                    swal("Deletion not done!");
+                }
+            });
+
+    }
+    const deleteAcademic = async () => {
+        const url = REST_APIS.DELETE_SKILL.replace('PROFILEID', user.id)+ props.skill?.id;
+        await BackendService.deleteRequest(url)
+            .then((response) => {
+                    const user = response.data?.payload;
+                    props.refreshSkills(user);
+                    BackendService.notifySuccess('Skill deleted successfully')
+                        .then(() => setLoading(false));
+                    BackendService.refershUserDetails(true);
+                },
+                (error) => {
+                    BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
+                    setLoading(false);
+                }
+            );
+    }
+
     return (
-        <> <LoadingOverlay
-            active={loadingRef.current}
-            spinner={<ClipLoader color={color} loading={loadingRef.current}/>}
-        >
-            <Grid stackable>
-                <Grid.Column>
+        <>
+            {props.delete ?
+                <Icon onClick={handleDelete} name='delete' />
+                : <LoadingOverlay
+                    active={loadingRef.current}
+                    spinner={<ClipLoader color={color} loading={loadingRef.current}/>}
+                >
 
-                        <Form>
-                            <Form.Group>
-                                <Form.Input
-                                    placeholder="Skill"
-                                    name="skill"
-                                    value={skillValuesRef.current.skill}
-                                    onChange={setField}
-                                    error={displayError('skill') ? {
-                                        content: skillValuesErrorsRef.current?.skill
-                                    } : false}
-                                />
-                                <Form.Button circular positive icon="add" onClick={submitSkillValues}/>
-                            </Form.Group>
-                        </Form>
-                </Grid.Column>
-            </Grid>
+                    <Grid stackable>
+                        <Grid.Column>
+
+                            <Form>
+                                <Form.Group>
+                                    <Form.Input
+                                        placeholder="Skill"
+                                        name="skill"
+                                        value={skillValuesRef.current.skill}
+                                        onChange={setField}
+                                        error={displayError('skill') ? {
+                                            content: skillValuesErrorsRef.current?.skill
+                                        } : false}
+                                    />
+                                    <Form.Button circular positive icon="add" onClick={submitSkillValues}/>
+                                </Form.Group>
+                            </Form>
+                        </Grid.Column>
+                    </Grid>
 
 
-
-
-        </LoadingOverlay>
+                </LoadingOverlay>}
         </>
     );
 

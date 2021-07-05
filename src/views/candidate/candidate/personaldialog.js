@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import useState from 'react-usestateref';
 // reactstrap components
-import {Card, CardBody, Col, Modal, Row} from 'reactstrap';
+import {Card, CardBody, Col, Row} from 'reactstrap';
 import {useHistory} from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import REST_APIS from 'services/APiCalls/config/apiUrl'
@@ -13,7 +13,8 @@ import moment from "moment";
 import STORAGE from "services/APiCalls/config/storage";
 import * as CandidateConstants from "views/candidate/candidate/candidateconstants";
 import {makeStyles} from "@material-ui/core";
-import DatePicker from "react-datepicker";
+import Dialog from "@material-ui/core/Dialog";
+import TextField from '@material-ui/core/TextField';
 
 const personalInfoFields = CandidateConstants.personalInfoFields;
 const dropDownConstants = CandidateConstants.dropDownConstants;
@@ -42,14 +43,14 @@ const optionsDisability = [
     {key: 'dis1', text: 'No', value: false},
     {key: 'dis2', text: 'Yes', value: true},
 ];
-const PersonalInfoDialog = () => {
+const PersonalInfoDialog = (props) => {
     const {push} = useHistory();
     const [open, setOpen] = useState(false);
     const classes = useStyles();
     const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
     const [settings, setSettings, settingsRef] = useState(dropDownConstants);
     const [color, setColor] = useState("#60991f");
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
     const [loading, setLoading, loadingRef] = useState(false);
     const [isMounted, setMounted, isMountedRef] = useState(false);
     const [isEdited, setEditing, isEditedRef] = useState(false);
@@ -60,7 +61,7 @@ const PersonalInfoDialog = () => {
         setOpen(!open);
     };
     const handleClose = () => {
-        BackendService.refershUserDetails().then(() => setOpen(false));
+        BackendService.refershUserDetails(props?.isJobApplication).then(() => setOpen(false));
 
     };
 
@@ -76,8 +77,8 @@ const PersonalInfoDialog = () => {
     }, [settings, isEdited, personalInfoValues]);
 
 
-    const initializePersonalInfo = async () => {
-        await initializeDefaultData()
+    const initializePersonalInfo =   () => {
+          initializeDefaultData()
             .finally(() => {
                 initializeCountySelect();
             })
@@ -90,7 +91,7 @@ const PersonalInfoDialog = () => {
         });
     }
 
-    const initializeCountySelect = async () => {
+    const initializeCountySelect =  () => {
         if (user?.homeCounty !== null) {
             const homeCounty = user?.homeCounty;
             const homeSubCounty = user?.homeSubCounty;
@@ -126,7 +127,7 @@ const PersonalInfoDialog = () => {
         setFieldValues(name, value);
         fetchSubCounties(name, value);
     }
-    const fetchWard = async (name, value) => {
+    const fetchWard =   (name, value) => {
         if (name === 'homeSubCounty') {
             const county = personalInfoValuesRef.current?.homeCounty;
             BackendService.getWards(county, value).then(wards => {
@@ -182,9 +183,7 @@ const PersonalInfoDialog = () => {
         if (!!personalInfoValuesErrorsRef.current?.dateOfBirth) {
             BackendService.notifyError('PLease select date of birth');
         }
-
-        console.log(JSON.stringify(personalInfoValuesErrorsRef.current))
-        return hasErrors;
+  return hasErrors;
     }
 
 
@@ -197,7 +196,9 @@ const PersonalInfoDialog = () => {
             personalInfo.id = user.id;
             const url = REST_APIS.UPDATE_USER_DETAILS.replace('PROFILEID', user.id);
             await BackendService.putRequest(url, personalInfo)
-                .then(() => {
+                .then((response) => {
+                        const user = response.data?.payload;
+                        props.refreshUserDetails(user);
                         BackendService.notifySuccess('Personal Data updated successfully')
                             .then(() => setLoading(false))
                             .finally(() => handleClose());
@@ -241,12 +242,14 @@ const PersonalInfoDialog = () => {
                 </Grid.Column>
             </Grid>
 
-            <Modal
-                className="modal-dialog-centered"
-                size="xl"
-                backdrop={'static'}
-                isOpen={open}
-                toggle={handleClickOpen}
+            <Dialog
+                fullWidth={true}
+                maxWidth={'xl'}
+                disableBackdropClick={true}
+                disableEscapeKeyDown={true}
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="max-width-dialog-title"
             >
                 <LoadingOverlay
                     active={loadingRef.current}
@@ -343,22 +346,37 @@ const PersonalInfoDialog = () => {
                                                 content: personalInfoValuesErrorsRef.current?.gender
                                             } : false}
                                         />
-                                        <Form.Field
-                                            error={displayError('dateOfBirth') ? {
-                                                content: personalInfoValuesErrorsRef.current?.dateOfBirth
-                                            } : false}>
-                                            Date Of Birth <br/>
-                                            <DatePicker
-                                                name='dateOfBirth'
-                                                selected={startDate}
-                                                onChange={(date) => {
-                                                    setFieldValues('dateOfBirth', moment(date).format("YYYY-MM-DD"));
-                                                    setStartDate(date);
+                                        <Form.Field  >
+                                            <TextField
+                                                error={displayError('dateOfBirth') ? {
+                                                    content: personalInfoValuesErrorsRef.current?.dateOfBirth
+                                                } : false}
+                                                id="date"
+                                                label="Date Of Birth"
+                                                type="date"
+                                                onChange={(e)=>{
+                                                    console.log('date=',e.target.value);
+                                                    setFieldValues('dateOfBirth', moment(e.target.value).format("YYYY-MM-DD"));
+                                                    setStartDate(e.target.value);
                                                 }}
-                                                showYearDropdown
-                                                showMonthYearDropdown
-                                                useShortMonthInDropdown
+                                                defaultValue={moment(personalInfoValuesRef.current?.dateOfBirth).format("YYYY-MM-DD")}
+                                                className={classes.textField}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
                                             />
+                                            {/*<DatePicker*/}
+                                            {/*    name='dateOfBirth'*/}
+                                            {/*    selected={startDate}*/}
+                                            {/*    onChange={(date) => {*/}
+                                            {/*        setFieldValues('dateOfBirth', moment(date).format("YYYY-MM-DD"));*/}
+                                            {/*        setStartDate(date);*/}
+                                            {/*    }}*/}
+                                            {/*    yearItemNumber={20}*/}
+                                            {/*    showYearDropdown*/}
+                                            {/*    showMonthYearDropdown*/}
+                                            {/*    useShortMonthInDropdown*/}
+                                            {/*/>*/}
                                         </Form.Field>
 
                                     </Form.Group>
@@ -542,13 +560,15 @@ const PersonalInfoDialog = () => {
                                                 onClick={submitPersonalInfo}>
                                             Save Personal Data
                                         </Button>
-                                    </Col>
+                                     <Button onClick={handleClose} color="primary">
+                                        Close
+                                    </Button></Col>
                                 </Row>
                             </CardBody>
                         </Card>
                     </div>
                 </LoadingOverlay>
-            </Modal>
+            </Dialog>
 
 
         </>

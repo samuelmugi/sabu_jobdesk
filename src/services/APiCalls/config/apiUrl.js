@@ -4,6 +4,7 @@ module.exports = Object.freeze({
     BASE_SETTINGS_URL: 'http://3.16.69.34:8083/',
     SIGN_UP: 'api/auth/signup',
     SIGN_IN: 'api/auth/signin',
+    RESET_PASSWORD: 'api/auth/reset-password',
     //USER DETAILS
     GET_USER_DETAILS: 'api/auth/user-details/',
     UPDATE_USER_DETAILS: 'profile/PROFILEID/personal-info',
@@ -26,7 +27,7 @@ module.exports = Object.freeze({
     ADD_SKILL: 'profile/PROFILEID/skills',
     GET_SKILL: 'profile/PROFILEID/skills',
     UPDATE_SKILL: 'profile/PROFILEID/skills',
-    DELETE_SKILL: 'profile/PROFILEID/skills',
+    DELETE_SKILL: 'profile/PROFILEID/skills/',
     //DEFAULT CONFIGS
     GET_ALL_RELIGIONS: 'settings/religions',
     GET_ALL_TRIBES: 'settings/tribes',
@@ -38,6 +39,10 @@ module.exports = Object.freeze({
     //JOBS
     GET_ALL_JOB_VACANCIES:'job-vacancies',
     APPLY_JOB_VACANCY:'job-applications',
-    MY_JOB_APPLICATIONS:'job-applications/'
+    MY_JOB_APPLICATIONS:'job-applications/',
+    //COVER LETTER
+    COVER_LETTER:'profile/PROFILEID/cover-letter',
+    // CONTACT US
+    CREATE_TICKET:'support-tickets'
 
 });

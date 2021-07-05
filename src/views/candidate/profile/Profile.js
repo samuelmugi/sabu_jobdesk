@@ -124,7 +124,7 @@ export default function MyProfile(props) {
                         </AppBar>
                         <div className={classes.profileVIew}>
 
-                            <ViewProfileStepper/>
+                            <ViewProfileStepper title={props.job.title} submitApplication={submitApplication} isJobApplication={true}/>
 
                         </div>
                     </Dialog>

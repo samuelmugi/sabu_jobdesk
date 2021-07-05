@@ -10,9 +10,11 @@ import BackendService from 'services/APiCalls/BackendService';
 import LoadingOverlay from 'react-loading-overlay'
 import ClipLoader from "react-spinners/PropagateLoader";
 import {Button, Form, Icon} from "semantic-ui-react";
+import * as CandidateConstants from "views/candidate/candidate/candidateconstants";
 
 toast.configure();
 const color = "#80e70b";
+const contactValuesFields = CandidateConstants.contactValuesFields;
 
 const Contact = () => {
     const {push} = useHistory();
@@ -20,8 +22,6 @@ const Contact = () => {
     const [form, setForm] = useState({});
     const [errors, setErrors] = useState({});
     const [loading, setLoading, loadingRef] = useState(false);
-    const [academicValues, setAcademicValues, academicValuesRef] = useState({});
-    const [academicValuesErrors, setAcademicValuesErrors, academicValuesErrorsRef] = useState({});
     const [isEdited, setEditing, isEditedRef] = useState(false);
 
     const handleClickOpen = () => {
@@ -32,16 +32,16 @@ const Contact = () => {
     };
 
 
-    const setField = (field, value) => {
-        setForm({
+    const setField = (e) => {
+         setForm({
             ...form,
-            [field]: value
+            [e.target.name]:e.target.value
         });
         // Check and see if errors exist, and remove them from the error object:
-        if (!!errors[field])
+        if (!!errors[e.target.name])
             setErrors({
                 ...errors,
-                [field]: null
+                [e.target.name]: null
             });
     };
     const sendMessage = async (event) => {
@@ -52,16 +52,17 @@ const Contact = () => {
         // Conditional logic:
         if (Object.keys(newErrors).length > 0) {
             // We got errors!
+            console.log(JSON.stringify(newErrors));
             setErrors(newErrors);
+            setLoading(false);
         } else {
-            setField('active', true)
-            // No errors! Put any logic here for the form submission!
+             // No errors! Put any logic here for the form submission!
             console.log(JSON.stringify(form))
-            await BackendService.postRequest(REST_APIS.SIGN_UP, form)
-                .then(() => {
-                        BackendService.notifySuccess(form.firstName + ' ' + form.middleName + ' ' + form.lastName + ' signed up successfully')
+            await BackendService.postRequest(REST_APIS.CREATE_TICKET, form)
+                .then((resp) => {
+                        BackendService.notifySuccess(resp.data.message)
                         setLoading(false);
-                        window.location.reload();
+
                     },
                     (error) => {
                         BackendService.notifySuccess('oops! error occured during sign up. pLease try later ');
@@ -72,36 +73,28 @@ const Contact = () => {
     };
 
     const findFormErrors = () => {
-        const {email, password, firstName, middleName, lastName, mobileNumber} = form;
+        const {message, fullNames, phoneNumber, nationalId} = form;
         const newErrors = {};
 
-        if (!email || email === '') {
-            newErrors.email = 'email cannot be blank!';
+        if (!message || message === '') {
+            newErrors.message = 'message cannot be blank!';
         }
-        if (!firstName || firstName === '') {
-            newErrors.firstName = 'firstName cannot be blank!';
+        if (!fullNames || fullNames === '') {
+            newErrors.fullNames = 'fullNames cannot be blank!';
         }
-        if (!middleName || middleName === '') {
-            newErrors.middleName = 'middleName cannot be blank!';
+        if (!phoneNumber || phoneNumber === '') {
+            newErrors.phoneNumber = 'phoneNumber cannot be blank!';
         }
-        if (!lastName || lastName === '') {
-            newErrors.lastName = 'lastName cannot be blank!';
-        }
-        if (!mobileNumber || mobileNumber === '') {
-            newErrors.mobileNumber = 'mobileNumber cannot be blank!';
-        }
-        if (!password || password === '') {
-            newErrors.password = 'password cannot be blank!';
+        if (!nationalId || nationalId === '') {
+            newErrors.nationalId = 'nationalId cannot be blank!';
         }
 
-
-        console.log(JSON.stringify(newErrors))
 
         return newErrors;
     };
     const displayError = (key) => {
         if (isEditedRef.current) {
-            if (academicValuesErrorsRef.current[key]) {
+            if (errors.current[key]) {
                 return true;
             } else {
                 return false;
@@ -147,27 +140,25 @@ const Contact = () => {
                                             </button>
                                         </h3>
                                     </CardHeader>
-                                    <CardBody  >
+                                    <CardBody>
                                         <Form>
                                             <Form.Group widths='equal'>
                                                 <Form.Input
                                                     label="National ID"
                                                     placeholder="National ID"
                                                     name="nationalId"
-                                                    value={academicValuesRef.current.nationalId}
-                                                    onChange={setField}
+                                                    onChange={(e) => setField(e)}
                                                     error={displayError('nationalId') ? {
-                                                        content: academicValuesErrorsRef.current?.nationalId
+                                                        content: errors.current?.nationalId
                                                     } : false}
                                                 />
                                                 <Form.Input
                                                     label="Phone NUmber"
                                                     placeholder="0712345678"
                                                     name="phoneNumber"
-                                                    value={academicValuesRef.current.phoneNumber}
-                                                    onChange={setField}
+                                                    onChange={(e) => setField(e)}
                                                     error={displayError('phoneNumber') ? {
-                                                        content: academicValuesErrorsRef.current?.phoneNumber
+                                                        content: errors.current?.phoneNumber
                                                     } : false}
                                                 />
 
@@ -178,10 +169,9 @@ const Contact = () => {
                                                     label="Full Names"
                                                     placeholder="fullNames"
                                                     name="fullNames"
-                                                    value={academicValuesRef.current.fullNames}
-                                                    onChange={setField}
+                                                    onChange={(e) => setField(e)}
                                                     error={displayError('fullNames') ? {
-                                                        content: academicValuesErrorsRef.current?.fullNames
+                                                        content: errors.current?.fullNames
                                                     } : false}
                                                 />
                                             </Form.Group>
@@ -190,15 +180,14 @@ const Contact = () => {
                                                     label="Message"
                                                     placeholder="Tell us more"
                                                     name="message"
-                                                    value={academicValuesRef.current.message}
-                                                    onChange={setField}
-                                                    error={displayError('fullNames') ? {
-                                                        content: academicValuesErrorsRef.current?.message
+                                                    onChange={(e) => setField(e)}
+                                                    error={displayError('message') ? {
+                                                        content: errors.current?.message
                                                     } : false}
                                                 />
                                             </Form.Group>
                                             <Button onClick={sendMessage} color="orange">
-                                                <Icon name='send' />
+                                                <Icon name='send'/>
                                                 Send
                                             </Button>
                                             <Button onClick={handleClose} color="grey">

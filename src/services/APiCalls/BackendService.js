@@ -23,51 +23,49 @@ const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
 
 // Add a request interceptor
 axios.interceptors.request.use((config) => {
-    const jwtToken = STORAGE.fetchAuthToken();
+     const jwtToken = STORAGE.fetchAuthToken();
     const token = 'Bearer ' + jwtToken;
-    // const token = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaW5kYUBnbWFpbC5jb20iLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiYXBwbGljYW50OnJlYWQifSx7ImF1dGhvcml0eSI6ImpvYjpyZWFkIn0seyJhdXRob3JpdHkiOiJqb2I6d3JpdGUifSx7ImF1dGhvcml0eSI6ImFwcGxpY2FudDp3cml0ZSJ9LHsiYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaWF0IjoxNjI0NjMxOTI0LCJleHAiOjE2MjU3ODg4MDB9.Tsbu5U7R6JFIGNQbz7M4aPw03tVQkZDVoq-qG1W5SHE';
-    headersConfig.Authorization = token;
+     headersConfig.Authorization = token;
     config.headers = headersConfig;
 
     return config;
 });
-
-axios.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response?.status === UNAUTHORIZED) {
-            STORAGE.destroyAuthTOken();
-            toast.error('PLease login to access this resource', {
-                position: "top-right",
-                autoClose: 2500,
-                transition: Zoom, hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            window.location.href = '/';
-            STORAGE.destroyAuthTOken();
-
-        } else {
-            return Promise.reject(error);
-        }
-    }
-);
+//
+// axios.interceptors.response.use(
+//     (response) => response,
+//     (error) => {
+//         if (error.response?.status === UNAUTHORIZED) {
+//             toast.error('PLease login to access this resource', {
+//                 position: "top-right",
+//                 autoClose: 2500,
+//                 transition: Zoom, hideProgressBar: false,
+//                 closeOnClick: true,
+//                 pauseOnHover: true,
+//                 draggable: true,
+//                 progress: undefined,
+//             });
+//
+//             // STORAGE.destroyAuthTOken();
+//
+//         } else {
+//             return Promise.reject(error);
+//         }
+//     }
+// );
 
 
 class BackendService {
 
-    async refershUserDetails() {
+    async refershUserDetails(isJobApplication) {
         const user = STORAGE.getCurrentUser();
-        console.log('refershUserDetails')
         if (user !== 'NA') {
             const url = REST_APIS.GET_USER_DETAILS + user?.email;
             this.getRequest(url).then(response => {
                 if (response?.status == '200') {
                     STORAGE.setUserDetials(response.data);
-                    window.location.reload();
-
+                    if (!isJobApplication) {
+                        // window.location.reload();
+                    }
                 }
             })
         } else {
@@ -93,18 +91,27 @@ class BackendService {
         return await axios.get(requestUrl);
     }
 
+    async DwonloadRequest(url) {
+        const requestUrl = baseURL + url;
+        return axios({
+            url: requestUrl,
+            method: 'GET',
+            responseType: 'blob',
+        });
+    }
+
     async postRequest(url, payload) {
-         const requestUrl = baseURL + url;
+        const requestUrl = baseURL + url;
         return await axios.post(requestUrl, payload);
     }
 
     async deleteRequest(url) {
-         const requestUrl = baseURL + url;
+        const requestUrl = baseURL + url;
         return await axios.delete(requestUrl);
     }
 
     async putRequest(url, payload) {
-         const requestUrl = baseURL + url;
+        const requestUrl = baseURL + url;
         return await axios.put(requestUrl, payload);
     }
 
@@ -144,7 +151,7 @@ class BackendService {
         return requestWards.data.map(val => ({key: val.id, text: val.wardName, value: val}))
     }
 
-    async  notifySuccess(value) {
+    async notifySuccess(value) {
         toast.success(value, {
             position: "top-right",
             autoClose: 4000,

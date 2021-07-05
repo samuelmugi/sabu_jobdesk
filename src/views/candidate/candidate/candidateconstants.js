@@ -67,5 +67,11 @@ module.exports = Object.freeze({
         {field: 'crbClearance'},
         {field: 'goodConductClearance'},
      ],
+    contactValuesFields: [
+        {field: 'nationalId'},
+        {field: 'phoneNumber'},
+        {field: 'fullNames'},
+        {field: 'message'},
+     ],
 })
 ;

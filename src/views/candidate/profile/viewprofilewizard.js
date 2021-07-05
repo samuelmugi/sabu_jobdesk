@@ -1,24 +1,16 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
-import {Button, Divider, Feed, Form, Grid, GridColumn, GridRow, Label} from 'semantic-ui-react'
+import {Button} from 'semantic-ui-react'
 import STORAGE from "services/APiCalls/config/storage";
-import {Card} from "reactstrap";
-import ProfileConstants from "views/candidate/profile/profileconstants";
-import useState from "react-usestateref";
 import StepButton from "@material-ui/core/StepButton";
-import PostSecondary from "views/candidate/candidate/postsecondary";
-import EmploymentHistory from "views/candidate/candidate/employmenthistory";
-import Skills from "views/candidate/candidate/Skills";
 import UploadFiles from "components/fileupload/upload-files";
-import PersonalInfoDialog from "views/candidate/candidate/personaldialog";
-import SecondarySchoolDialog from "views/candidate/candidate/secondarydialog";
-import Typography from "@material-ui/core/Typography";
-import CoverLetter from "views/candidate/candidate/coverletter";
-import moment from "moment";
+import AcademicStepper from "views/candidate/profile/academicstepper";
+import ExperienceStepper from "views/candidate/profile/experiencestepper";
+import CoverLetterStepper from "views/candidate/profile/coverletterstepper";
+import PersonalInfoStepper from "views/candidate/profile/personalstepper";
+import SkillStepper from "views/candidate/profile/skillstepper";
 
 const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
 
@@ -39,448 +31,27 @@ function getSteps() {
     return ['Personal Info', 'Academic Details', 'Experience', 'Skills', 'Cover Letter', 'Upload Cv'];
 }
 
-function getStepContent(step) {
+function getStepContent(step, props) {
     switch (step) {
         case 0: {
-            const personalInfoFields = ProfileConstants.personalInfoFields;
-            const sizeOfFields = personalInfoFields.length;
-            const rowModulus = +sizeOfFields % 4;
-            let noOfRows = 0;
-            if (+rowModulus > 0) {
-                noOfRows = ((+sizeOfFields - rowModulus) / 4) + 1;
-            } else {
-                noOfRows = +sizeOfFields / 4;
-            }
-            const events = [
-                {
-                    date: '4 Likes',
-                    summary: 'Elliot Fu added you as a friend',
-                }
-            ]
-            let col = 0;
-            return <Card className="bg-secondary shadow  ">
-                <PersonalInfoDialog/>
-                <Paper variant="outlined">
-
-                    <Box m={4}>
-                        <Grid stackable columns='equal'>
-                            {
-                                [...Array(noOfRows).keys()].map((row) => {
-                                        return (<Grid.Row>
-                                            {
-                                                [...Array(4).keys()].map((coll) => {
-                                                    const field = personalInfoFields[col];
-                                                    const fieldFeed = [
-                                                        {
-                                                            date: field?.field,
-                                                            summary: field?.field==='dateOfBirth'?moment(user[field?.field]).format("YYYY-MM-DD"):user[field?.field],
-                                                        }
-                                                    ];
-                                                    col++;
-                                                    return (
-                                                        <Grid.Column>
-                                                            <Feed events={fieldFeed}/>
-                                                        </Grid.Column>
-                                                    )
-                                                })
-
-                                            }
-                                        </Grid.Row>)
-
-                                    }
-                                )
-                            }
-                            {(user !== 'NA' && user?.homeCounty !== null) && (<Grid.Row>
-                                    <Grid.Column>
-                                        <Feed events={[
-                                            {
-                                                date: 'homeCounty',
-                                                summary: user?.homeCounty.name,
-                                            }
-                                        ]}/>
-                                    </Grid.Column>
-                                    <Grid.Column>
-                                        <Feed events={[
-                                            {
-                                                date: 'homeSubCounty',
-                                                summary: user?.homeSubCounty.name,
-                                            }
-                                        ]}/>
-                                    </Grid.Column>
-                                    <Grid.Column>
-                                        <Feed events={[
-                                            {
-                                                date: 'homeWard',
-                                                summary: user?.homeWard.wardName,
-                                            }
-                                        ]}/>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            )}
-                            {(user !== 'NA' && user?.countyOfResidence !== null) && (<Grid.Row>
-                                    <Grid.Column>
-                                        <Feed events={[
-                                            {
-                                                date: 'county Of Residence',
-                                                summary: user?.countyOfResidence.name,
-                                            }
-                                        ]}/>
-                                    </Grid.Column>
-                                    <Grid.Column>
-                                        <Feed events={[
-                                            {
-                                                date: 'Residence sub County',
-                                                summary: user?.subCountyOfResidence.name,
-                                            }
-                                        ]}/>
-                                    </Grid.Column>
-                                    <Grid.Column>
-                                        <Feed events={[
-                                            {
-                                                date: 'Residence Ward',
-                                                summary: user?.countyOfResidenceWard.wardName,
-                                            }
-                                        ]}/>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            )}
-                        </Grid>
-                    </Box>
-
-
-                </Paper>
-            </Card>
-
-
+            return <PersonalInfoStepper/>
         }
 
         case 1: {
-            const academicValuesFields = ProfileConstants.academicValuesFields;
-            const sizeOfFields = academicValuesFields.length;
-            const rowModulus = +sizeOfFields % 4;
-            let noOfRows = 0;
-            if (+rowModulus > 0) {
-                noOfRows = ((+sizeOfFields - rowModulus) / 4) + 1;
-            } else {
-                noOfRows = +sizeOfFields / 4;
-            }
-             const events = [
-                {
-                    date: '4 Likes',
-                    summary: 'Elliot Fu added you as a friend',
-                }
-            ]
-            let col = 0;
-            const academicQualifications = user?.academicQualifications;
-
-            return <Card className="bg-secondary shadow border-left-4">
-                <SecondarySchoolDialog/>
-                <Paper variant="outlined" circle>
-                    <Box m={4}>
-                        <Grid stackable columns='equal'>
-                            {
-                                [...Array(noOfRows).keys()].map((row) => {
-                                        return (<Grid.Row>
-                                            {
-                                                [...Array(4).keys()].map((coll) => {
-                                                    const field = academicValuesFields[col];
-                                                    const fieldFeed = [
-                                                        {
-                                                            date: field?.field,
-                                                            summary: user[field?.field],
-                                                        }
-                                                    ];
-                                                    col++;
-                                                    return (
-                                                        <Grid.Column>
-                                                            <Feed events={fieldFeed}/>
-                                                        </Grid.Column>
-                                                    )
-                                                })
-
-                                            }
-                                        </Grid.Row>)
-
-                                    }
-                                )
-                            }
-                            <Divider horizontal>Academic Qualifications</Divider>
-                            <Grid.Row>
-                                <Grid.Column>
-                                    <PostSecondary/>
-                                </Grid.Column>
-                            </Grid.Row>
-                            {
-                                academicQualifications.map((val, key) => {
-
-                                        return (<>
-                                                <Grid.Row>
-                                                    <Grid.Column>
-                                                        <Feed events={[
-                                                            {
-                                                                date: 'Qualification',
-                                                                summary: val?.educationLevel,
-                                                            }
-                                                        ]}/>
-                                                    </Grid.Column>
-                                                    <Grid.Column>
-                                                        <Feed events={[
-                                                            {
-                                                                date: 'School',
-                                                                summary: val?.schoolName,
-                                                            }
-                                                        ]}/>
-                                                    </Grid.Column>
-                                                    <Grid.Column>
-                                                        <Feed events={[
-                                                            {
-                                                                date: 'Course',
-                                                                summary: val?.courseName,
-                                                            }
-                                                        ]}/>
-                                                    </Grid.Column>
-
-                                                    <Grid.Column>
-                                                        <Feed events={[
-                                                            {
-                                                                date: 'start',
-                                                                summary: val?.start,
-                                                            }
-                                                        ]}/>
-                                                    </Grid.Column>
-                                                    <Grid.Column>
-                                                        <Feed events={[
-                                                            {
-                                                                date: 'end',
-                                                                summary: val?.end,
-                                                            }
-                                                        ]}/>
-                                                    </Grid.Column>
-                                                    <Grid.Column>
-                                                        <PostSecondary qualification={val}  edit={true}/>
-                                                    </Grid.Column>
-                                                    <Grid.Column>
-                                                        <PostSecondary qualification={val}  delete={true}/>
-                                                    </Grid.Column>
-                                                </Grid.Row>
-
-                                            </>
-                                        )
-
-                                    }
-                                )
-                            }
-                        </Grid>
-                    </Box>
-                </Paper>
-            </Card>
-                ;
+            return <AcademicStepper {...props}/>
         }
         case 2: {
-
-            const workExperiences = user?.workExperiences;
-
-            return <Card className="bg-secondary shadow border-left-4">
-                <EmploymentHistory/>
-                <Paper variant="outlined" circle>
-                    <Box m={4}>
-                        <Grid stackable columns='equal'>
-
-                            {
-                                workExperiences.map((val, key) => {
-
-                                        return (<>
-                                                <Grid.Row>
-                                                    <Grid.Column>
-                                                        <Feed events={[
-                                                            {
-                                                                date: 'companyName',
-                                                                summary: val?.companyName,
-                                                            }
-                                                        ]}/>
-                                                    </Grid.Column>
-                                                    <Grid.Column>
-                                                        <Feed events={[
-                                                            {
-                                                                date: 'jobTitle',
-                                                                summary: val?.jobTitle,
-                                                            }
-                                                        ]}/>
-                                                    </Grid.Column>
-                                                    <Grid.Column>
-                                                        <Feed events={[
-                                                            {
-                                                                date: 'currentActive',
-                                                                summary: val?.currentActive,
-                                                            }
-                                                        ]}/>
-                                                    </Grid.Column>
-
-                                                    <Grid.Column>
-                                                        <Feed events={[
-                                                            {
-                                                                date: 'startDate',
-                                                                summary: val?.startDate,
-                                                            }
-                                                        ]}/>
-                                                    </Grid.Column>
-                                                    <Grid.Column>
-                                                        <Feed events={[
-                                                            {
-                                                                date: 'endDate',
-                                                                summary: val?.endDate,
-                                                            }
-                                                        ]}/>
-                                                    </Grid.Column>
-                                                    <Grid.Column>
-                                                        <EmploymentHistory experience={val}  edit={true}/>
-                                                    </Grid.Column>
-                                                    <Grid.Column>
-                                                        <EmploymentHistory experience={val}  delete={true}/>
-                                                    </Grid.Column>
-                                                </Grid.Row>
-                                                <Grid.Row>
-                                                    <Grid.Column>
-                                                        <Feed events={[
-                                                            {
-                                                                date: 'description',
-                                                                summary: val?.description,
-                                                            }
-                                                        ]}/>
-                                                    </Grid.Column>
-                                                </Grid.Row>
-                                                <Divider></Divider>
-
-                                            </>
-                                        )
-
-                                    }
-                                )
-                            }
-                        </Grid>
-                    </Box>
-                </Paper>
-            </Card>
-                ;
+            return <ExperienceStepper/>
         }
 
         case 3 : {
-            const skills = user?.skills;
-            const sizeOfFields = skills.length;
-            const rowModulus = +sizeOfFields % 5;
-            let noOfRows = 0;
-            if (+rowModulus > 0) {
-                noOfRows = ((+sizeOfFields - rowModulus) / 5) + 1;
-            } else {
-                noOfRows = +sizeOfFields / 5;
-            }
-            console.log('noOfRows=', noOfRows)
-
-            let col = 0;
-            return <Card className="bg-secondary shadow  ">
-                <Skills/>
-                <Paper variant="outlined" circle>
-                    <Box m={4}>
-                        <Grid stackable columns='equal'>
-                            {
-                                [...Array(noOfRows).keys()].map((row) => {
-                                        const colNos = skills.length > 4 ? 4 : skills.length;
-                                        return (<Grid.Row>
-                                            {
-                                                [...Array(colNos).keys()].map((coll) => {
-                                                    if (skills.length > col) {
-                                                        const skill = JSON.parse(skills[col]);
-                                                        col++;
-                                                        return (
-                                                            <Grid.Column>
-                                                                <Label as='a' color='teal' tag>
-                                                                    {skill?.skill}
-                                                                </Label>
-                                                            </Grid.Column>
-                                                        )
-                                                    } else {
-                                                        return <Grid.Column></Grid.Column>
-                                                    }
-                                                })
-
-                                            }
-                                        </Grid.Row>);
-                                        col++;
-
-                                    }
-                                )
-                            }
-
-                        </Grid>
-                    </Box>
-                </Paper>
-            </Card>
-
+            return <SkillStepper/>
         }
         case 4: {
-            return <Card className="bg-secondary shadow  ">
-                <CoverLetter/>
-                <Paper variant="outlined" circle>
-                    <Box m={4}>
-                        <Grid stackable columns='equal'>
-                            <GridRow>
-                                <GridColumn>
-                                    <Label>Cover Letter.</Label>
-                                    <Typography>
-                                        {user?.coverLetter}
-                                    </Typography>
-                                </GridColumn>
-                            </GridRow>
-                            <GridRow>
-                                <GridColumn>
-                                    <Form.Checkbox
-                                        label="KRA Clerance"
-                                        name="kraClearace"
-                                        checked={user?.kraClearace}
-                                    />
-                                </GridColumn>
-
-                                <GridColumn>
-                                    <Form.Checkbox
-                                        label="Helb CLearance"
-                                        name="helbClearance"
-                                        checked={user?.helbClearance}
-                                    /> </GridColumn>
-
-                                <GridColumn>
-                                    <Form.Checkbox
-                                        label="EACC Clearance"
-                                        name="eaccClearance"
-                                        checked={user?.eaccClearance}
-                                    />
-                                </GridColumn>
-
-                                <GridColumn>
-                                    <Form.Checkbox
-                                        label="CRB CLearance"
-                                        name="crbClearance"
-                                        checked={user?.crbClearance}
-                                    /> </GridColumn>
-
-                                <GridColumn>
-                                    <Form.Checkbox
-                                        label="Good Conduct"
-                                        name="goodConductClearance"
-                                        checked={user?.goodConductClearance}
-                                    />
-
-
-                                </GridColumn>
-                            </GridRow>
-                        </Grid>
-                    </Box>
-                </Paper>
-            </Card>
-                ;
-
+            return <CoverLetterStepper/>;
         }
         case 5: {
-            return <UploadFiles/>;
+            return <UploadFiles isJobApplication={props.isJobApplication}/>;
 
         }
             ;
@@ -489,22 +60,11 @@ function getStepContent(step) {
     }
 }
 
-export default function ViewProfileStepper() {
+export default function ViewProfileStepper(props) {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
-    const [skipped, setSkipped] = React.useState(new Set());
-    const [isMounted, setMounted, isMountedRef] = useState(false);
     const [completed, setCompleted] = React.useState({});
 
-
-    useEffect(() => {
-        (async function () {
-            if (!isMountedRef.current) {
-                setMounted(true);
-               // BackendService.refershUserDetails().then(() => setMounted(true));
-            }
-        })();
-    }, []);
 
     const steps = getSteps();
 
@@ -542,22 +102,11 @@ export default function ViewProfileStepper() {
         setActiveStep(step);
     };
 
-    const handleComplete = () => {
-        const newCompleted = completed;
-        newCompleted[activeStep] = true;
-        setCompleted(newCompleted);
-        handleNext();
-    };
-
-    const handleReset = () => {
-        setActiveStep(0);
-        setCompleted({});
-    };
-
 
     return (
         <>
-            {(user !== 'NA' && isMountedRef.current) && <div className={classes.root}>
+            {user !== 'NA' &&
+            <div className={classes.root}>
                 <Stepper nonLinear activeStep={activeStep}>
                     {steps.map((label, index) => (
                         <Step key={label}>
@@ -570,20 +119,23 @@ export default function ViewProfileStepper() {
                 <div>
 
                     <div>
-                        <div className={classes.instructions}>{getStepContent(activeStep)}</div>
+                        <div
+                            className={classes.instructions}>{getStepContent(activeStep, {isJobApplication: props?.isJobApplication})}</div>
                         <div>
                             <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
                                 Back
                             </Button>
-
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleNext}
-                                className={classes.button}
-                            >
-                                Next
-                            </Button>
+                            {(isLastStep() && props.isJobApplication) ?
+                                <Button onClick={props.submitApplication} color="green">
+                                    <strong>Submit Application {props.title}</strong>
+                                </Button> : <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleNext}
+                                    className={classes.button}
+                                >
+                                    Next
+                                </Button>}
                         </div>
                     </div>
 

@@ -5,18 +5,13 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
 import {grey} from '@material-ui/core/colors';
-import {Badge} from 'reactstrap';
-import {Button, Divider, Header, Icon} from 'semantic-ui-react'
+import {Divider, Icon} from 'semantic-ui-react'
 import Box from '@material-ui/core/Box';
-import REST_APIS from "services/APiCalls/config/apiUrl";
-import BackendService from "services/APiCalls/BackendService";
 import STORAGE from "services/APiCalls/config/storage";
 import useState from "react-usestateref";
 import LoadingOverlay from 'react-loading-overlay'
 import ClipLoader from "react-spinners/PropagateLoader";
-import ApplyJob from "views/jobs/jobs/jobcomponents/applyjob";
 import faqConstants from "views/faq/faq/faqconstant";
 
 const useStyles = makeStyles((theme) => ({

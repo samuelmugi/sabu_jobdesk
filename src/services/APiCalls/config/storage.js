@@ -5,7 +5,7 @@ const LS_KEY = {
 
 class Storage {
     setAuthTOken = (authToken) => {
-        this.destroyAuthTOken();
+        // this.destroyAuthTOken();
         localStorage.setItem(
             LS_KEY.auth_token,
             JSON.stringify({

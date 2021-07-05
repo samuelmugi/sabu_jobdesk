@@ -64,12 +64,12 @@ class DemoNavbar extends React.Component {
     };
     logout = () => {
         STORAGE.destroyAuthTOken();
-     }
+    }
 
     render() {
         return (
             <>
-                <header  >
+                <header>
                     <Navbar
                         className="navbar-main navbar-transparent navbar-light headroom"
                         expand="lg"
@@ -144,23 +144,10 @@ class DemoNavbar extends React.Component {
                                     {user === 'NA' &&
                                     <>
                                         <NavItem className="nav-link-icon">
-                                            <Button
-                                                className="btn-neutral btn-icon"
-                                                color="default"
-                                            >
-                                                <span>
-                       <Signup/>
-                      </span>
-                                            </Button>
+                                            <Signup/>
                                         </NavItem>
                                         <NavItem className="nav-link-icon">
-                                            <Button
-                                                className="btn-neutral btn-icon"
-                                                color="default"
-                                            >  <span>
-                                        <Signin/>
-                                        </span>
-                                            </Button>
+                                            <Signin/>
                                         </NavItem>
                                     </>
                                     }

@@ -1,4 +1,5 @@
 import React from 'react';
+import './footer.scss';
 // reactstrap components
 import {makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -20,7 +21,10 @@ const useStyles = makeStyles((theme) => ({
     appBar: {
         top: 'auto',
         bottom: 0,
-        background: '#69831d'
+        background: '#69831d',
+        '@media (max-width: 780px)': {
+            display: 'none'
+        }
 
     },
     grow: {
@@ -41,8 +45,6 @@ const CardsFooter = () => {
 
 
     return (
-
-
         <AppBar position="fixed" color="primary" className={classes.appBar}>
 
             <Row className="justify-content-center align-content-center">

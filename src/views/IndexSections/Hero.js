@@ -18,10 +18,10 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 // reactstrap components
-import {Button, CardBody, Col, Container, Row} from 'reactstrap';
+import {CardBody, Col, Container, Row} from 'reactstrap';
 import Signin from 'views/login/login/signin.js';
 import Signup from 'views/login/login/SIgnup.js';
-import {Card, List} from "semantic-ui-react";
+import {Button, Card, List} from "semantic-ui-react";
 import DemoNavbar from "components/Navbars/DemoNavbar";
 import STORAGE from "services/APiCalls/config/storage";
 
@@ -155,36 +155,25 @@ class Hero extends React.Component {
                                             What would you like to do?
                                         </p>
                                         <div className="btn-wrapper mt-5">
-                                            {user === 'NA' &&
-                                            <Button
-                                                className="btn-neutral btn-icon"
-                                                color="default"
-                                            >  <span>
-                    <Signup/>
-                      </span>
-                                            </Button>
-                                            }
-                                            <Button
-                                                className="btn-neutral btn-icon"
-                                                color="default"
-                                                to="/jobs-page" tag={Link}
-                                            >
+                                            <Row>
+                                                <Col> {user === 'NA' && <Signup/>}</Col>
+                                                <Col>
+                                                    <Button
+                                                    className="btn-neutral btn-icon"
+                                                    color="grey"
+                                                    to="/jobs-page" tag={Link}
+                                                >
                       <span className="btn-inner--icon">
                         <i className="fa fa-binoculars mr-2"/>
                       </span>
-                                                <span className="nav-link-inner--text ml-1">
+                                                    <span className="nav-link-inner--text ml-1">
                         JOBS
                       </span>
-                                            </Button>
-                                            {user === 'NA' &&
-                                            <Button
-                                                className="btn-neutral btn-icon"
-                                                color="default"
-                                            >  <span>
-                    <Signin/>
-                      </span>
-                                            </Button>
-                                            }
+                                                </Button></Col>
+                                                <Col> {user === 'NA' && <Signin/>}</Col>
+                                            </Row>
+                                           
+
                                         </div>
                                         <div className="mt-5">
                                             <small className="text-white font-weight-bold mb-0 mr-2">
