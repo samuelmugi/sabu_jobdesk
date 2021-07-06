@@ -77,8 +77,8 @@ const PersonalInfoDialog = (props) => {
     }, [settings, isEdited, personalInfoValues]);
 
 
-    const initializePersonalInfo =   () => {
-          initializeDefaultData()
+    const initializePersonalInfo = () => {
+        initializeDefaultData()
             .finally(() => {
                 initializeCountySelect();
             })
@@ -91,7 +91,7 @@ const PersonalInfoDialog = (props) => {
         });
     }
 
-    const initializeCountySelect =  () => {
+    const initializeCountySelect = () => {
         if (user?.homeCounty !== null) {
             const homeCounty = user?.homeCounty;
             const homeSubCounty = user?.homeSubCounty;
@@ -127,7 +127,7 @@ const PersonalInfoDialog = (props) => {
         setFieldValues(name, value);
         fetchSubCounties(name, value);
     }
-    const fetchWard =   (name, value) => {
+    const fetchWard = (name, value) => {
         if (name === 'homeSubCounty') {
             const county = personalInfoValuesRef.current?.homeCounty;
             BackendService.getWards(county, value).then(wards => {
@@ -180,10 +180,26 @@ const PersonalInfoDialog = (props) => {
                 hasErrors = true;
             }
         });
-        if (!!personalInfoValuesErrorsRef.current?.dateOfBirth) {
-            BackendService.notifyError('PLease select date of birth');
+        const isId = isNumeric(personalObj.nationalID);
+        if (!isId) {
+            setPersonalInfoValuesErrors((prevValues) => {
+                return {...prevValues, nationalID: 'Please enter a valid id number'};
+            });
+            setPersonalInfoValues((prevValues) => {
+                return {...prevValues, nationalID: ''};
+            });
         }
-  return hasErrors;
+        const dateOfBirth = moment(personalObj.dateOfBirth).format("YYYY-MM-DD")
+        const isAfter = moment(dateOfBirth).isAfter();
+
+        if (isAfter) {
+            setPersonalInfoValuesErrors((prevValues) => {
+                return {...prevValues, dateOfBirth: 'Date of birth is in the future'};
+            });
+            hasErrors = true;
+            BackendService.notifyError('Date of birth is in the future');
+        }
+        return hasErrors;
     }
 
 
@@ -222,6 +238,10 @@ const PersonalInfoDialog = (props) => {
         } else {
             return false;
         }
+    }
+
+    function isNumeric(value) {
+        return /^-?\d+$/.test(value);
     }
 
     return (
@@ -346,16 +366,20 @@ const PersonalInfoDialog = (props) => {
                                                 content: personalInfoValuesErrorsRef.current?.gender
                                             } : false}
                                         />
-                                        <Form.Field  >
+                                        <Form.Field error={displayError('dateOfBirth')}>
+                                            {displayError('dateOfBirth') &&
+                                            <>
+                                                <Label basic color='red' pointing='below'>
+                                                    {personalInfoValuesErrorsRef.current?.dateOfBirth}
+                                                </Label><br/>
+                                            </>}
                                             <TextField
-                                                error={displayError('dateOfBirth') ? {
-                                                    content: personalInfoValuesErrorsRef.current?.dateOfBirth
-                                                } : false}
+
                                                 id="date"
                                                 label="Date Of Birth"
                                                 type="date"
-                                                onChange={(e)=>{
-                                                    console.log('date=',e.target.value);
+                                                onChange={(e) => {
+                                                    console.log('date=', e.target.value);
                                                     setFieldValues('dateOfBirth', moment(e.target.value).format("YYYY-MM-DD"));
                                                     setStartDate(e.target.value);
                                                 }}
@@ -365,18 +389,7 @@ const PersonalInfoDialog = (props) => {
                                                     shrink: true,
                                                 }}
                                             />
-                                            {/*<DatePicker*/}
-                                            {/*    name='dateOfBirth'*/}
-                                            {/*    selected={startDate}*/}
-                                            {/*    onChange={(date) => {*/}
-                                            {/*        setFieldValues('dateOfBirth', moment(date).format("YYYY-MM-DD"));*/}
-                                            {/*        setStartDate(date);*/}
-                                            {/*    }}*/}
-                                            {/*    yearItemNumber={20}*/}
-                                            {/*    showYearDropdown*/}
-                                            {/*    showMonthYearDropdown*/}
-                                            {/*    useShortMonthInDropdown*/}
-                                            {/*/>*/}
+
                                         </Form.Field>
 
                                     </Form.Group>
@@ -560,9 +573,9 @@ const PersonalInfoDialog = (props) => {
                                                 onClick={submitPersonalInfo}>
                                             Save Personal Data
                                         </Button>
-                                     <Button onClick={handleClose} color="primary">
-                                        Close
-                                    </Button></Col>
+                                        <Button onClick={handleClose} color="primary">
+                                            Close
+                                        </Button></Col>
                                 </Row>
                             </CardBody>
                         </Card>

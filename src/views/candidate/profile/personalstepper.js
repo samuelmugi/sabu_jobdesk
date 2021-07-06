@@ -66,7 +66,7 @@ const PersonalInfoStepper = (props) => {
                                             const fieldFeed = [
                                                 {
                                                     date: field?.field,
-                                                    summary: field?.field === 'dateOfBirth' ? moment(userRef.current[field?.field]).format("YYYY-MM-DD") : otherValue,
+                                                    summary: field?.field === 'dateOfBirth' ? moment(userRef.current[field?.field]).format("Do MMM YYYY") : otherValue,
                                                 }
                                             ];
                                             col++;

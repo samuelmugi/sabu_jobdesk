@@ -115,8 +115,34 @@ export default function PostSecondary(props) {
                 hasErrors = true;
             }
         });
-        if (!!postSecondaryValuesErrorsRef.current?.dateOfBirth) {
-            BackendService.notifyError('PLease select date of birth');
+        const start = moment(personalObj.start).format("YYYY")
+        const isAfter = moment(start).isAfter();
+
+        if (isAfter) {
+            setPostSecondaryValuesErrors((prevValues) => {
+                return {...prevValues, start: 'Start Year  is in the future'};
+            });
+            hasErrors = true;
+        }
+        const end = moment(personalObj.end).format("YYYY")
+        const isEndAfter = moment(end).isAfter();
+
+        if (isEndAfter) {
+            setPostSecondaryValuesErrors((prevValues) => {
+                return {...prevValues, end: 'End Year  is in the future'};
+            });
+            hasErrors = true;
+        }
+
+        const checkStartAndEnd=moment(end).isAfter(start);
+        if (checkStartAndEnd) {
+            setPostSecondaryValuesErrors((prevValues) => {
+                return {...prevValues, end: 'End Year  is before start'};
+            });
+            setPostSecondaryValuesErrors((prevValues) => {
+                return {...prevValues, start: 'Start Year  is after  end year'};
+            });
+            hasErrors = true;
         }
   return hasErrors;
     }
@@ -306,9 +332,7 @@ export default function PostSecondary(props) {
 
                             </Form.Group>
                             <Form.Group>
-                                <Form.Field error={displayError('start') ? {
-                                    content: postSecondaryValuesErrorsRef.current?.start
-                                } : false}
+                                <Form.Field error={displayError('start')  }
                                 >
                                     Year Of Start<br/>
                                     <DatePicker
@@ -321,11 +345,14 @@ export default function PostSecondary(props) {
                                         }}
                                         showYearPicker
                                         dateFormat="yyyy"
-                                    />
+                                    /> {displayError('start') &&
+                                <>
+                                    <br/> <Label basic color='red' pointing='above'>
+                                    {postSecondaryValuesErrorsRef.current?.start}
+                                </Label>
+                                </>}
                                 </Form.Field>
-                                <Form.Field error={displayError('end') ? {
-                                    content: postSecondaryValuesErrorsRef.current?.end
-                                } : false}
+                                <Form.Field error={displayError('end')  }
                                 >
                                     Year Of Completion<br/>
                                     <DatePicker
@@ -337,7 +364,12 @@ export default function PostSecondary(props) {
                                         }}
                                         showYearPicker
                                         dateFormat="yyyy"
-                                    />
+                                    /> {displayError('end') &&
+                                <>
+                                    <br/>   <Label basic color='red' pointing='above'>
+                                    {postSecondaryValuesErrorsRef.current?.end}
+                                </Label>
+                                </>}
                                 </Form.Field>
                             </Form.Group>
 

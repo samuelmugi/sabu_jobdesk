@@ -15,6 +15,7 @@ import BackendService from "services/APiCalls/BackendService";
 import useState from "react-usestateref";
 import STORAGE from "services/APiCalls/config/storage";
 import {Button} from "semantic-ui-react";
+import swal from "sweetalert";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -96,6 +97,26 @@ export default function MyProfile(props) {
 
         }
     }
+    const handleSubmit = async () => {
+        swal({
+            title: "Do you want to submit the job application?",
+            text: props.job?.title.length>50?props.job?.title.substr(0,20)+'...':props.job?.title,
+            icon: "warning",
+            buttons: true,
+            dangerMode: false,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Application submitted successfully!", {
+                        icon: "success",
+                    });
+                    submitApplication();
+                } else {
+                    swal("Application not submitted!");
+                }
+            });
+
+    }
 
     return (
         <>
@@ -113,18 +134,14 @@ export default function MyProfile(props) {
                                 </IconButton>
                                 <Typography variant="h6" className={classes.title}>
                                     <strong style={{color: 'red'}}> Review Profile Before submitting
-                                        application</strong>
+                                        application for {props.job.title}</strong>
                                 </Typography>
-                                {props.job &&
-                                <Button onClick={submitApplication} color="green">
-                                    <strong>Submit Application {props.job.title}</strong>
-                                </Button>
-                                }
+
                             </Toolbar>
                         </AppBar>
                         <div className={classes.profileVIew}>
 
-                            <ViewProfileStepper title={props.job.title} submitApplication={submitApplication} isJobApplication={true}/>
+                            <ViewProfileStepper title={props.job.title} submitApplication={handleSubmit} isJobApplication={true}/>
 
                         </div>
                     </Dialog>

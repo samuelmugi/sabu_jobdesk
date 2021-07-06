@@ -108,8 +108,35 @@ export default function EmploymentHistory(props) {
             }
         });
 
+        const start = moment(personalObj.startDate).format("YYYY-MM-DD")
+        const isAfter = moment(startDate).isAfter();
 
-        console.log(JSON.stringify(employmentValuesErrorsRef.current))
+        if (isAfter) {
+            setEmploymentValuesErrors((prevValues) => {
+                return {...prevValues, startDate: 'Start Year  is in the future'};
+            });
+            hasErrors = true;
+        }
+        const endDate = moment(personalObj.endDate).format("YYYY-MM-DD")
+        const isEndAfter = moment(endDate).isAfter();
+
+        if (isEndAfter) {
+            setEmploymentValuesErrors((prevValues) => {
+                return {...prevValues, endDate: 'End Year  is in the future'};
+            });
+            hasErrors = true;
+        }
+
+        const checkStartAndEnd = moment(endDate).isAfter(start);
+        if (checkStartAndEnd) {
+            setEmploymentValuesErrors((prevValues) => {
+                return {...prevValues, endDate: 'End Year  is before start'};
+            });
+            setEmploymentValuesErrors((prevValues) => {
+                return {...prevValues, startDate: 'Start Year  is after  end year'};
+            });
+            hasErrors = true;
+        }
         return hasErrors;
     }
     const resetValues = () => {
@@ -308,9 +335,7 @@ export default function EmploymentHistory(props) {
                         <Form.Group widths='equal'>
                             <Form.Field>
                                 <TextField
-                                    error={displayError('startDate') ? {
-                                        content: employmentValuesErrorsRef.current?.startDate
-                                    } : false}
+                                    error={displayError('startDate')}
                                     id="startDate"
                                     label="Period From"
                                     type="date"
@@ -323,15 +348,18 @@ export default function EmploymentHistory(props) {
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
-                                />
+                                />{displayError('startDate') &&
+                            <>
+                                <br/> <Label basic color='red' pointing='above'>
+                                {employmentValuesErrorsRef.current?.startDate}
+                            </Label>
+                            </>}
                             </Form.Field>
 
                             <Form.Field>
 
                                 <TextField
-                                    error={displayError('endDate') ? {
-                                        content: employmentValuesErrorsRef.current?.endDate
-                                    } : false}
+                                    error={displayError('endDate')}
                                     id="endDate"
                                     label="Period To"
                                     type="date"
@@ -344,7 +372,12 @@ export default function EmploymentHistory(props) {
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
-                                />
+                                />{displayError('endDate') &&
+                            <>
+                                <br/> <Label basic color='red' pointing='above'>
+                                {employmentValuesErrorsRef.current?.endDate}
+                            </Label>
+                            </>}
                             </Form.Field>
                         </Form.Group>
                         <Button onClick={submitEmploymentValues} positive>

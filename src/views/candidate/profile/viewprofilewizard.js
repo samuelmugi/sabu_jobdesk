@@ -10,7 +10,7 @@ import AcademicStepper from "views/candidate/profile/academicstepper";
 import ExperienceStepper from "views/candidate/profile/experiencestepper";
 import CoverLetterStepper from "views/candidate/profile/coverletterstepper";
 import PersonalInfoStepper from "views/candidate/profile/personalstepper";
-import SkillStepper from "views/candidate/profile/skillstepper";
+import swal from "sweetalert";
 
 const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
 
@@ -28,30 +28,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-    return ['Personal Info', 'Academic Details', 'Experience', 'Skills', 'Cover Letter', 'Upload Cv'];
+    return ['Personal Info', 'Academic Details', 'Experience', 'Cover Letter', 'Upload Cv'];
 }
 
 function getStepContent(step, props) {
     switch (step) {
         case 0: {
-            return <PersonalInfoStepper/>
+            return <PersonalInfoStepper  {...props}/>
         }
-
         case 1: {
             return <AcademicStepper {...props}/>
         }
         case 2: {
-            return <ExperienceStepper/>
+            return <ExperienceStepper  {...props}/>
         }
 
-        case 3 : {
-            return <SkillStepper/>
+        // case 3 : {
+        //     return <SkillStepper/>
+        // }
+        case 3: {
+            return <CoverLetterStepper  {...props}/>;
         }
         case 4: {
-            return <CoverLetterStepper/>;
-        }
-        case 5: {
-            return <UploadFiles isJobApplication={props.isJobApplication}/>;
+            return <UploadFiles  {...props}/>;
 
         }
             ;
@@ -93,6 +92,22 @@ export default function ViewProfileStepper(props) {
                 : activeStep + 1;
         setActiveStep(newActiveStep);
     };
+    const handleDone = () => {
+        swal({
+            title: "You will be re-directed to jobs page",
+            text: 'If you are okay with your profile',
+            icon: "warning",
+            buttons: true,
+            dangerMode: false,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+
+                    window.location.href = '/jobs-page';
+                }
+            });
+
+    };
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -127,15 +142,27 @@ export default function ViewProfileStepper(props) {
                             </Button>
                             {(isLastStep() && props.isJobApplication) ?
                                 <Button onClick={props.submitApplication} color="green">
-                                    <strong>Submit Application {props.title}</strong>
-                                </Button> : <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleNext}
-                                    className={classes.button}
-                                >
-                                    Next
-                                </Button>}
+                                    <strong>Submit Application</strong>
+                                </Button> :
+                                (isLastStep() ?
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={handleDone}
+                                            className={classes.button}
+                                        >
+                                            Submit and Exit
+                                        </Button> : <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={handleNext}
+                                            className={classes.button}
+                                        >
+                                            Next
+                                        </Button>
+
+
+                                )}
                         </div>
                     </div>
 

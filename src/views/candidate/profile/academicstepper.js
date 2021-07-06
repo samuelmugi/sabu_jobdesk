@@ -141,9 +141,7 @@ const AcademicStepper = (props) => {
                                                            qualification={val} edit={true}/>
                                         </Grid.Column>
                                         <Grid.Column>
-                                            <PostSecondary refreshUserDetails={refreshUserDetails}
-                                                           isJobApplication={props.isJobApplication}
-                                                           qualification={val} delete={true}/>
+
                                         </Grid.Column>
                                     </Grid.Row>
 

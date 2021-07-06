@@ -122,6 +122,15 @@ const SecondarySchoolDialog = (props) => {
             }
         }}
         );
+        const secondarySchoolYearOfCompletion = moment(personalObj.secondarySchoolYearOfCompletion).format("YYYY")
+        const isAfter = moment(secondarySchoolYearOfCompletion).isAfter();
+
+        if (isAfter) {
+            setAcademicValuesErrors((prevValues) => {
+                return {...prevValues, secondarySchoolYearOfCompletion: 'Year of completions is in the future'};
+            });
+            hasErrors = true;
+         }
         return hasErrors;
     }
 
@@ -236,9 +245,13 @@ const SecondarySchoolDialog = (props) => {
                                                         content: academicValuesErrorsRef.current?.secondaryOverallGrade
                                                     } : false}
                                                 />
-                                                <Form.Field error={displayError('secondarySchoolYearOfCompletion') ? {
-                                                    content: academicValuesErrorsRef.current?.secondarySchoolYearOfCompletion
-                                                } : false}>
+                                                <Form.Field error={displayError('secondarySchoolYearOfCompletion') }>
+                                                    {displayError('secondarySchoolYearOfCompletion') &&
+                                                    <>
+                                                        <Label basic color='red' pointing='below'>
+                                                            {academicValuesErrorsRef.current?.secondarySchoolYearOfCompletion}
+                                                        </Label><br/>
+                                                    </>}
                                                     Year Of Completion<br/>
                                                     <DatePicker
                                                         selected={startDate}

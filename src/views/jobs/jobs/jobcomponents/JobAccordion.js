@@ -158,8 +158,9 @@ const JobAccordion = (props) => {
                                         {item?.jobDescription.split("\n").join("\n")}
                                     </Typography>
 
-                                    {/*<ApplyJob job={item}/>*/}
-                                    <MyProfile job={item}/>
+                                    {user !== 'NA' ?<MyProfile job={item}/>
+                                        :<ApplyJob job={item}/>
+                                    }
 
                                 </Box>
                             </AccordionDetails>
