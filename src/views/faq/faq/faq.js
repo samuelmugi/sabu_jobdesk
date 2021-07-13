@@ -3,13 +3,9 @@ import './faq.scss';
 import {Card, CardBody, Col, Container, Row} from "reactstrap";
 import DemoNavbar from "components/Navbars/DemoNavbar";
 import CardsFooter from "components/Footers/CardsFooter";
-import faqConstants from "./faqconstant";
 import FaqAccordion from "views/faq/faq/faqaccordion";
 
 const style = {width: "80rem"};
-const styleImg = {width: "100px"};
-const faqConstantsFields=faqConstants.faqConstantsFields;
-
 
 
 export default class faq extends Component {
@@ -70,7 +66,7 @@ export default class faq extends Component {
                                     <Col>
                                         <Card style={style} className="card-lift--hover shadow border-0">
                                             <CardBody className="py-5">
-                                               <FaqAccordion/>
+                                                <FaqAccordion/>
                                             </CardBody>
                                         </Card>
                                     </Col>

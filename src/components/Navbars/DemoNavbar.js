@@ -109,7 +109,7 @@ class DemoNavbar extends React.Component {
                                     {user !== 'NA' &&
                                     <NavItem>
                                         <NavLink className="nav-link-icon" to="/candidate-page" tag={Link}>
-                                            MY CANDIDATURE
+                                            My Job Profile
                                         </NavLink>
                                     </NavItem>
                                     }
@@ -133,7 +133,7 @@ class DemoNavbar extends React.Component {
                                         </NavLink>
                                     </NavItem>
                                     <NavItem className="nav-link-icon">
-                                        <NavLink tag={Link}> <Contact/></NavLink>
+                                       <Contact/>
 
                                     </NavItem>
                                     <NavItem>

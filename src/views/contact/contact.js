@@ -1,7 +1,7 @@
 import React from 'react';
 import useState from 'react-usestateref';
 // reactstrap components
-import {Card, CardBody, CardHeader, Col, Modal, Row} from 'reactstrap';
+import {Card, CardBody, CardHeader, Col, Modal, NavLink, Row} from 'reactstrap';
 import {useHistory} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -107,10 +107,11 @@ const Contact = () => {
         <>
             <Row>
                 <Col>
-                    <a onClick={handleClickOpen}>
-                        <span>
-                          Contact Us </span>
-                    </a>
+
+                    <NavLink   onClick={handleClickOpen}>
+
+                          Contact Us
+                    </NavLink>
                     <Modal
                         className="modal-dialog-centered"
                         size="lg"

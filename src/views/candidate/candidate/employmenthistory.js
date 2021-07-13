@@ -127,7 +127,7 @@ export default function EmploymentHistory(props) {
             hasErrors = true;
         }
 
-        const checkStartAndEnd = moment(endDate).isAfter(start);
+        const checkStartAndEnd = moment(start).isAfter(endDate);
         if (checkStartAndEnd) {
             setEmploymentValuesErrors((prevValues) => {
                 return {...prevValues, endDate: 'End Year  is before start'};
@@ -383,7 +383,7 @@ export default function EmploymentHistory(props) {
                         <Button onClick={submitEmploymentValues} positive>
                             Save
                         </Button>
-                        <Button onClick={handleClose} color="primary">
+                        <Button onClick={handleClose} color="blue">
                             Close
                         </Button>
 

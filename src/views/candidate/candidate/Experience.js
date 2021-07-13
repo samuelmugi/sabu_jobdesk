@@ -46,16 +46,12 @@ export default function Experience(props) {
     useEffect(() => {
         (async function () {
             if (!isMountedRef.current) {
-                await initializeExperienceValues;
-                setMounted(true);
+                 setMounted(true);
             }
         })();
     }, [isEdited]);
 
 
-    const initializeExperienceValues = async () => {
-
-    }
 
     return (
         <> <LoadingOverlay

@@ -78,7 +78,7 @@ export default function MyProfile(props) {
 
                         setTimeout(function () {
                             setLoading(false);
-                            window.location.reload();
+                           STORAGE.navigateToApplicationsPage(2);
                         }, 4000);
 
 

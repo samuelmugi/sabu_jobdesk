@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import useState from 'react-usestateref';
 // reactstrap components
 import {Card, CardBody, Col, Row} from 'reactstrap';
-import {useHistory} from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import REST_APIS from 'services/APiCalls/config/apiUrl'
 import BackendService from 'services/APiCalls/BackendService';
@@ -44,7 +43,6 @@ const optionsDisability = [
     {key: 'dis2', text: 'Yes', value: true},
 ];
 const PersonalInfoDialog = (props) => {
-    const {push} = useHistory();
     const [open, setOpen] = useState(false);
     const classes = useStyles();
     const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
@@ -68,7 +66,7 @@ const PersonalInfoDialog = (props) => {
     useEffect(() => {
         (async function () {
             if (!isMountedRef.current) {
-                await BackendService.getAllSetings()
+                BackendService.getAllSetings()
                     .then(data => setSettings(data))
                     .then(() => initializePersonalInfo());
                 setMounted(true);
@@ -85,8 +83,9 @@ const PersonalInfoDialog = (props) => {
     }
     const initializeDefaultData = async () => {
         personalInfoFields.map(fieldObj => {
+            const value = user[fieldObj.field];
             setPersonalInfoValues((prevValues) => {
-                return {...prevValues, [fieldObj.field]: user[fieldObj.field]};
+                return {...prevValues, [fieldObj.field]: !value ? '' : value};
             });
         });
     }
@@ -124,8 +123,8 @@ const PersonalInfoDialog = (props) => {
         }
     }
     const handleCounties = (e, {name, value}) => {
-        setFieldValues(name, value);
-        fetchSubCounties(name, value);
+        setFieldValues(name, JSON.parse(value));
+        fetchSubCounties(name, JSON.parse(value));
     }
     const fetchWard = (name, value) => {
         if (name === 'homeSubCounty') {
@@ -145,15 +144,15 @@ const PersonalInfoDialog = (props) => {
         }
     }
     const handleSubCounties = (e, {name, value}) => {
-        setFieldValues(name, value);
-        fetchWard(name, value);
+        setFieldValues(name, JSON.parse(value));
+        fetchWard(name, JSON.parse(value));
 
     }
     const handleWards = (e, {name, value}) => {
-        setFieldValues(name, value);
+        setFieldValues(name, JSON.parse(value));
     }
     const handleOtherSelects = (e, {name, value}) => {
-        setFieldValues(name, value);
+        setFieldValues(name, JSON.parse(value));
     }
     const setField = (e) => {
         setFieldValues(e.target.name, e.target.value);
@@ -180,6 +179,28 @@ const PersonalInfoDialog = (props) => {
                 hasErrors = true;
             }
         });
+
+        if (!personalObj.mobileNumber || personalObj.mobileNumber !== '') {
+            var pattern = new RegExp(/^([0-9]{10}$)/);
+            if (!pattern.test(personalObj.mobileNumber)) {
+                // isValid = false;
+                setPersonalInfoValuesErrors((prevValues) => {
+                    return {...prevValues, mobileNumber: 'Please enter valid mobile number.'};
+                });
+                hasErrors = true;
+            }
+        }
+
+        if (!personalObj.emailAddress || personalObj.emailAddress !== '') {
+            var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+            if (!pattern.test(personalObj.emailAddress)) {
+                // isValid = false;
+                setPersonalInfoValuesErrors((prevValues) => {
+                    return {...prevValues, emailAddress: 'Please enter valid email address.'};
+                });
+                hasErrors = true;
+            }
+        }
         const isId = isNumeric(personalObj.nationalID);
         if (!isId) {
             setPersonalInfoValuesErrors((prevValues) => {
@@ -188,6 +209,7 @@ const PersonalInfoDialog = (props) => {
             setPersonalInfoValues((prevValues) => {
                 return {...prevValues, nationalID: ''};
             });
+            hasErrors = true;
         }
         const dateOfBirth = moment(personalObj.dateOfBirth).format("YYYY-MM-DD")
         const isAfter = moment(dateOfBirth).isAfter();
@@ -198,6 +220,14 @@ const PersonalInfoDialog = (props) => {
             });
             hasErrors = true;
             BackendService.notifyError('Date of birth is in the future');
+        }
+        const yearsDiff = moment().diff(dateOfBirth, 'years');
+        if (yearsDiff < 18) {
+            setPersonalInfoValuesErrors((prevValues) => {
+                return {...prevValues, dateOfBirth: 'You must be above 18 years!'};
+            });
+            hasErrors = true;
+            BackendService.notifyError('You must be above 18 years!');
         }
         return hasErrors;
     }
@@ -347,6 +377,7 @@ const PersonalInfoDialog = (props) => {
                                             label="National ID"
                                             placeholder="National ID"
                                             name="nationalID"
+                                            readOnly
                                             value={personalInfoValuesRef.current.nationalID}
                                             onChange={setField}
                                             error={displayError('nationalID') ? {
@@ -399,6 +430,7 @@ const PersonalInfoDialog = (props) => {
                                             label="email"
                                             placeholder="email address"
                                             name="emailAddress"
+                                            readOnly
                                             value={personalInfoValuesRef.current.emailAddress}
                                             onChange={setField}
                                             error={displayError('emailAddress') ? {
@@ -409,6 +441,8 @@ const PersonalInfoDialog = (props) => {
                                             label="Mobile NUmber"
                                             placeholder="07********"
                                             name="mobileNumber"
+                                            type="number"
+                                            readOnly
                                             value={personalInfoValuesRef.current.mobileNumber}
                                             onChange={setField}
                                             error={displayError('mobileNumber') ? {
@@ -429,6 +463,7 @@ const PersonalInfoDialog = (props) => {
                                             label="Postal Code"
                                             placeholder="Postal Code"
                                             name="postalCode"
+                                            type="number"
                                             value={personalInfoValuesRef.current.postalCode}
                                             onChange={setField}
                                             error={displayError('postalCode') ? {
@@ -493,7 +528,7 @@ const PersonalInfoDialog = (props) => {
                                             label='Home County'
                                             name='homeCounty'
                                             onChange={handleCounties}
-                                            value={personalInfoValuesRef.current.homeCounty}
+                                            value={JSON.stringify(personalInfoValuesRef.current.homeCounty)}
                                             options={settingsRef.current?.homeCounties}
                                             placeholder='Home County'
                                             error={displayError('homeCounty') ? {
@@ -505,7 +540,7 @@ const PersonalInfoDialog = (props) => {
                                             label='Home Sub County'
                                             name='homeSubCounty'
                                             onChange={handleSubCounties}
-                                            value={personalInfoValuesRef.current.homeSubCounty}
+                                            value={JSON.stringify(personalInfoValuesRef.current.homeSubCounty)}
                                             options={settingsRef.current?.homeSubCounties}
                                             placeholder='Home Sub County'
                                             error={displayError('homeSubCounty') ? {
@@ -517,7 +552,7 @@ const PersonalInfoDialog = (props) => {
                                             label='Home Ward'
                                             name='homeWard'
                                             onChange={handleWards}
-                                            value={personalInfoValuesRef.current.homeWard}
+                                            value={JSON.stringify(personalInfoValuesRef.current.homeWard)}
                                             options={settingsRef.current?.homeWards}
                                             placeholder='Home Ward'
                                             error={displayError('homeWard') ? {
@@ -531,7 +566,7 @@ const PersonalInfoDialog = (props) => {
                                             label='Residence County'
                                             name='countyOfResidence'
                                             onChange={handleCounties}
-                                            value={personalInfoValuesRef.current.countyOfResidence}
+                                            value={JSON.stringify(personalInfoValuesRef.current.countyOfResidence)}
                                             options={settingsRef.current?.residentCounties}
                                             placeholder='Residence County'
                                             error={displayError('countyOfResidence') ? {
@@ -543,7 +578,7 @@ const PersonalInfoDialog = (props) => {
                                             label='Residence Sub County'
                                             name='subCountyOfResidence'
                                             onChange={handleSubCounties}
-                                            value={personalInfoValuesRef.current.subCountyOfResidence}
+                                            value={JSON.stringify(personalInfoValuesRef.current.subCountyOfResidence)}
                                             options={settingsRef.current?.residentSubCounties}
                                             placeholder='Residence Sub County'
                                             error={displayError('subCountyOfResidence') ? {
@@ -555,7 +590,7 @@ const PersonalInfoDialog = (props) => {
                                             name='countyOfResidenceWard'
                                             label='Residence Ward'
                                             onChange={handleWards}
-                                            value={personalInfoValuesRef.current.countyOfResidenceWard}
+                                            value={JSON.stringify(personalInfoValuesRef.current.countyOfResidenceWard)}
                                             options={settingsRef.current?.residentWards}
                                             placeholder='Residence Ward'
                                             error={displayError('countyOfResidenceWard') ? {
@@ -573,7 +608,7 @@ const PersonalInfoDialog = (props) => {
                                                 onClick={submitPersonalInfo}>
                                             Save Personal Data
                                         </Button>
-                                        <Button onClick={handleClose} color="primary">
+                                        <Button onClick={handleClose} color="blue">
                                             Close
                                         </Button></Col>
                                 </Row>

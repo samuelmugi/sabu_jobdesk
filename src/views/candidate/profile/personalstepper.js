@@ -57,7 +57,7 @@ const PersonalInfoStepper = (props) => {
                     {
                         [...Array(noOfRows).keys()].map((row) => {
 
-                                return (<Grid.Row>
+                                return (<Grid.Row key={row+new Date()}>
                                     {
                                         [...Array(4).keys()].map((coll) => {
                                             const field = personalInfoFields[col];
@@ -71,7 +71,7 @@ const PersonalInfoStepper = (props) => {
                                             ];
                                             col++;
                                             return (
-                                                <Grid.Column>
+                                                <Grid.Column key={row+col+field?.field}>
                                                     <Feed events={fieldFeed}/>
                                                 </Grid.Column>
                                             )

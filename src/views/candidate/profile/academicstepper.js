@@ -16,7 +16,7 @@ const AcademicStepper = (props) => {
     let col = 0;
     const [isMounted, setMounted, isMountedRef] = useState(false);
     const [user, setUser, userRef] = useState(USERDATA);
-    const [noOfRows, setnoOfRows, noOfRowsRef] = useState(0);
+    const [noOfRows, setnoOfRows, noOfRowsRef] = useState();
     const [academicQualifications, setacademicQualifications, academicQualificationsRef] = useState(USERDATA?.academicQualifications);
 
     useEffect(() => {
@@ -26,7 +26,7 @@ const AcademicStepper = (props) => {
                 initializeAcademicDetails();
             }
         })();
-    }, [isMounted, user, academicQualifications]);
+    }, [ user, academicQualifications]);
 
     const refreshUserDetails = (user) => {
         setUser(user)
@@ -53,12 +53,12 @@ const AcademicStepper = (props) => {
     }
     return <Card className="bg-secondary shadow border-left-4">
         <SecondarySchoolDialog refreshUserDetails={refreshUserDetails} isJobApplication={props.isJobApplication}/>
-        <Paper variant="outlined" circle>
+        <Paper variant="outlined" circle="true">
             <Box m={4}>
                 <Grid stackable columns='equal'>
                     {
                         [...Array(noOfRowsRef.current).keys()].map((row) => {
-                                return (<Grid.Row>
+                                return (<Grid.Row key ={new Date()+row}>
                                     {
                                         [...Array(4).keys()].map((coll) => {
                                             const field = academicValuesFields[col];
@@ -70,7 +70,7 @@ const AcademicStepper = (props) => {
                                             ];
                                             col++;
                                             return (
-                                                <Grid.Column>
+                                                <Grid.Column key ={row+col+new Date()}>
                                                     <Feed events={fieldFeed}/>
                                                 </Grid.Column>
                                             )

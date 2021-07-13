@@ -38,10 +38,10 @@ const JobApplications = () => {
         })();
     }, [alljobs]);
 
-    const fetchData = async () => {
+    const fetchData =   () => {
         setLoading(true);
         console.log('fetchData all job applications')
-        await BackendService.getRequest(REST_APIS.MY_JOB_APPLICATIONS + user.id)
+          BackendService.getRequest(REST_APIS.MY_JOB_APPLICATIONS + user.id)
             .then(res => {
                 setAllJobs(res.data?.payload===null?[]:res.data?.payload);
                 setTimeout(() => setLoading(false), 3000)

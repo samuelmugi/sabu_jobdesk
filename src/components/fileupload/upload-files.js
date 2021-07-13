@@ -107,10 +107,7 @@ export default class UploadFiles extends Component {
         const {
             selectedFiles,
             currentFile,
-            progress,
-            message,
-            fileInfos,
-            isError
+            progress
         } = this.state;
 
         return (

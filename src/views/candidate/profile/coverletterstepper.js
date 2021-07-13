@@ -30,7 +30,7 @@ const CoverLetterStepper = (props) => {
     }
     return <Card className="bg-secondary shadow  ">
         <CoverLetter refreshUserDetails={refreshUserDetails} isJobApplication={props.isJobApplication}/>
-        <Paper variant="outlined" circle>
+        <Paper variant="outlined" circle="true">
             <Box m={4}>
                 <Grid stackable columns='equal'>
                     <GridRow>

@@ -26,10 +26,15 @@ import BackendService from 'services/APiCalls/BackendService';
 import {Button} from "semantic-ui-react";
 import STORAGE from "services/APiCalls/config/storage";
 import REST_APIS from 'services/APiCalls/config/apiUrl'
+import RequestOtp from "views/login/login/requestotp";
 
 toast.configure();
 const color = "#80e70b";
-
+const styles = {
+    textInputStyle: {
+        color: 'green',
+    }
+};
 const Signin = () => {
     const {push} = useHistory();
     const [open, setOpen] = useState(false);
@@ -82,14 +87,14 @@ const Signin = () => {
             setErrors(newErrors);
         } else {
             if (resetPassword) {
-                const {username, mobileNumber, confirmpassword, password} = form;
+                const {username, confirmpassword, password} = form;
 
                 const url = REST_APIS.RESET_PASSWORD;
                 const resetForm = {
                     email: form.username,
-                    password: form.password,
-                    mobileNumber: form.mobileNumber
+                    password: form.password
                 };
+
                 if (form.password === form.confirmpassword) {
                     BackendService.postRequest(url, resetForm)
                         .then(() => {
@@ -149,22 +154,42 @@ const Signin = () => {
     };
 
     const findFormErrors = () => {
-        const {username, mobileNumber, confirmpassword, password} = form;
+        const {username, oneTimePin, confirmpassword, password} = form;
         const newErrors = {};
+
         // username errors
         if (!username || username === '')
             newErrors.username = 'username cannot be blank!';
+        if (!username || username !== '') {
+            var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+            if (!pattern.test(username)) {
+                // isValid = false;
+                newErrors.username = "Please enter valid email address.";
+            }
+        }
         // food errors
         if (!password || password === '')
             newErrors.password = 'password cannot be blank!';
         if (resetPassword) {
+            if (!oneTimePin || oneTimePin === '') {
+                newErrors.oneTimePin = 'OTP cannot be blank!';
+            }
             if (!confirmpassword || confirmpassword === '')
                 newErrors.confirmpassword = 'confirmpassword cannot be blank!';
-            if (!mobileNumber || mobileNumber === '')
-                newErrors.mobileNumber = 'mobileNumber cannot be blank!';
+
             if (!confirmpassword || confirmpassword === '') {
                 newErrors.confirmpassword = 'confirm password cannot be blank!';
             }
+            // if (!mobileNumber || mobileNumber === '')
+            //     newErrors.mobileNumber = 'mobileNumber cannot be blank!';
+            // if (!mobileNumber || mobileNumber !== '') {
+            //     var pattern = new RegExp(/^([0-9]{10}$)/);
+            //     if (!pattern.test(mobileNumber)) {
+            //         // isValid = false;
+            //         newErrors.mobileNumber = "Please enter valid mobile number.";
+            //     }
+            // }
+
         }
         return newErrors;
     };
@@ -214,27 +239,28 @@ const Signin = () => {
                                                             <i className="ni ni-email-83"/>
                                                         </InputGroupText>
                                                     </InputGroupAddon>
-                                                    <Input placeholder="Email" type="email"
+                                                    <Input style={{'fontSize': '15px'}} placeholder="Email" type="email"
                                                            onChange={(e) => setField('username', e.target.value)}
                                                            invalid={!!errors.username}/>
                                                     <FormFeedback>{errors.username}</FormFeedback>
 
                                                 </InputGroup>
                                             </FormGroup>
-                                            {resetPassword && <FormGroup className="mb-3">
-                                                <InputGroup className="input-group-alternative">
-                                                    <InputGroupAddon addonType="prepend">
-                                                        <InputGroupText>
-                                                            <i className="ni ni-email-83"/>
-                                                        </InputGroupText>
-                                                    </InputGroupAddon>
-                                                    <Input placeholder="Phone Number" type="number"
-                                                           onChange={(e) => setField('mobileNumber', e.target.value)}
-                                                           invalid={!!errors.mobileNumber}/>
-                                                    <FormFeedback>{errors.mobileNumber}</FormFeedback>
+                                            {/*{resetPassword &&*/}
+                                            {/*<FormGroup className="mb-3">*/}
+                                            {/*    <InputGroup className="input-group-alternative">*/}
+                                            {/*        <InputGroupAddon addonType="prepend">*/}
+                                            {/*            <InputGroupText>*/}
+                                            {/*                <i className="ni ni-email-83"/>*/}
+                                            {/*            </InputGroupText>*/}
+                                            {/*        </InputGroupAddon>*/}
+                                            {/*        <Input placeholder="Phone Number" type="number"*/}
+                                            {/*               onChange={(e) => setField('mobileNumber', e.target.value)}*/}
+                                            {/*               invalid={!!errors.mobileNumber}/>*/}
+                                            {/*        <FormFeedback>{errors.mobileNumber}</FormFeedback>*/}
 
-                                                </InputGroup>
-                                            </FormGroup>}
+                                            {/*    </InputGroup>*/}
+                                            {/*</FormGroup>}*/}
                                             <FormGroup className="mb-3">
                                                 <InputGroup className="input-group-alternative">
                                                     <InputGroupAddon addonType="prepend">
@@ -269,15 +295,18 @@ const Signin = () => {
                                                     id="customCheck1"
                                                     type="checkbox"
                                                     onChange={(e) => {
-                                                        console.log('reset password=' + e.target.checked)
                                                         toggleResetPassword()
                                                     }}
                                                 />
                                                 <label className="custom-control-label" htmlFor="customCheck1">
-                                                    Reset Passord
+                                                    Reset Password
                                                 </label>
                                             </div>
-
+                                            {resetPassword &&
+                                            <RequestOtp isSignin={true} errors={errors}
+                                                        email={form.username}
+                                                        mobileNumber={null}
+                                                        setField={setField}/>}
                                             <div className="text-center">
                                                 <Button
                                                     className="my-4"

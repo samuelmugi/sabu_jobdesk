@@ -12,6 +12,7 @@ class Storage {
                 [LS_KEY.auth_token]: authToken
             })
         );
+        this.setJobsActiveTab(1);
 
     };
 
@@ -41,18 +42,18 @@ class Storage {
     }
     getCurrentUser = () => {
         const data = localStorage.getItem(LS_KEY.user_det);
-         if (data) {
+        if (data) {
             try {
                 const decoded = JSON.parse(data);
                 return decoded[LS_KEY.user_det];
             } catch (err) {
                 console.log(err);
-                const user={jobApplicantProfileViewModel: 'NA'}
+                const user = {jobApplicantProfileViewModel: 'NA'}
                 return user;
             }
-        }else{
-            const user={jobApplicantProfileViewModel: 'NA'}
-             return user;
+        } else {
+            const user = {jobApplicantProfileViewModel: 'NA'}
+            return user;
 
         }
     };
@@ -61,6 +62,22 @@ class Storage {
         localStorage.clear();
         window.location.href = '/';
     };
+
+    navigateToApplicationsPage = (index) => {
+        this.setJobsActiveTab(index);
+        window.location.href = '/jobs-page';
+    };
+    setJobsActiveTab = (index) => {
+        localStorage.setItem('activeTab', index+'');
+    }
+    getActiveTab = () => {
+        try {
+            const activeTab = localStorage.getItem('activeTab');
+            return activeTab === null ? 1 : +activeTab;
+        } catch (e) {
+            return 1;
+        }
+    }
 
 }
 

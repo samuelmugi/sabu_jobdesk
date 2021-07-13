@@ -24,6 +24,7 @@ import BackendService from 'services/APiCalls/BackendService';
 import LoadingOverlay from 'react-loading-overlay'
 import ClipLoader from "react-spinners/PropagateLoader";
 import {Button} from "semantic-ui-react";
+import RequestOtp from "views/login/login/requestotp";
 
 toast.configure();
 const color = "#80e70b";
@@ -99,12 +100,8 @@ const Signup = () => {
     };
 
     const findFormErrors = () => {
-        const {email, password, firstName, confirmpassword, middleName, lastName, mobileNumber} = form;
+        const {email, oneTimePin, password, firstName, nationalID, confirmpassword, middleName, lastName, mobileNumber} = form;
         const newErrors = {};
-
-        if (!email || email === '') {
-            newErrors.email = 'email cannot be blank!';
-        }
         if (!firstName || firstName === '') {
             newErrors.firstName = 'firstName cannot be blank!';
         }
@@ -114,29 +111,51 @@ const Signup = () => {
         if (!lastName || lastName === '') {
             newErrors.lastName = 'lastName cannot be blank!';
         }
-        if (!mobileNumber || mobileNumber === '') {
-            newErrors.mobileNumber = 'mobileNumber cannot be blank!';
-        }
+
         if (!password || password === '') {
             newErrors.password = 'password cannot be blank!';
         }
         if (!confirmpassword || confirmpassword === '') {
             newErrors.confirmpassword = 'confirm password cannot be blank!';
         }
+        if (!mobileNumber || mobileNumber === '') {
+            newErrors.mobileNumber = 'mobileNumber cannot be blank!';
+        }
+        if (!oneTimePin || oneTimePin === '') {
+            newErrors.oneTimePin = 'OTP cannot be blank!';
+        }
+        if (!mobileNumber || mobileNumber !== '') {
+            var pattern = new RegExp(/^([0-9]{10}$)/);
+            if (!pattern.test(mobileNumber)) {
+                // isValid = false;
+                newErrors.mobileNumber = "Please enter valid mobile number.";
+            }
+        }
+        if (!email || email === '') {
+            newErrors.email = 'email cannot be blank!';
+        }
+        if (!email || email !== '') {
+            var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+            if (!pattern.test(email)) {
+                // isValid = false;
+                newErrors.email = "Please enter valid email address.";
+            }
+        }
+        const isId = isNumeric(nationalID);
+        if (!isId) {
+            newErrors.nationalID = "Please enter valid National ID";
+        }
         return newErrors;
     };
 
-
+    function isNumeric(value) {
+        return /^-?\d+$/.test(value);
+    }
 
     return (
         <>
             <Row>
                 <Col>
-                    {/*<a*/}
-                    {/*    onClick={handleClickOpen}*/}
-                    {/*><span className="nav-link-inner--text ml-1 btn-inner--icon">*/}
-                    {/*    <i className="fa fa-user-plus mr-2">*/}
-                    {/*     &nbsp;Register </i></span> </a>*/}
                     <Button onClick={handleClickOpen} color='orange'>
                         Register
                     </Button>
@@ -251,7 +270,22 @@ const Signup = () => {
 
                                                     </FormGroup>
                                                 </Col>
+                                                <Col>
+                                                    <FormGroup>
+                                                        <InputGroup className="input-group-alternative mb-3">
+                                                            <InputGroupAddon addonType="prepend">
+                                                                <InputGroupText>
+                                                                    <i className="ni ni-hat-3"/>
+                                                                </InputGroupText>
+                                                            </InputGroupAddon>
+                                                            <Input placeholder="National Id" type="number"
+                                                                   onChange={(e) => setField('nationalID', e.target.value)}
+                                                                   invalid={!!errors.nationalID}/>
+                                                            <FormFeedback>{errors.nationalID}</FormFeedback>
+                                                        </InputGroup>
 
+                                                    </FormGroup>
+                                                </Col>
 
                                             </Row>
                                             <Row>
@@ -290,7 +324,12 @@ const Signup = () => {
                                                     </FormGroup>
                                                 </Col>
                                             </Row>
-
+                                            <Row>
+                                                <Col>
+                                                    <RequestOtp  isSignin={false}  errors={errors} mobileNumber={form.mobileNumber}
+                                                                  setField={setField}/>
+                                                </Col>
+                                            </Row>
                                             <div className="text-center">
                                                 <Button
                                                     className="mt-4"

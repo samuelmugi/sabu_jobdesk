@@ -125,16 +125,16 @@ class BackendService {
             .all([requestReligion, requestTribe, requestMarital, requestSalutation, requestCounties]);
 
         const settings = {
-                religions: religions.data.map(val => ({key: val, text: val, value: val})),
-                tribes: tribes.data.map(val => ({key: val, text: val, value: val})),
-                maritals: maritals.data.map(val => ({key: val, text: val, value: val})),
-                salutations: salutations.data.map(val => ({key: val, text: val, value: val})),
-                homeCounties: counties.data.map(val => ({key: val.countyCode, text: val.name, value: val})),
-                residentCounties: counties.data.map(val => ({key: val.id, text: val.name, value: val})),
-                homeSubCounties: [{key: 'cou', text: '', value: ''}],
-                homeWards: [{key: 'cou', text: '', value: ''}],
-                residentSubCounties: [{key: 'cou', text: '', value: ''}],
-                residentWards: [{key: 'cou', text: '', value: ''}],
+                religions: religions.data.map((val,index) => ({key: val+index, text: val, value: val})),
+                tribes: tribes.data.map((val,index) => ({key: val+index, text: val, value: val})),
+                maritals: maritals.data.map((val,index) => ({key: val+index, text: val, value: val})),
+                salutations: salutations.data.map((val,index) => ({key: val+index, text: val, value: val})),
+                homeCounties: counties.data.map(val => ({key: val.countyCode, text: val.name, value: JSON.stringify(val)})),
+                residentCounties: counties.data.map(val => ({key: val.id+'residentcounty', text: val.name, value: JSON.stringify(val)})),
+                homeSubCounties: [{key: 'homesub', text: '-', value: '-'}],
+                homeWards: [{key: 'homeward', text: '-', value: '-'}],
+                residentSubCounties: [{key: 'residentsub', text: '-', value: '-'}],
+                residentWards: [{key: 'residentward', text: '-', value: '-'}],
             }
         ;
         return settings
@@ -142,13 +142,13 @@ class BackendService {
 
     async getSubCounty(county) {
         let requestSubCounties = await axios.get(BASE_SETTINGS_URL + REST_APIS.GET_ALL_COUNTIES + county.id + REST_APIS.GET_ALL_SUB_COUNTIES);
-        return requestSubCounties.data.map(val => ({key: val.code, text: val.name, value: val}))
+        return requestSubCounties.data.map(val => ({key: val.code, text: val.name, value: JSON.stringify(val)}))
     }
 
     async getWards(county, subCounty) {
         let requestWards = await axios.get(BASE_SETTINGS_URL + REST_APIS.GET_ALL_COUNTIES +
             county.id + REST_APIS.GET_ALL_SUB_COUNTIES + subCounty.id + REST_APIS.GET_ALL_WARDS);
-        return requestWards.data.map(val => ({key: val.id, text: val.wardName, value: val}))
+        return requestWards.data.map(val => ({key: val.id, text: val.wardName, value: JSON.stringify(val)}))
     }
 
     async notifySuccess(value) {

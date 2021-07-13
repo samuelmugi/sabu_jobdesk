@@ -42,16 +42,12 @@ export default function Skills(props) {
     useEffect(() => {
         (async function () {
             if (!isMountedRef.current) {
-                await initializeSkillValues;
-                setMounted(true);
+                 setMounted(true);
             }
         })();
     }, [isEdited]);
 
 
-    const initializeSkillValues = async () => {
-
-    }
 
     const setField = (e) => {
         setFieldValues(e.target.name, e.target.value);

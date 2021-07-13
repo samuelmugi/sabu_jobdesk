@@ -9,21 +9,25 @@ import JobApplications from 'views/jobs/jobs/applications';
 import STORAGE from "services/APiCalls/config/storage";
 
 const user = STORAGE.getCurrentUser()?.jobApplicantProfileViewModel;
+const activeTab = STORAGE.getActiveTab();
 
 export default class JobsMain extends Component {
+
     state = {
-        iconTabs: 1,
+        iconTabs: activeTab,
         plainTabs: 1
     };
     toggleNavs = (e, state, index) => {
         e.preventDefault();
+         STORAGE.setJobsActiveTab(index);
         this.setState({
             [state]: index
         });
     };
 
+
     render() {
-        return (
+         return (
             <>
                 <DemoNavbar/>
                 <main ref="main">

@@ -1,8 +1,8 @@
 import React from 'react';
 import DemoNavbar from "components/Navbars/DemoNavbar";
 import {Card, CardBody, Col, Container, Row} from "reactstrap";
-import {Label, List} from "semantic-ui-react";
 import CardsFooter from "components/Footers/CardsFooter";
+import AllNotices from "views/notices/noticeslist";
 
 const style = {width: "80rem"};
 const styleImg = {width: "100px"};
@@ -77,52 +77,7 @@ class Notices extends React.Component {
                                                             ></img>
                                                         </Col>
                                                         <Col>
-                                                            <List as='ol' divided selection>
-                                                                <List.Item  >
-                                                                    <List.Content  as='li' floated='left'>
-                                                                        CANCELLED ECDE INTERVIEWS
-                                                                    </List.Content>
-                                                                    <List.Content floated='right'>
-                                                                        <Label as='a' color='teal' tag='right'>
-                                                                            Download DOcument
-                                                                        </Label>
-                                                                    </List.Content>
-
-                                                                </List.Item>
-                                                                <List.Item>
-                                                                    <List.Content  as='li'  floated='left'> INTERVIEW SCHEDULE FOR SHORTLISTED CANDIDATES FOR
-                                                                    THE POST OF ECDE
-                                                                    </List.Content>
-                                                                    <List.Content floated='right'>
-                                                                        <Label as='a' color='teal' tag='right'>
-                                                                            Download DOcument
-                                                                        </Label>
-                                                                    </List.Content>
-
-                                                                </List.Item>
-                                                                <List.Item>
-                                                                    <List.Content  as='li'  floated='left'>
-                                                                        ECDE INTERVIEW VENUE NOTICE
-                                                                    </List.Content>
-                                                                    <List.Content floated='right'>
-                                                                        <Label as='a' color='teal' tag='right'>
-                                                                            Download DOcument
-                                                                        </Label>
-                                                                    </List.Content>
-
-                                                                </List.Item>
-                                                                <List.Item>
-                                                                    <List.Content   as='li' floated='left'>
-                                                                        NOTICE TO ALL APPLICANTS AND THE GENERAL PUBLIC
-                                                                    </List.Content>
-                                                                    <List.Content floated='right'>
-                                                                        <Label as='a' color='teal' tag='right'>
-                                                                            Download DOcument
-                                                                        </Label>
-                                                                    </List.Content>
-                                                                </List.Item>
-
-                                                            </List>
+                                                            <AllNotices/>
                                                             <p></p>
                                                         </Col>
                                                         <Col md="1">

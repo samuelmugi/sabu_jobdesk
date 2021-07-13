@@ -31,12 +31,12 @@ const ExperienceStepper = (props) => {
     }
     return <Card className="bg-secondary shadow border-left-4">
         <EmploymentHistory refreshUserDetails={refreshUserDetails} isJobApplication={props.isJobApplication}/>
-        <Paper variant="outlined" circle>
+        <Paper variant="outlined" circle="true">
             <Box m={4}>
                 <Grid stackable columns='equal'>
 
                     {
-                        workExperiences.map((val, key) => {
+                        workExperiencesRef.current.map((val, key) => {
 
                                 return (<>
                                         <Grid.Row>

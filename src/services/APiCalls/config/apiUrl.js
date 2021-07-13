@@ -4,6 +4,8 @@ module.exports = Object.freeze({
     BASE_SETTINGS_URL: 'http://3.16.69.34:8083/',
     SIGN_UP: 'api/auth/signup',
     SIGN_IN: 'api/auth/signin',
+    GET_OTP_SIGNUP:'settings/generate-otp/',
+    GET_OTP_SIGNIN:'settings/otp/',
     RESET_PASSWORD: 'api/auth/reset-password',
     //USER DETAILS
     GET_USER_DETAILS: 'api/auth/user-details/',
@@ -37,12 +39,15 @@ module.exports = Object.freeze({
     GET_ALL_SUB_COUNTIES: '/sub-counties/',
     GET_ALL_WARDS: '/wards',
     //JOBS
-    GET_ALL_JOB_VACANCIES:'job-vacancies',
+    GET_ALL_JOB_VACANCIES:'job-openings',
     APPLY_JOB_VACANCY:'job-applications',
-    MY_JOB_APPLICATIONS:'job-applications/',
+    MY_JOB_APPLICATIONS:'job-openings/loggedIn/',
     //COVER LETTER
     COVER_LETTER:'profile/PROFILEID/cover-letter',
     // CONTACT US
-    CREATE_TICKET:'support-tickets'
+    CREATE_TICKET:'support-tickets',
+    //    NOTICES
+    GET_ALL_NOTICES:'settings/notices',
+    DOWNLOAD_SHORTLIST:'settings/notices/download/'
 
 });

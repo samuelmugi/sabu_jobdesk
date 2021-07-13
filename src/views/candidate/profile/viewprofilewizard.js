@@ -147,15 +147,15 @@ export default function ViewProfileStepper(props) {
                                 (isLastStep() ?
                                         <Button
                                             variant="contained"
-                                            color="primary"
+                                            positive
                                             onClick={handleDone}
                                             className={classes.button}
                                         >
                                             Submit and Exit
-                                        </Button> : <Button
+                                        </Button> :
+                                        <Button
                                             variant="contained"
-                                            color="primary"
-                                            onClick={handleNext}
+                                            primary onClick={handleNext}
                                             className={classes.button}
                                         >
                                             Next

@@ -86,8 +86,9 @@ const SecondarySchoolDialog = (props) => {
     const initializeAcademicValues = () => {
 
         academicValuesFields.map(fieldObj => {
+            const value=user[fieldObj.field];
             setAcademicValues((prevValues) => {
-                return {...prevValues, [fieldObj.field]: user[fieldObj.field]};
+                return {...prevValues, [fieldObj.field]: !value?'':value};
             });
             setEditing(true);
         })
@@ -354,7 +355,7 @@ const SecondarySchoolDialog = (props) => {
                                                 onClick={submitAcademicValues}>
                                             Save Academic Data
                                         </Button>
-                                        <Button onClick={handleClose} color="primary">
+                                        <Button onClick={handleClose} color="blue">
                                             Close
                                         </Button>
 

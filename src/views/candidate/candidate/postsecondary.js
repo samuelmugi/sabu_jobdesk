@@ -81,8 +81,9 @@ export default function PostSecondary(props) {
             setStartDate(moment(qualification?.start + '-01-01').toDate());
             setEndDate(moment(qualification?.end + '-01-01').toDate());
             postSecondaryValuesFields.map(fieldObj => {
+                const value=user[fieldObj.field];
                 setPostSecondaryValues((prevValues) => {
-                    return {...prevValues, [fieldObj.field]: qualification[fieldObj.field]};
+                    return {...prevValues, [fieldObj.field]: !value?'':value};
                 });
             })
         }
@@ -134,7 +135,7 @@ export default function PostSecondary(props) {
             hasErrors = true;
         }
 
-        const checkStartAndEnd=moment(end).isAfter(start);
+        const checkStartAndEnd=moment(start).isAfter(end);
         if (checkStartAndEnd) {
             setPostSecondaryValuesErrors((prevValues) => {
                 return {...prevValues, end: 'End Year  is before start'};
@@ -376,7 +377,7 @@ export default function PostSecondary(props) {
                             <Button onClick={submitPostSecondaryValues} positive>
                                 Save
                             </Button>
-                            <Button onClick={handleClose} color="primary">
+                            <Button onClick={handleClose} color="blue">
                                 Close
                             </Button>
                         </Form>

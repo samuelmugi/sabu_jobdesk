@@ -94,10 +94,8 @@ class Hero extends React.Component {
                                                                     <h6 className="text-primary text-uppercase">
                                                                         VACANCIES IN NAIROBI CITY COUNTY
                                                                     </h6>
-                                                                    <p>The Nairobi City County Public Service Board
-                                                                        (NCPSB) invites applications from suitably
-                                                                        qualified candidates to fill the following
-                                                                        vacant positions.
+                                                                    <p>The Nairobi City County Public Service Board (NCPSB) invites applications
+                                                                        from suitably qualified candidates to fill in various vacancies.
                                                                     </p>
                                                                     <p className="h6">IMPORTANT INFORMATION TO
                                                                         PROSPECTIVE APPLICANTS

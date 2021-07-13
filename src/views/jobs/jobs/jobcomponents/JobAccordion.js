@@ -7,10 +7,8 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import {grey} from '@material-ui/core/colors';
-import {Divider, Grid, Header, Label} from 'semantic-ui-react'
+import {Divider, Header, Label} from 'semantic-ui-react'
 import Box from '@material-ui/core/Box';
-import REST_APIS from "services/APiCalls/config/apiUrl";
-import BackendService from "services/APiCalls/BackendService";
 import STORAGE from "services/APiCalls/config/storage";
 import useState from "react-usestateref";
 import LoadingOverlay from 'react-loading-overlay'
@@ -18,6 +16,7 @@ import ClipLoader from "react-spinners/PropagateLoader";
 import ApplyJob from "views/jobs/jobs/jobcomponents/applyjob";
 import moment from 'moment';
 import MyProfile from "views/candidate/profile/Profile";
+import { Markup } from 'interweave';
 
 const useStyles = makeStyles((theme) => ({
         root: {
@@ -68,31 +67,6 @@ const JobAccordion = (props) => {
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     };
-    const submitApplication = async (jobid) => {
-        setLoading(true);
-        if (user.hasOwnProperty('id')) {
-            const jobApplication = {
-                jobApplicantProfileId: user.id,
-                jobVacancyId: jobid.id
-            };
-            const url = REST_APIS.APPLY_JOB_VACANCY.replace('PROFILEID', user.id);
-            await BackendService.postRequest(url, jobApplication)
-                .then(() => {
-                        BackendService.notifySuccess('Job Applied successfully')
-                        setLoading(false);
-                    },
-                    (error) => {
-                        BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
-                        setLoading(false);
-                    }
-                );
-
-        } else {
-            BackendService.notifyError('Please log in to apply for the Job.');
-            setLoading(false);
-
-        }
-    }
 
     return (
         <div className={classes.root}>
@@ -151,11 +125,13 @@ const JobAccordion = (props) => {
 
                                     <Header as='h3'>Job Requirements</Header>
                                     <Typography paragraph style={{whiteSpace: "pre-line"}}>
-                                        {item?.jobRequirements.split("\n").join("\n")}
+                                        {/*{item?.jobRequirements.split("\n").join("\n")}*/}
+                                        <Markup content={item?.jobRequirements} />
                                     </Typography>
                                     <Header as='h3'>Job Description</Header>
                                     <Typography paragraph style={{whiteSpace: "pre-line"}}>
-                                        {item?.jobDescription.split("\n").join("\n")}
+                                        {/*{item?.jobDescription.split("\n").join("\n")}*/}
+                                        <Markup content={item?.jobDescription} />
                                     </Typography>
 
                                     {user !== 'NA' ?<MyProfile job={item}/>
