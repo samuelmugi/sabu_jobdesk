@@ -21,10 +21,14 @@ const RequestOtp = (props) => {
     const fetchOtp = async (event) => {
         event.preventDefault();
         setLoading(true);
-        if (!props.mobileNumber) {
+        if (!props.mobileNumber && !props.isSignin) {
+            setLoading(false);
             BackendService.notifyError('Please provide mobile number first to get O.T.P')
+        } else if (!props.email && props.isSignin) {
+            setLoading(false);
+            BackendService.notifyError('Please provide username first to get O.T.P')
         } else {
-            const url =props.isSignin?REST_APIS.GET_OTP_SIGNIN + props.email: REST_APIS.GET_OTP_SIGNUP + props.mobileNumber;
+            const url = props.isSignin ? REST_APIS.GET_OTP_SIGNIN + props.email : REST_APIS.GET_OTP_SIGNUP + props.mobileNumber;
             BackendService.getRequest(url)
                 .then((response) => {
 

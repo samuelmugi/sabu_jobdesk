@@ -57,9 +57,13 @@ const Signin = () => {
     };
     const handleClickOpen = () => {
         setOpen(!open);
+        setResetPassword(false);
+
     };
     const handleClose = () => {
         setOpen(false);
+        setResetPassword(false);
+
     };
 
 

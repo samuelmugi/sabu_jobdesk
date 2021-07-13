@@ -40,8 +40,9 @@ module.exports = Object.freeze({
     GET_ALL_WARDS: '/wards',
     //JOBS
     GET_ALL_JOB_VACANCIES:'job-openings',
+    GET_ALL_JOB_NOT_APPLIED:'job-openings/loggedIn/',
     APPLY_JOB_VACANCY:'job-applications',
-    MY_JOB_APPLICATIONS:'job-openings/loggedIn/',
+    MY_JOB_APPLICATIONS:'job-applications/',
     //COVER LETTER
     COVER_LETTER:'profile/PROFILEID/cover-letter',
     // CONTACT US

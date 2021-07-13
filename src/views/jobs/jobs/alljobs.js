@@ -29,7 +29,7 @@ const Alljobs = () => {
     }, [alljobs]);
 
     const fetchData = () => {
-        const url = user !== 'NA' ? REST_APIS.MY_JOB_APPLICATIONS + user.id : REST_APIS.GET_ALL_JOB_VACANCIES;
+        const url = user !== 'NA' ? REST_APIS.GET_ALL_JOB_NOT_APPLIED + user.id : REST_APIS.GET_ALL_JOB_VACANCIES;
         BackendService.getRequest(url)
             .then(response => setAllJobs(response.data?.payload));
     }
