@@ -121,9 +121,9 @@ const Signup = () => {
         if (!mobileNumber || mobileNumber === '') {
             newErrors.mobileNumber = 'mobileNumber cannot be blank!';
         }
-        if (!oneTimePin || oneTimePin === '') {
-            newErrors.oneTimePin = 'OTP cannot be blank!';
-        }
+        // if (!oneTimePin || oneTimePin === '') {
+        //     newErrors.oneTimePin = 'OTP cannot be blank!';
+        // }
         if (!mobileNumber || mobileNumber !== '') {
             var pattern = new RegExp(/^([0-9]{10}$)/);
             if (!pattern.test(mobileNumber)) {
@@ -324,12 +324,12 @@ const Signup = () => {
                                                     </FormGroup>
                                                 </Col>
                                             </Row>
-                                            <Row>
-                                                <Col>
-                                                    <RequestOtp  isSignin={false}  errors={errors} mobileNumber={form.mobileNumber}
-                                                                  setField={setField}/>
-                                                </Col>
-                                            </Row>
+                                            {/*<Row>*/}
+                                            {/*    <Col>*/}
+                                            {/*        <RequestOtp  isSignin={false}  errors={errors} mobileNumber={form.mobileNumber}*/}
+                                            {/*                      setField={setField}/>*/}
+                                            {/*    </Col>*/}
+                                            {/*</Row>*/}
                                             <div className="text-center">
                                                 <Button
                                                     className="mt-4"
