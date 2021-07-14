@@ -96,7 +96,8 @@ const Signin = () => {
                 const url = REST_APIS.RESET_PASSWORD;
                 const resetForm = {
                     email: form.username,
-                    password: form.password
+                    password: form.password,
+                    oneTimePin:form.oneTimePin
                 };
 
                 if (form.password === form.confirmpassword) {

@@ -33,9 +33,9 @@ const Contact = () => {
 
 
     const setField = (e) => {
-         setForm({
+        setForm({
             ...form,
-            [e.target.name]:e.target.value
+            [e.target.name]: e.target.value
         });
         // Check and see if errors exist, and remove them from the error object:
         if (!!errors[e.target.name])
@@ -56,7 +56,7 @@ const Contact = () => {
             setErrors(newErrors);
             setLoading(false);
         } else {
-             // No errors! Put any logic here for the form submission!
+            // No errors! Put any logic here for the form submission!
             console.log(JSON.stringify(form))
             await BackendService.postRequest(REST_APIS.CREATE_TICKET, form)
                 .then((resp) => {
@@ -73,7 +73,7 @@ const Contact = () => {
     };
 
     const findFormErrors = () => {
-        const {message, fullNames, phoneNumber, nationalId} = form;
+        const {message, fullNames, phoneNumber, nationalId, emailAddress} = form;
         const newErrors = {};
 
         if (!message || message === '') {
@@ -88,7 +88,13 @@ const Contact = () => {
         if (!nationalId || nationalId === '') {
             newErrors.nationalId = 'nationalId cannot be blank!';
         }
+        if (!emailAddress || emailAddress !== '') {
+            var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+            if (!pattern.test(emailAddress)) {
+                newErrors.emailAddress = 'Please enter valid email address!';
 
+            }
+        }
 
         return newErrors;
     };
@@ -108,9 +114,9 @@ const Contact = () => {
             <Row>
                 <Col>
 
-                    <NavLink   onClick={handleClickOpen}>
+                    <NavLink onClick={handleClickOpen}>
 
-                          Contact Us
+                        Contact Us
                     </NavLink>
                     <Modal
                         className="modal-dialog-centered"
@@ -173,6 +179,17 @@ const Contact = () => {
                                                     onChange={(e) => setField(e)}
                                                     error={displayError('fullNames') ? {
                                                         content: errors.current?.fullNames
+                                                    } : false}
+                                                />
+                                            </Form.Group>
+                                            <Form.Group widths='equal'>
+                                                <Form.Input
+                                                    label="Email"
+                                                    placeholder="johndoe@gmail.com"
+                                                    name="emailAddress"
+                                                    onChange={(e) => setField(e)}
+                                                    error={displayError('emailAddress') ? {
+                                                        content: errors.current?.emailAddress
                                                     } : false}
                                                 />
                                             </Form.Group>

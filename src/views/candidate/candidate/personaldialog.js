@@ -152,7 +152,7 @@ const PersonalInfoDialog = (props) => {
         setFieldValues(name, JSON.parse(value));
     }
     const handleOtherSelects = (e, {name, value}) => {
-        setFieldValues(name, JSON.parse(value));
+        setFieldValues(name, value);
     }
     const setField = (e) => {
         setFieldValues(e.target.name, e.target.value);
