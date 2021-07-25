@@ -152,13 +152,14 @@ export default class UploadFiles extends Component {
                                 component="span"
                                 disabled={!selectedFiles}
                                 onClick={this.upload}>
-                                Upload
+                                {!user?.curriculumVitaeName ? 'Click here to Upload CV' : 'Upload to replace the current CV'}
                             </Button>
 
 
                         </GridColumn>
                     </GridRow>
-                    {user?.curriculumVitaeName && <GridRow>
+                    {user?.curriculumVitaeName &&
+                    <GridRow>
                         <GridColumn>
 
                             Download &nbsp;
@@ -167,8 +168,8 @@ export default class UploadFiles extends Component {
                                 href="#latestcv"
                                 onClick={this.download}
                             >
-                                {user?.curriculumVitaeName}
-                            </a> &nbsp;uploaded {moment(user?.curriculumVitaeUploadDate).format("MMM Do YYYY")}
+                                {user?.curriculumVitaeName + '_CV.pdf'}
+                            </a> &nbsp;{!user?.curriculumVitaeUploadDate ? '' : 'uploaded ' + moment(user?.curriculumVitaeUploadDate).format("MMM Do YYYY")}
                         </GridColumn>
                     </GridRow>}
                     {

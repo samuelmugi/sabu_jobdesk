@@ -49,6 +49,7 @@ module.exports = Object.freeze({
     CREATE_TICKET:'support-tickets',
     //    NOTICES
     GET_ALL_NOTICES:'settings/notices',
+    GET_ALL_SHORTLIST:'settings/shortlists',
     DOWNLOAD_SHORTLIST:'settings/notices/download/'
 
 });

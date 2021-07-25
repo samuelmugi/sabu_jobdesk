@@ -1,29 +1,13 @@
-/*!
-
-=========================================================
-* Argon Design System React - v1.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-design-system-react
-* Copyright 2020 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-design-system-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from 'react';
 import {Link} from 'react-router-dom';
 // reactstrap components
 import {CardBody, Col, Container, Row} from 'reactstrap';
 import Signin from 'views/login/login/signin.js';
 import Signup from 'views/login/login/SIgnup.js';
-import {Button, Card, List} from "semantic-ui-react";
+import {Button, Card, Label, List} from "semantic-ui-react";
 import DemoNavbar from "components/Navbars/DemoNavbar";
 import STORAGE from "services/APiCalls/config/storage";
+import AllNotices from "views/notices/noticeslist";
 
 const style = {width: "350rem"};
 const styleImg = {width: "100px"};
@@ -94,8 +78,10 @@ class Hero extends React.Component {
                                                                     <h6 className="text-primary text-uppercase">
                                                                         VACANCIES IN NAIROBI CITY COUNTY
                                                                     </h6>
-                                                                    <p>The Nairobi City County Public Service Board (NCPSB) invites applications
-                                                                        from suitably qualified candidates to fill in various vacancies.
+                                                                    <p>The Nairobi City County Public Service Board
+                                                                        (NCPSB) invites applications
+                                                                        from suitably qualified candidates to fill in
+                                                                        various vacancies.
                                                                     </p>
                                                                     <p className="h6">IMPORTANT INFORMATION TO
                                                                         PROSPECTIVE APPLICANTS
@@ -136,11 +122,47 @@ class Hero extends React.Component {
                                         </Col>
 
                                     </Row>
+                                    <Row className="row-grid justify-content-center">
+                                        <Col lg="12">
+                                            <Card style={style} className="card-lift--hover shadow border-0">
+                                                <CardBody className="py-5">
+                                                    <Row>
+                                                        <Col>
+                                                            <Label as='a' color='red' ribbon>
+                                                                Notice(s)
+                                                            </Label>
+                                                            <AllNotices type={'notices'}/>
+                                                        </Col>
+                                                    </Row>
+                                                </CardBody>
+                                            </Card>
+                                        </Col>
+
+                                    </Row>
+                                    <Row className="row-grid justify-content-center">
+                                        <Col lg="12">
+
+                                            <Card style={style} className="card-lift--hover shadow border-0">
+                                                <CardBody className="py-5">
+                                                    <Row>
+
+                                                        <Col>
+                                                            <Label as='a' color='teal' ribbon>
+                                                                Shortlist(s)
+                                                            </Label>
+                                                            <AllNotices type={'shortlist'}/>
+                                                        </Col>
+                                                    </Row>
+                                                </CardBody>
+                                            </Card>
+                                        </Col>
+
+                                    </Row>
                                 </Col>
                             </Row>
                         </Container>
                     </section>
-                    <section className="section pb-0 bg-gradient-default">
+                    <section className="section  pb-0  bg-gradient-default">
                         <Container>
 
                             <div className="col px-0">
@@ -157,20 +179,20 @@ class Hero extends React.Component {
                                                 <Col> {user === 'NA' && <Signup/>}</Col>
                                                 <Col>
                                                     <Button
-                                                    className="btn-neutral btn-icon"
-                                                    color="grey"
-                                                    to="/jobs-page" tag={Link}
-                                                >
+                                                        className="btn-neutral btn-icon"
+                                                        color="grey"
+                                                        to="/jobs-page" tag={Link}
+                                                    >
                       <span className="btn-inner--icon">
                         <i className="fa fa-binoculars mr-2"/>
                       </span>
-                                                    <span className="nav-link-inner--text ml-1">
+                                                        <span className="nav-link-inner--text ml-1">
                         JOBS
                       </span>
-                                                </Button></Col>
+                                                    </Button></Col>
                                                 <Col> {user === 'NA' && <Signin/>}</Col>
                                             </Row>
-                                           
+
 
                                         </div>
                                         <div className="mt-5">

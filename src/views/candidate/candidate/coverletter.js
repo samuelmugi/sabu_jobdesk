@@ -57,8 +57,7 @@ export default function CoverLetter(props) {
                 return {...prevValues, [fieldObj.field]: user[fieldObj.field]};
             });
         })
-
-    }
+     }
 
     const setField = (e) => {
         setFieldValues(e.target.name, e.target.value);
@@ -98,30 +97,14 @@ export default function CoverLetter(props) {
             setLoading(true);
             coverLetterValues.id = user.id;
             const url = REST_APIS.COVER_LETTER.replace('PROFILEID', user.id);
-            await BackendService.postRequest(url, coverLetterValues)
+            await BackendService.putRequest(url, coverLetterValues)
                 .then((response) => {
                     const user = response.data?.payload;
                     props.refreshUserDetails(user);
                     BackendService.notifySuccess('CoverLetter  Updated successfully')
                         .then(() => setLoading(false))
                         .finally(() => handleClose());
-                    // delete coverLetterValues.coverLetter;
-                    // delete coverLetterValues.id;
-                    // const clearanceurl = REST_APIS.UPDATE_USER_DETAILS.replace('PROFILEID', user.id);
-                    // BackendService.putRequest(clearanceurl, coverLetterValues)
-                    //     .then((response) => {
-                    //         const user =response.data?.payload;
-                    //         props.refreshUserDetails(user);
-                    //
-                    //         BackendService.notifySuccess('CoverLetter  Updated successfully')
-                    //             .then(() => setLoading(false))
-                    //             .finally(() => handleClose());
-                    //     },
-                    //     (error) => {
-                    //         BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
-                    //         setLoading(false);
-                    //     }
-                    // )
+
                     setMounted(false);
                 }, (error) => {
                     BackendService.notifyError('oops! error occured during personal data update. pLease try later ');
@@ -192,9 +175,9 @@ export default function CoverLetter(props) {
                         <Form.Group widths='equal'>
 
                             <Form.Checkbox
-                                label="KRA Clerance"
+                                label="KRA Clearance"
                                 name="kraClearace"
-                                checked={coverLetterValuesRef?.kraClearace}
+                                checked={coverLetterValuesRef.current?.kraClearace}
                                 onChange={(e, data) => {
                                     setFieldValues('kraClearace', data.checked);
                                 }}
@@ -206,7 +189,7 @@ export default function CoverLetter(props) {
                             <Form.Checkbox
                                 label="Helb CLearance"
                                 name="helbClearance"
-                                checked={coverLetterValuesRef?.helbClearance}
+                                checked={coverLetterValuesRef.current?.helbClearance}
                                 onChange={(e, data) => {
                                     setFieldValues('helbClearance', data.checked);
                                 }}
@@ -217,7 +200,7 @@ export default function CoverLetter(props) {
                             <Form.Checkbox
                                 label="EACC Clearance"
                                 name="eaccClearance"
-                                checked={coverLetterValuesRef?.eaccClearance}
+                                checked={coverLetterValuesRef.current?.eaccClearance}
                                 onChange={(e, data) => {
                                     setFieldValues('eaccClearance', data.checked);
                                 }}
@@ -229,7 +212,7 @@ export default function CoverLetter(props) {
                             <Form.Checkbox
                                 label="CRB CLearance"
                                 name="crbClearance"
-                                checked={coverLetterValuesRef?.crbClearance}
+                                checked={coverLetterValuesRef.current?.crbClearance}
                                 onChange={(e, data) => {
                                     setFieldValues('crbClearance', data.checked);
                                 }}
@@ -240,7 +223,7 @@ export default function CoverLetter(props) {
                             <Form.Checkbox
                                 label="Good Conduct"
                                 name="goodConductClearance"
-                                checked={coverLetterValuesRef?.goodConductClearance}
+                                checked={coverLetterValuesRef.current?.goodConductClearance}
                                 onChange={(e, data) => {
                                     setFieldValues('goodConductClearance', data.checked);
                                 }}

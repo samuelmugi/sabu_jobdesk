@@ -81,7 +81,7 @@ export default function PostSecondary(props) {
             setStartDate(moment(qualification?.start + '-01-01').toDate());
             setEndDate(moment(qualification?.end + '-01-01').toDate());
             postSecondaryValuesFields.map(fieldObj => {
-                const value=user[fieldObj.field];
+                const value=qualification[fieldObj.field];
                 setPostSecondaryValues((prevValues) => {
                     return {...prevValues, [fieldObj.field]: !value?'':value};
                 });

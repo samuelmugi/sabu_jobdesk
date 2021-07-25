@@ -13,7 +13,7 @@ const useJobStyles = makeStyles((theme) => ({
     }
 }));
 
-const AllNotices = () => {
+const AllNotices = (props) => {
     const [isMounted, setMounted, isMountedRef] = useState(false);
     const [allnotices, setAllNotices, allnoticesRef] = useState([]);
 
@@ -27,7 +27,14 @@ const AllNotices = () => {
     }, [allnotices]);
 
     const fetchData = () => {
-        BackendService.getRequest(REST_APIS.GET_ALL_NOTICES)
+        let url;
+        if(props.type==='notices'){
+            url=REST_APIS.GET_ALL_NOTICES;
+        }
+        if(props.type==='shortlist'){
+            url=REST_APIS.GET_ALL_SHORTLIST;
+        }
+        BackendService.getRequest(url)
             .then(response => {
                 setAllNotices(response.data?.payload)
             });
@@ -55,7 +62,7 @@ const AllNotices = () => {
                         </List.Content>
                         <List.Content key={notice.id + notice.attachmentName + notice.title} floated='right'>
                             <Label onClick={downloadNotice(notice)} as='a' color='teal' tag>
-                                {notice.attachmentName} <Icon name='download'/>
+                                 Download <Icon name='download'/>
                             </Label>
                         </List.Content>
 

@@ -24,7 +24,6 @@ const CoverLetterStepper = (props) => {
     }, [isMounted, user]);
 
     const refreshUserDetails = (user) => {
-        console.log(user);
         setUser(user)
         setMounted(false);
     }
@@ -48,22 +47,22 @@ const CoverLetterStepper = (props) => {
                                 {userRef.current?.kraClearace &&
                                 <List.Item>
                                     <List.Icon name='check'/>
-                                    <List.Content>KRA Clerance</List.Content>
+                                    <List.Content>KRA Clearance</List.Content>
                                 </List.Item>}
                                 {userRef.current?.helbClearance &&
                                 <List.Item>
                                     <List.Icon name='check'/>
-                                    <List.Content>HELB Clerance</List.Content>
+                                    <List.Content>HELB Clearance</List.Content>
                                 </List.Item>}
                                 {userRef.current?.eaccClearance &&
                                 <List.Item>
                                     <List.Icon name='check'/>
-                                    <List.Content>EACC Clerance</List.Content>
+                                    <List.Content>EACC Clearance</List.Content>
                                 </List.Item>}
                                 {userRef.current?.crbClearance &&
                                 <List.Item>
                                     <List.Icon name='check'/>
-                                    <List.Content>CRB Clerance</List.Content>
+                                    <List.Content>CRB Clearance</List.Content>
                                 </List.Item>}
                                 {userRef.current?.goodConductClearance &&
                                 <List.Item>

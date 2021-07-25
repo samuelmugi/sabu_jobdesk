@@ -5,6 +5,7 @@ import useState from 'react-usestateref';
 import BackendService from 'services/APiCalls/BackendService';
 import REST_APIS from 'services/APiCalls/config/apiUrl'
 import STORAGE from "services/APiCalls/config/storage";
+import {Feed, Icon, List} from "semantic-ui-react";
 
 
 const useJobStyles = makeStyles((theme) => ({
@@ -36,9 +37,17 @@ const Alljobs = () => {
 
     return (
         <div className={classes.root}>
-            <JobAccordion
+            {alljobsRef.current.length>0? <JobAccordion
                 jobs={alljobsRef.current}
             />
+            : <Feed>
+                <Feed.Event
+                date='Today'
+                summary="No Jobs to apply at this time."
+                ><Icon name='comment'/>
+                </Feed.Event>
+
+                </Feed>}
 
         </div>
     );

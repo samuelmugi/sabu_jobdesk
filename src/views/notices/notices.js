@@ -3,8 +3,10 @@ import DemoNavbar from "components/Navbars/DemoNavbar";
 import {Card, CardBody, Col, Container, Row} from "reactstrap";
 import CardsFooter from "components/Footers/CardsFooter";
 import AllNotices from "views/notices/noticeslist";
+import {Grid, Label, Segment} from "semantic-ui-react";
 
 const style = {width: "80rem"};
+const styleNotice = {width: "60rem"};
 const styleImg = {width: "100px"};
 
 class Notices extends React.Component {
@@ -76,9 +78,54 @@ class Notices extends React.Component {
                                                                 style={styleImg}
                                                             ></img>
                                                         </Col>
+
                                                         <Col>
-                                                            <AllNotices/>
-                                                            <p></p>
+                                                            <Grid>
+                                                                {this.props.isNotices ?
+                                                                    <Grid.Row>
+                                                                        <Grid.Column>
+                                                                            <Segment raised>
+                                                                                <Label as='a' color='red' ribbon>
+                                                                                    Notice(s)
+                                                                                </Label>
+                                                                                <Card style={styleNotice}>
+
+                                                                                    <CardBody>
+                                                                                        <Row>
+                                                                                            <Col>
+                                                                                                <AllNotices
+                                                                                                    type={'notices'}/>
+                                                                                            </Col>
+                                                                                        </Row>
+                                                                                    </CardBody>
+                                                                                </Card>
+                                                                            </Segment>
+                                                                        </Grid.Column>
+                                                                    </Grid.Row>
+                                                                    :
+                                                                    <Grid.Row>
+                                                                        <Grid.Column>
+                                                                            <Segment raised>
+                                                                                <Label as='a' color='teal' ribbon>
+                                                                                    Shortlist(s)
+                                                                                </Label>
+                                                                                <Card style={styleNotice}>
+
+                                                                                    <CardBody>
+                                                                                        <Row>
+                                                                                            <Col>
+                                                                                                <AllNotices
+                                                                                                    type={'shortlist'}/>
+                                                                                            </Col>
+                                                                                        </Row>
+                                                                                    </CardBody>
+                                                                                </Card>
+                                                                            </Segment>
+                                                                        </Grid.Column>
+                                                                    </Grid.Row>}
+                                                            </Grid>
+
+
                                                         </Col>
                                                         <Col md="1">
 
